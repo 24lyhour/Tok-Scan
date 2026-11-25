@@ -5,6 +5,7 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
+import { migrations } from './migrations'
 import { adminI18n, collections, localization, Users } from './modules'
 
 const filename = fileURLToPath(import.meta.url)
@@ -42,6 +43,9 @@ export default buildConfig({
           pool: {
                connectionString: process.env.DATABASE_URL || '',
           },
+          // Production (Vercel) never auto-pushes the schema: pending migrations in src/migrations
+          // run on start-up instead. After changing collections: `yarn payload migrate:create <name>`.
+          prodMigrations: migrations,
      }),
      sharp,
      plugins: [],
