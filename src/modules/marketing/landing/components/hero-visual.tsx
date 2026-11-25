@@ -115,11 +115,11 @@ function KitchenTicket({ className }: { className?: string }) {
 }
 
 /** Hero illustration: guest menu, KHQR bill and kitchen ticket — "show the product" (guide p.21). */
-export function HeroVisual({ className }: { className?: string }) {
+export function HeroVisual({ className, label }: { className?: string; label: string }) {
      return (
           <div
                role="img"
-               aria-label="tok-scan on a guest's phone: a Fish Amok menu card, a KHQR bill marked Paid, and the kitchen ticket for table 7"
+               aria-label={label}
                className={cn('relative mx-auto aspect-[10/9] w-full max-w-[520px]', className)}
           >
                <Phone className="top-0 left-[8%] h-[88%] w-[46%]">
