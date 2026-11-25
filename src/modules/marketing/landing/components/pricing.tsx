@@ -3,16 +3,21 @@
 import { Check } from 'lucide-react'
 import { useState } from 'react'
 
+import { useTranslations } from '@/i18n/client'
 import { Reveal } from '@/shared/components/motion/reveal'
+import { format } from '@/shared/i18n/site-locale'
 import { cn } from '@/shared/lib/utils'
 
-import { type BillingCycle, type Plan, plans, yearlyMonthsCharged } from '../content'
+import {
+     type BillingCycle,
+     type LandingContent,
+     type Plan,
+     plans,
+     yearlyMonthsCharged,
+} from '../content'
 import { Container, CtaLink, SectionHeading } from './primitives'
 
-const cycles: { id: BillingCycle; label: string; note?: string }[] = [
-     { id: 'monthly', label: 'Monthly' },
-     { id: 'yearly', label: 'Yearly', note: '2 months free' },
-]
+type PricingText = LandingContent['pricing']
 
 function priceFor(plan: Plan, cycle: BillingCycle) {
      if (plan.monthly === null) return null
@@ -21,8 +26,19 @@ function priceFor(plan: Plan, cycle: BillingCycle) {
      return { perMonth: Math.round(perYear / 12), perYear }
 }
 
-function PlanCard({ plan, cycle, index }: { plan: Plan; cycle: BillingCycle; index: number }) {
+function PlanCard({
+     plan,
+     cycle,
+     index,
+     t,
+}: {
+     plan: Plan
+     cycle: BillingCycle
+     index: number
+     t: PricingText
+}) {
      const price = priceFor(plan, cycle)
+     const text = t.plans[plan.id]
      const isPrimary = plan.highlight === 'primary'
      const isPremium = plan.highlight === 'premium'
 
@@ -37,19 +53,19 @@ function PlanCard({ plan, cycle, index }: { plan: Plan; cycle: BillingCycle; ind
                     !plan.highlight && 'border-line',
                )}
           >
-               {plan.badge && (
+               {text.badge && (
                     <span
                          className={cn(
                               'absolute -top-3 left-5 rounded-full px-2.5 py-0.5 text-[0.6875rem] font-semibold',
                               isPremium ? 'bg-saffron-500 text-ink' : 'bg-brand-700 text-white',
                          )}
                     >
-                         {plan.badge}
+                         {text.badge}
                     </span>
                )}
 
                <h3 className="text-lg font-semibold text-ink">{plan.name}</h3>
-               <p className="mt-1 text-sm text-ink-3">{plan.limits}</p>
+               <p className="mt-1 text-sm text-ink-3">{text.limits}</p>
 
                <p className="mt-5 flex items-baseline gap-1">
                     {price ? (
@@ -57,24 +73,28 @@ function PlanCard({ plan, cycle, index }: { plan: Plan; cycle: BillingCycle; ind
                               <span className="tabular text-4xl font-bold tracking-tight text-ink">
                                    ${price.perMonth}
                               </span>
-                              <span className="text-sm text-ink-3">/ month</span>
+                              <span className="text-sm text-ink-3">{t.perMonth}</span>
                          </>
                     ) : (
-                         <span className="text-4xl font-bold tracking-tight text-ink">Custom</span>
+                         <span className="text-4xl font-bold tracking-tight text-ink">
+                              {t.custom}
+                         </span>
                     )}
                </p>
-               <p className="mt-1 h-5 text-xs text-ink-3">
+               <p className="mt-1 min-h-5 text-xs text-ink-3">
                     {price?.perYear ? (
-                         <span className="tabular">${price.perYear} billed yearly</span>
+                         <span className="tabular">
+                              {format(t.billedYearly, { amount: price.perYear })}
+                         </span>
                     ) : price ? (
-                         'Billed monthly'
+                         t.billedMonthly
                     ) : (
-                         'Volume pricing'
+                         t.volume
                     )}
                </p>
 
                <ul className="mt-5 flex-1 space-y-2.5">
-                    {plan.features.map((f) => (
+                    {text.features.map((f) => (
                          <li key={f} className="flex gap-2.5 text-sm text-ink">
                               <Check
                                    aria-hidden
@@ -96,29 +116,35 @@ function PlanCard({ plan, cycle, index }: { plan: Plan; cycle: BillingCycle; ind
                     }
                     className="mt-6 w-full"
                >
-                    {plan.cta}
+                    {text.cta}
                </CtaLink>
           </Reveal>
      )
 }
 
 export function Pricing() {
+     const t = useTranslations('landing').m.pricing
      const [cycle, setCycle] = useState<BillingCycle>('monthly')
+
+     const cycles: { id: BillingCycle; label: string; note?: string }[] = [
+          { id: 'monthly', label: t.monthly },
+          { id: 'yearly', label: t.yearly, note: t.yearlyNote },
+     ]
 
      return (
           <section id="pricing" aria-labelledby="pricing-title" className="py-20 sm:py-24">
                <Container>
                     <SectionHeading
                          id="pricing-title"
-                         eyebrow="Pricing"
-                         title="Simple plans per organization"
-                         body="Every plan starts with a 14-day free trial. Add outlets as you grow."
+                         eyebrow={t.eyebrow}
+                         title={t.title}
+                         body={t.body}
                     />
 
                     <div className="mt-8 flex justify-center">
                          <div
                               role="radiogroup"
-                              aria-label="Billing period"
+                              aria-label={t.billingPeriod}
                               className="inline-flex rounded-xl bg-muted p-1"
                          >
                               {cycles.map((c) => {
@@ -131,7 +157,7 @@ export function Pricing() {
                                              aria-checked={active}
                                              onClick={() => setCycle(c.id)}
                                              className={cn(
-                                                  'inline-flex h-9 items-center gap-2 rounded-[0.625rem] px-4 text-sm font-semibold transition-colors duration-[120ms]',
+                                                  'inline-flex min-h-9 items-center gap-2 rounded-[0.625rem] px-4 text-sm font-semibold transition-colors duration-[120ms]',
                                                   active
                                                        ? 'bg-white text-ink shadow-sm'
                                                        : 'text-ink-2 hover:text-ink',
@@ -151,13 +177,18 @@ export function Pricing() {
 
                     <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                          {plans.map((plan, index) => (
-                              <PlanCard key={plan.id} plan={plan} cycle={cycle} index={index} />
+                              <PlanCard
+                                   key={plan.id}
+                                   plan={plan}
+                                   cycle={cycle}
+                                   index={index}
+                                   t={t}
+                              />
                          ))}
                     </ul>
 
                     <p className="mx-auto mt-8 max-w-2xl text-center text-xs text-ink-3">
-                         Prices in USD. Guest payments (KHQR, ABA, card, cash) go straight to your
-                         own merchant account — tok·scan only bills the subscription.
+                         {t.note}
                     </p>
                </Container>
           </section>

@@ -1,52 +1,40 @@
 'use client'
 
-import { ChevronRight, Globe, Menu, X } from 'lucide-react'
+import { ChevronRight, Menu, X } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 
 import { Logo } from '@/shared/components/brand/logo'
+import { LanguageToggle } from '@/shared/components/i18n/language-toggle'
+import { useTranslations } from '@/i18n/client'
 import { cn } from '@/shared/lib/utils'
 
-import { links, nav, plans } from '../content'
+import { links, navTargets, plans } from '../content'
 import { Container, CtaLink } from './primitives'
 
 const premium = plans.find((p) => p.id === 'premium')
 
-/** EN / ខ្មែរ switch. Khmer copy is not written yet, so KH is shown but disabled. */
-function LanguageToggle({ className }: { className?: string }) {
-     return (
-          <div
-               role="group"
-               aria-label="Language"
-               className={cn(
-                    'inline-flex items-center rounded-full border border-line bg-white p-0.5 text-xs font-semibold',
-                    className,
-               )}
-          >
-               <Globe aria-hidden className="mx-1.5 size-3.5 text-ink-3" />
-               <span
-                    aria-current="true"
-                    className="rounded-full bg-brand-50 px-2 py-1 text-brand-700"
-               >
-                    EN
-               </span>
-               <span
-                    aria-disabled="true"
-                    title="Khmer coming soon"
-                    className="cursor-not-allowed rounded-full px-2 py-1 font-khmer text-ink-3"
-                    lang="km"
-               >
-                    ខ្មែរ
-               </span>
-          </div>
-     )
-}
-
 export function SiteHeader() {
+     const { m } = useTranslations('landing')
+     const t = m.header
+     const common = m.common
      const [open, setOpen] = useState(false)
      const [scrolled, setScrolled] = useState(false)
      const closeRef = useRef<HTMLButtonElement>(null)
      const openRef = useRef<HTMLButtonElement>(null)
+
+     const nav = navTargets.map((href, i) => ({ href, label: t.nav[i] ?? href }))
+
+     // Already on the home page (maybe at #pricing): Next.js won't navigate to the same URL,
+     // so scroll back to the top ourselves and drop the #hash.
+     const goHome = (e: MouseEvent<HTMLAnchorElement>) => {
+          if (window.location.pathname !== '/') return
+          e.preventDefault()
+          setOpen(false)
+          const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
+          if (window.location.hash) window.history.replaceState(null, '', '/')
+     }
 
      useEffect(() => {
           const onScroll = () => setScrolled(window.scrollY > 8)
@@ -55,7 +43,7 @@ export function SiteHeader() {
           return () => window.removeEventListener('scroll', onScroll)
      }, [])
 
-     // Lock page scroll and close on Escape while the mobile menu is open
+     // Lock page scroll, move focus in, and close on Escape while the mobile menu is open
      useEffect(() => {
           if (!open) return
           const prev = document.body.style.overflow
@@ -83,13 +71,14 @@ export function SiteHeader() {
                <Container className="flex h-16 items-center justify-between gap-4">
                     <Link
                          href="/"
-                         aria-label="tok-scan home"
-                         className="rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-brand-300"
+                         onClick={goHome}
+                         aria-label={common.home}
+                         className="rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-brand-300 focus-visible:ring-offset-4 focus-visible:ring-offset-paper"
                     >
                          <Logo />
                     </Link>
 
-                    <nav aria-label="Main" className="hidden lg:block">
+                    <nav aria-label={t.mainNav} className="hidden lg:block">
                          <ul className="flex items-center gap-1">
                               {nav.map((item) => (
                                    <li key={item.href}>
@@ -110,16 +99,16 @@ export function SiteHeader() {
                               href={links.login}
                               className="px-2 text-sm font-semibold text-ink hover:text-brand-700"
                          >
-                              Log in
+                              {t.login}
                          </Link>
                          <CtaLink href={links.signup} variant="saffron">
-                              Start free trial
+                              {t.startTrial}
                          </CtaLink>
                     </div>
 
                     <div className="flex items-center gap-2 lg:hidden">
                          <CtaLink href={links.signup} variant="saffron" size="sm">
-                              Free trial
+                              {t.freeTrial}
                          </CtaLink>
                          <button
                               ref={openRef}
@@ -127,7 +116,7 @@ export function SiteHeader() {
                               onClick={() => setOpen(true)}
                               aria-expanded={open}
                               aria-controls="mobile-menu"
-                              aria-label="Open menu"
+                              aria-label={t.openMenu}
                               className="inline-flex size-11 items-center justify-center rounded-xl text-ink hover:bg-brand-50"
                          >
                               <Menu className="size-5" />
@@ -140,7 +129,7 @@ export function SiteHeader() {
                     id="mobile-menu"
                     role="dialog"
                     aria-modal="true"
-                    aria-label="Menu"
+                    aria-label={t.menu}
                     hidden={!open}
                     className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden"
                >
@@ -150,14 +139,14 @@ export function SiteHeader() {
                               ref={closeRef}
                               type="button"
                               onClick={() => setOpen(false)}
-                              aria-label="Close menu"
+                              aria-label={t.closeMenu}
                               className="inline-flex size-11 items-center justify-center rounded-xl text-ink hover:bg-brand-50"
                          >
                               <X className="size-5" />
                          </button>
                     </div>
 
-                    <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-4">
+                    <nav aria-label={t.menu} className="flex-1 overflow-y-auto px-4">
                          <ul className="divide-y divide-line">
                               {nav.map((item) => (
                                    <li key={item.href}>
@@ -177,7 +166,7 @@ export function SiteHeader() {
                          </ul>
 
                          <div className="mt-4 flex items-center justify-between">
-                              <span className="text-sm text-ink-2">Language</span>
+                              <span className="text-sm text-ink-2">{common.language}</span>
                               <LanguageToggle />
                          </div>
 
@@ -188,10 +177,10 @@ export function SiteHeader() {
                                    className="mt-6 block rounded-[14px] border border-brand-100 bg-brand-50 p-4"
                               >
                                    <span className="font-semibold text-ink">
-                                        ✦ {premium.name} · ${premium.monthly} / month
+                                        ✦ {premium.name} · ${premium.monthly} {t.perMonth}
                                    </span>
                                    <span className="mt-1 block text-sm text-ink-2">
-                                        5 outlets · custom domain · advanced analytics
+                                        {t.premiumTeaser}
                                    </span>
                               </a>
                          )}
@@ -204,13 +193,13 @@ export function SiteHeader() {
                               size="lg"
                               className="w-full"
                          >
-                              Start free trial
+                              {t.startTrial}
                          </CtaLink>
                          <CtaLink href={links.login} variant="outline" size="lg" className="w-full">
-                              Log in
+                              {t.login}
                          </CtaLink>
                          <p className="text-center text-xs text-ink-3">
-                              Questions? Telegram{' '}
+                              {t.questions}{' '}
                               <a
                                    href={links.telegram}
                                    target="_blank"

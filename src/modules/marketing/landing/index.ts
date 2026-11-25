@@ -1,6 +1,6 @@
 /**
- * marketing/landing — public site at tok-scan.app (guide p.21–22).
- * Every primary CTA leads into onboarding step 1 (`/signup`, module tenancy/onboarding).
+ * marketing/landing — public site at tok-scan.app (guide p.21–22), in English, Khmer and Chinese.
+ * Text: `landing` namespace of the global i18n catalog (src/i18n). Every primary CTA leads to `/signup`.
  */
 export { LandingPage } from './landing-page'
-export * as landingContent from './content'
+export { links as landingLinks, type LandingContent } from './content'

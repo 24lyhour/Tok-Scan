@@ -2,6 +2,10 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Kantumruy_Pro } from 'next/font/google'
 import React from 'react'
 
+import { I18nProvider } from '@/i18n/client'
+import { getMessages } from '@/i18n/messages'
+import { getSiteLocale } from '@/shared/i18n/get-site-locale'
+
 import './styles.css'
 
 // Inter (with optical sizing so large headings render like Inter Display) + Khmer fallback — guide p.03
@@ -26,15 +30,25 @@ export const metadata: Metadata = {
      description:
           'Guests order from their phone, the kitchen sees it instantly, and bills are paid by KHQR. One restaurant or twenty outlets.',
      applicationName: 'tok-scan',
+     // tok-scan logo tile — files in /public (generated from public/favicon.svg)
+     icons: {
+          icon: [
+               { url: '/favicon.ico', sizes: '48x48' },
+               { url: '/favicon.svg', type: 'image/svg+xml' },
+          ],
+          apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
+     },
+     manifest: '/manifest.webmanifest',
 }
 
 export const viewport: Viewport = {
      themeColor: '#0b2e24',
 }
 
-export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+     const locale = await getSiteLocale()
      return (
-          <html lang="en" className={`${inter.variable} ${khmer.variable}`}>
+          <html lang={locale} className={`${inter.variable} ${khmer.variable}`}>
                <head>
                     {/* Scroll-reveal content must stay visible when JavaScript is off */}
                     <noscript
@@ -44,7 +58,11 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
                     />
                </head>
                {/* Browser extensions (e.g. WOT) inject attributes on <body> before React hydrates */}
-               <body suppressHydrationWarning>{children}</body>
+               <body suppressHydrationWarning>
+                    <I18nProvider locale={locale} messages={getMessages(locale)}>
+                         {children}
+                    </I18nProvider>
+               </body>
           </html>
      )
 }

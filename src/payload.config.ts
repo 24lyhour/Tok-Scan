@@ -16,6 +16,17 @@ export default buildConfig({
           importMap: {
                baseDir: path.resolve(dirname),
           },
+          // tok-scan branding in the admin tab (same icon files as the website, in /public)
+          meta: {
+               titleSuffix: '· tok·scan',
+               icons: {
+                    icon: [
+                         { url: '/favicon.ico', sizes: '48x48' },
+                         { url: '/favicon.svg', type: 'image/svg+xml' },
+                    ],
+                    apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
+               },
+          },
      },
      collections,
      // Content languages (menu, receipts…): en · km · zh — src/modules/core/i18n/localization.ts
