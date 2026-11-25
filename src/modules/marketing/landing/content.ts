@@ -8,7 +8,7 @@ import type { Translations } from '@/shared/i18n/site-locale'
 export const links = {
      /** Every primary CTA leads into onboarding step 1 (guide p.21 "One goal per page") */
      signup: '/signup',
-     login: '/admin',
+     login: '/login',
      // Guide p.21–22: demos and sales go through Telegram
      demo: 'https://t.me/LyhourKouch',
      telegram: 'https://t.me/LyhourKouch',

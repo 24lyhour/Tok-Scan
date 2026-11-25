@@ -8,7 +8,7 @@ import { getTranslations } from '@/i18n/server'
 import { OnboardingShell } from './components/onboarding-shell'
 import { SignupForm } from './components/signup-form'
 
-const LOGIN_HREF = '/admin/login'
+const LOGIN_HREF = '/login'
 
 /** Onboarding step 1 of 4 — create the owner's account (guide p.23, first screen). */
 export async function SignupPage() {

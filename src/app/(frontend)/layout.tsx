@@ -30,6 +30,15 @@ export const metadata: Metadata = {
      description:
           'Guests order from their phone, the kitchen sees it instantly, and bills are paid by KHQR. One restaurant or twenty outlets.',
      applicationName: 'tok-scan',
+     // tok-scan logo tile — files in /public (generated from public/favicon.svg)
+     icons: {
+          icon: [
+               { url: '/favicon.ico', sizes: '48x48' },
+               { url: '/favicon.svg', type: 'image/svg+xml' },
+          ],
+          apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
+     },
+     manifest: '/manifest.webmanifest',
 }
 
 export const viewport: Viewport = {

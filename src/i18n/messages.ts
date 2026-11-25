@@ -5,6 +5,7 @@
  * then register it below. Import the content file directly (not the module index) to avoid cycles.
  */
 import { landingContent } from '@/modules/marketing/landing/content'
+import { authContent } from '@/modules/tenancy/auth/content'
 import { onboardingContent } from '@/modules/tenancy/onboarding/content'
 import type { SiteLocale } from '@/shared/i18n/site-locale'
 
@@ -14,6 +15,7 @@ const catalog = {
      common: commonMessages,
      landing: landingContent,
      onboarding: onboardingContent,
+     auth: authContent,
 }
 
 type Catalog = typeof catalog
@@ -26,5 +28,6 @@ export function getMessages(locale: SiteLocale): Messages {
           common: catalog.common[locale],
           landing: catalog.landing[locale],
           onboarding: catalog.onboarding[locale],
+          auth: catalog.auth[locale],
      }
 }

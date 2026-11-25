@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>tok-scan</title>
+  <rect width="64" height="64" rx="16" fill="#14513F"/>
+  <g fill="none" stroke="#FAF8F4" stroke-linecap="round" stroke-width="4">
+    <path d="M10 20v-4a6 6 0 0 1 6-6h4"/>
+    <path d="M44 10h4a6 6 0 0 1 6 6v4"/>
+    <path d="M54 44v4a6 6 0 0 1-6 6h-4"/>
+    <path d="M20 54h-4a6 6 0 0 1-6-6v-4"/>
+  </g>
+  <g fill="#FAF8F4">
+    <rect x="17" y="28" width="30" height="6" rx="2"/>
+    <rect x="22" y="33" width="5" height="15" rx="1"/>
+    <rect x="37" y="33" width="5" height="15" rx="1"/>
+  </g>
+  <circle cx="32" cy="20.5" r="5" fill="#E09F3E"/>
+</svg>

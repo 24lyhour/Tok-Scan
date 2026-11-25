@@ -1,11 +1,9 @@
-import Link from 'next/link'
 import type { ReactNode } from 'react'
 
-import { Logo } from '@/shared/components/brand/logo'
-import { LanguageToggle } from '@/shared/components/i18n/language-toggle'
 import { format, localizeDigits, type SiteLocale } from '@/shared/i18n/site-locale'
 import { cn } from '@/shared/lib/utils'
 
+import { AuthShell } from '../../shared/auth-shell'
 import type { OnboardingContent } from '../content'
 
 export const ONBOARDING_STEPS = 4
@@ -31,24 +29,10 @@ export function OnboardingShell({
      })
 
      return (
-          <div className="min-h-dvh bg-paper">
-               <div className="mx-auto flex min-h-dvh w-full max-w-[30rem] flex-col px-4 py-5 sm:py-10">
-                    <header className="flex items-center justify-between gap-3">
-                         <Link
-                              href="/"
-                              aria-label={t.home}
-                              className="rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-brand-300"
-                         >
-                              <Logo size="sm" />
-                         </Link>
-                         <div className="flex items-center gap-3">
-                              <span className="text-xs font-medium text-ink-3 sm:text-sm">
-                                   {stepLabel}
-                              </span>
-                              <LanguageToggle />
-                         </div>
-                    </header>
-
+          <AuthShell
+               homeLabel={t.home}
+               meta={<span className="text-xs font-medium text-ink-3 sm:text-sm">{stepLabel}</span>}
+               progress={
                     <div
                          role="progressbar"
                          aria-label={t.progress}
@@ -68,11 +52,9 @@ export function OnboardingShell({
                               />
                          ))}
                     </div>
-
-                    <main className="mt-6 flex flex-1 flex-col rounded-3xl border border-line bg-white p-5 shadow-[0_12px_40px_-20px_rgb(22_24_29/0.18)] sm:mt-8 sm:p-8">
-                         {children}
-                    </main>
-               </div>
-          </div>
+               }
+          >
+               {children}
+          </AuthShell>
      )
 }
