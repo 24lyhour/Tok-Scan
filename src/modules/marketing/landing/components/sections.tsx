@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 
 import { Logo } from '@/shared/components/brand/logo'
+import { Reveal } from '@/shared/components/motion/reveal'
 import { cn } from '@/shared/lib/utils'
 
 import { chains, faq, features, finalCta, footer, links, socialProof, steps } from '../content'
@@ -27,21 +28,23 @@ import { Container, CtaLink, Eyebrow, SectionHeading } from './primitives'
 export function SocialProof() {
      return (
           <section aria-label="Customers" className="border-b border-line bg-white py-8">
-               <Container>
-                    <p className="text-center text-[0.6875rem] font-semibold tracking-[0.18em] text-ink-3 uppercase">
-                         {socialProof.label}
-                    </p>
-                    <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
-                         {socialProof.names.map((name) => (
-                              <li
-                                   key={name}
-                                   className="text-base font-semibold tracking-tight text-ink-3"
-                              >
-                                   {name}
-                              </li>
-                         ))}
-                    </ul>
-               </Container>
+               <Reveal>
+                    <Container>
+                         <p className="text-center text-[0.6875rem] font-semibold tracking-[0.18em] text-ink-3 uppercase">
+                              {socialProof.label}
+                         </p>
+                         <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
+                              {socialProof.names.map((name) => (
+                                   <li
+                                        key={name}
+                                        className="text-base font-semibold tracking-tight text-ink-3"
+                                   >
+                                        {name}
+                                   </li>
+                              ))}
+                         </ul>
+                    </Container>
+               </Reveal>
           </section>
      )
 }
@@ -68,7 +71,9 @@ export function HowItWorks() {
                          {steps.map((step, i) => {
                               const { icon: Icon, tone } = stepArt[step.icon]
                               return (
-                                   <li
+                                   <Reveal
+                                        as="li"
+                                        delay={i * 100}
                                         key={step.title}
                                         className="overflow-hidden rounded-[14px] border border-line bg-white"
                                    >
@@ -100,7 +105,7 @@ export function HowItWorks() {
                                                   {step.body}
                                              </p>
                                         </div>
-                                   </li>
+                                   </Reveal>
                               )
                          })}
                     </ol>
@@ -143,21 +148,23 @@ export function Features() {
                          </a>
                     </div>
                     <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                         {features.map((f) => {
+                         {features.map((f, i) => {
                               const Icon = featureIcons[f.icon]
                               return (
-                                   <li
-                                        key={f.title}
-                                        className="rounded-[14px] border border-line bg-paper/60 p-5 transition-colors duration-200 hover:border-brand-300 hover:bg-white"
-                                   >
-                                        <span className="inline-flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
-                                             <Icon aria-hidden className="size-5" />
-                                        </span>
-                                        <h3 className="mt-4 font-semibold text-ink">{f.title}</h3>
-                                        <p className="mt-1.5 text-sm leading-relaxed text-ink-2">
-                                             {f.body}
-                                        </p>
-                                   </li>
+                                   <Reveal as="li" key={f.title} delay={(i % 3) * 80}>
+                                        {/* inner card keeps its own hover transition separate from the reveal */}
+                                        <div className="h-full rounded-[14px] border border-line bg-paper/60 p-5 transition-colors duration-200 hover:border-brand-300 hover:bg-white">
+                                             <span className="inline-flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+                                                  <Icon aria-hidden className="size-5" />
+                                             </span>
+                                             <h3 className="mt-4 font-semibold text-ink">
+                                                  {f.title}
+                                             </h3>
+                                             <p className="mt-1.5 text-sm leading-relaxed text-ink-2">
+                                                  {f.body}
+                                             </p>
+                                        </div>
+                                   </Reveal>
                               )
                          })}
                     </ul>
@@ -172,7 +179,7 @@ export function Chains() {
      return (
           <section id="chains" aria-labelledby="chains-title" className="py-20 sm:py-24">
                <Container className="grid items-center gap-12 lg:grid-cols-2">
-                    <div>
+                    <Reveal>
                          <Eyebrow>{chains.eyebrow}</Eyebrow>
                          <h2
                               id="chains-title"
@@ -194,10 +201,11 @@ export function Chains() {
                                    </li>
                               ))}
                          </ul>
-                    </div>
+                    </Reveal>
 
                     {/* Organization → outlets diagram (guide p.20) */}
-                    <div
+                    <Reveal
+                         delay={120}
                          className="rounded-[14px] border border-line bg-white p-4 sm:p-6"
                          aria-label="Example organization with three outlets"
                     >
@@ -240,7 +248,7 @@ export function Chains() {
                               restaurant is simply an organization with one outlet — no migration
                               when you open a second branch.
                          </p>
-                    </div>
+                    </Reveal>
                </Container>
           </section>
      )
@@ -256,7 +264,7 @@ export function Faq() {
                className="border-t border-line bg-white py-20 sm:py-24"
           >
                <Container className="grid gap-10 lg:grid-cols-[1fr_1.6fr]">
-                    <div>
+                    <Reveal>
                          <Eyebrow>FAQ</Eyebrow>
                          <h2
                               id="faq-title"
@@ -276,8 +284,8 @@ export function Faq() {
                               </a>
                               .
                          </p>
-                    </div>
-                    <div className="divide-y divide-line border-y border-line">
+                    </Reveal>
+                    <Reveal delay={120} className="divide-y divide-line border-y border-line">
                          {faq.map((item) => (
                               <details key={item.q} className="group">
                                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left font-semibold text-ink [&::-webkit-details-marker]:hidden">
@@ -292,7 +300,7 @@ export function Faq() {
                                    </p>
                               </details>
                          ))}
-                    </div>
+                    </Reveal>
                </Container>
           </section>
      )
@@ -304,7 +312,7 @@ export function FinalCta() {
      return (
           <section id="contact" aria-labelledby="cta-title" className="py-16 sm:py-20">
                <Container>
-                    <div className="relative isolate overflow-hidden rounded-3xl bg-brand-700 px-6 py-10 sm:px-12 sm:py-14">
+                    <Reveal className="relative isolate overflow-hidden rounded-3xl bg-brand-700 px-6 py-10 sm:px-12 sm:py-14">
                          <div
                               aria-hidden
                               className="absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_100%_0%,rgb(224_159_62/0.25),transparent_70%)]"
@@ -328,7 +336,7 @@ export function FinalCta() {
                                    </CtaLink>
                               </div>
                          </div>
-                    </div>
+                    </Reveal>
                </Container>
           </section>
      )

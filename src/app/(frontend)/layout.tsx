@@ -35,7 +35,16 @@ export const viewport: Viewport = {
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
      return (
           <html lang="en" className={`${inter.variable} ${khmer.variable}`}>
-               <body>{children}</body>
+               <head>
+                    {/* Scroll-reveal content must stay visible when JavaScript is off */}
+                    <noscript
+                         dangerouslySetInnerHTML={{
+                              __html: '<style>[data-reveal]{opacity:1!important;transform:none!important}</style>',
+                         }}
+                    />
+               </head>
+               {/* Browser extensions (e.g. WOT) inject attributes on <body> before React hydrates */}
+               <body suppressHydrationWarning>{children}</body>
           </html>
      )
 }

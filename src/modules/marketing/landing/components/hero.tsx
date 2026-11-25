@@ -1,5 +1,7 @@
 import { CalendarDays, Check, ChevronRight, QrCode } from 'lucide-react'
 
+import { Reveal } from '@/shared/components/motion/reveal'
+
 import { hero, links } from '../content'
 import { HeroVisual } from './hero-visual'
 import { Container, CtaLink } from './primitives'
@@ -16,7 +18,7 @@ export function Hero() {
                     className="absolute inset-0 -z-10 bg-[radial-gradient(60%_70%_at_80%_40%,rgb(31_122_92/0.45),transparent_70%)]"
                />
                <Container className="grid items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-8 lg:py-24">
-                    <div>
+                    <Reveal>
                          <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-saffron-300">
                               <QrCode aria-hidden className="size-3.5" />
                               {hero.eyebrow}
@@ -77,9 +79,11 @@ export function Hero() {
                                    </li>
                               ))}
                          </ul>
-                    </div>
+                    </Reveal>
 
-                    <HeroVisual />
+                    <Reveal delay={150}>
+                         <HeroVisual />
+                    </Reveal>
                </Container>
           </section>
      )

@@ -3,6 +3,7 @@
 import { Check } from 'lucide-react'
 import { useState } from 'react'
 
+import { Reveal } from '@/shared/components/motion/reveal'
 import { cn } from '@/shared/lib/utils'
 
 import { type BillingCycle, type Plan, plans, yearlyMonthsCharged } from '../content'
@@ -20,13 +21,15 @@ function priceFor(plan: Plan, cycle: BillingCycle) {
      return { perMonth: Math.round(perYear / 12), perYear }
 }
 
-function PlanCard({ plan, cycle }: { plan: Plan; cycle: BillingCycle }) {
+function PlanCard({ plan, cycle, index }: { plan: Plan; cycle: BillingCycle; index: number }) {
      const price = priceFor(plan, cycle)
      const isPrimary = plan.highlight === 'primary'
      const isPremium = plan.highlight === 'premium'
 
      return (
-          <li
+          <Reveal
+               as="li"
+               delay={index * 80}
                className={cn(
                     'relative flex flex-col rounded-[14px] border bg-white p-5 sm:p-6',
                     isPrimary && 'border-brand-700 ring-1 ring-brand-700',
@@ -95,7 +98,7 @@ function PlanCard({ plan, cycle }: { plan: Plan; cycle: BillingCycle }) {
                >
                     {plan.cta}
                </CtaLink>
-          </li>
+          </Reveal>
      )
 }
 
@@ -147,8 +150,8 @@ export function Pricing() {
                     </div>
 
                     <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                         {plans.map((plan) => (
-                              <PlanCard key={plan.id} plan={plan} cycle={cycle} />
+                         {plans.map((plan, index) => (
+                              <PlanCard key={plan.id} plan={plan} cycle={cycle} index={index} />
                          ))}
                     </ul>
 

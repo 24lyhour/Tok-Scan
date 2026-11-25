@@ -72,7 +72,7 @@ function KhqrScreen() {
                     </div>
                     <div className="p-2.5 sm:p-3">
                          <p className="text-[0.5rem] font-medium tracking-wider text-ink-3 uppercase sm:text-[0.5625rem]">
-                              Mahob Kitchen
+                              Tok-Scans
                          </p>
                          <p className="tabular text-sm font-bold text-ink sm:text-lg">$30.67</p>
                          <div className="mt-2 border-t border-dashed border-line pt-2">

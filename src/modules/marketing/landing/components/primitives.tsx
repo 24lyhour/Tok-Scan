@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { ComponentProps, ReactNode } from 'react'
 
+import { Reveal } from '@/shared/components/motion/reveal'
 import { cn } from '@/shared/lib/utils'
 
 /** Max-width page column with the guide's 16px mobile gutter. */
@@ -44,7 +45,7 @@ export function SectionHeading({
      className?: string
 }) {
      return (
-          <div className={cn(align === 'center' && 'mx-auto max-w-2xl text-center', className)}>
+          <Reveal className={cn(align === 'center' && 'mx-auto max-w-2xl text-center', className)}>
                <Eyebrow>{eyebrow}</Eyebrow>
                <h2
                     id={id}
@@ -53,7 +54,7 @@ export function SectionHeading({
                     {title}
                </h2>
                {body && <p className="mt-4 text-base text-pretty text-ink-2 sm:text-lg">{body}</p>}
-          </div>
+          </Reveal>
      )
 }
 
