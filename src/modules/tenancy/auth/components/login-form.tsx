@@ -12,6 +12,7 @@ import {
 } from 'react'
 
 import { useTranslations } from '@/i18n/client'
+import { Turnstile } from '@/shared/components/security/turnstile'
 
 import {
      Field,
@@ -38,7 +39,8 @@ export function LoginForm({
      signupHref: string
      forgotHref: string
 }) {
-     const t = useTranslations('auth').m.login
+     const { m, locale } = useTranslations('auth')
+     const t = m.login
      const uid = useId()
      const ids = { email: `${uid}-email`, password: `${uid}-password` } satisfies Record<
           LoginField,
@@ -51,11 +53,20 @@ export function LoginForm({
           status: 'idle',
      })
      const [, startTransition] = useTransition()
+     // Cloudflare Turnstile token (one-time use; refreshed after every server response)
+     const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+     const [captchaReset, setCaptchaReset] = useState(0)
+     const [captchaMissing, setCaptchaMissing] = useState(false)
+     const onCaptchaToken = (token: string | null) => {
+          setCaptchaToken(token)
+          if (token) setCaptchaMissing(false)
+     }
      const passwordRef = useRef<HTMLInputElement>(null)
 
      // Server said "wrong email or password": clear the password and put the cursor back in it
      useEffect(() => {
           if (state.status !== 'error') return
+          setCaptchaReset((k) => k + 1)
           if (state.fieldErrors) {
                setErrors(state.fieldErrors)
                return
@@ -80,13 +91,21 @@ export function LoginForm({
                return
           }
           setErrors({})
+          if (!captchaToken) {
+               setCaptchaMissing(true)
+               return
+          }
           const data = new FormData(e.currentTarget)
           startTransition(() => dispatch(data))
      }
 
      const msg = (field: LoginField) => (errors[field] ? t.errors[errors[field]!] : undefined)
      const hasFieldErrors = Object.values(errors).some(Boolean)
-     const alert = !hasFieldErrors && state.formError ? t.errors[state.formError] : undefined
+     const alert = captchaMissing
+          ? t.errors.captcha
+          : !hasFieldErrors && state.formError
+            ? t.errors[state.formError]
+            : undefined
 
      return (
           <form noValidate onSubmit={onSubmit} className="flex flex-1 flex-col">
@@ -160,6 +179,13 @@ export function LoginForm({
                </div>
 
                <div className="mt-auto pt-8">
+                    <Turnstile
+                         action="login"
+                         locale={locale}
+                         resetKey={captchaReset}
+                         onToken={onCaptchaToken}
+                         className="mb-4"
+                    />
                     <SubmitButton pending={pending} label={t.submit} pendingLabel={t.submitting} />
                     <p className="mt-4 text-center text-sm text-ink-2">
                          {t.noAccount}{' '}

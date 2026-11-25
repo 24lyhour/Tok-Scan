@@ -5,6 +5,9 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 
+import { verifyTurnstile } from '@/shared/security/verify-turnstile'
+import { TURNSTILE_FIELD } from '@/shared/security/turnstile-config'
+
 import { type SignupErrorCode, type SignupField, validateSignup } from './validation'
 
 export type SignupState = {
@@ -32,6 +35,11 @@ export async function signupAction(_prev: SignupState, formData: FormData): Prom
           terms: formData.get('terms') === 'on',
      })
      if (!result.ok) return { status: 'error', fieldErrors: result.fieldErrors }
+
+     // Bot check before creating anything
+     if (!(await verifyTurnstile(formData.get(TURNSTILE_FIELD), 'signup'))) {
+          return { status: 'error', formError: 'captcha' }
+     }
 
      const { name, email, phone, password } = result.data
      const payload = await getPayload({ config })

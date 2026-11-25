@@ -15,6 +15,7 @@ export type SignupErrorCode =
      | 'passwordShort'
      | 'termsRequired'
      | 'emailTaken'
+     | 'captcha'
      | 'generic'
 
 export type SignupValues = {

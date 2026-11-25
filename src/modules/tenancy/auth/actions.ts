@@ -5,6 +5,9 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { AuthenticationError, getPayload, LockedAuth } from 'payload'
 
+import { verifyTurnstile } from '@/shared/security/verify-turnstile'
+import { TURNSTILE_FIELD } from '@/shared/security/turnstile-config'
+
 import { type LoginErrorCode, type LoginField, safeNextPath, validateLogin } from './validation'
 
 export type LoginState = {
@@ -24,6 +27,11 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
           password: String(formData.get('password') ?? ''),
      })
      if (!result.ok) return { status: 'error', fieldErrors: result.fieldErrors }
+
+     // Bot check first, so bots can't use this form to guess passwords
+     if (!(await verifyTurnstile(formData.get(TURNSTILE_FIELD), 'login'))) {
+          return { status: 'error', formError: 'captcha' }
+     }
 
      const payload = await getPayload({ config })
      try {

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useActionState, useEffect, useId, useState, useTransition, type FormEvent } from 'react'
 
 import { useTranslations } from '@/i18n/client'
+import { Turnstile } from '@/shared/components/security/turnstile'
 import { cn } from '@/shared/lib/utils'
 
 import {
@@ -23,7 +24,8 @@ type Errors = Partial<Record<SignupField, SignupErrorCode>>
 const FIELD_ORDER: SignupField[] = ['name', 'email', 'phone', 'password', 'terms']
 
 export function SignupForm({ loginHref }: { loginHref: string }) {
-     const t = useTranslations('onboarding').m.signup
+     const { m, locale } = useTranslations('onboarding')
+     const t = m.signup
      const uid = useId()
      const ids = {
           name: `${uid}-name`,
@@ -45,6 +47,14 @@ export function SignupForm({ loginHref }: { loginHref: string }) {
           status: 'idle',
      })
      const [, startTransition] = useTransition()
+     // Cloudflare Turnstile token (one-time use; refreshed after every server response)
+     const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+     const [captchaReset, setCaptchaReset] = useState(0)
+     const [captchaMissing, setCaptchaMissing] = useState(false)
+     const onCaptchaToken = (token: string | null) => {
+          setCaptchaToken(token)
+          if (token) setCaptchaMissing(false)
+     }
 
      const focusFirstError = (errs: Errors) => {
           const first = FIELD_ORDER.find((f) => errs[f])
@@ -53,6 +63,7 @@ export function SignupForm({ loginHref }: { loginHref: string }) {
 
      // Errors coming back from the server (e.g. email already used)
      useEffect(() => {
+          if (state.status === 'error') setCaptchaReset((k) => k + 1)
           if (state.status === 'error' && state.fieldErrors) {
                setErrors(state.fieldErrors)
                focusFirstError(state.fieldErrors)
@@ -74,6 +85,10 @@ export function SignupForm({ loginHref }: { loginHref: string }) {
                return
           }
           setErrors({})
+          if (!captchaToken) {
+               setCaptchaMissing(true)
+               return
+          }
           // Manual dispatch (instead of <form action>) so React doesn't reset the inputs on error
           const data = new FormData(e.currentTarget)
           startTransition(() => dispatch(data))
@@ -86,11 +101,13 @@ export function SignupForm({ loginHref }: { loginHref: string }) {
      const describedBy = (field: SignupField, hasHint = false) =>
           errors[field] ? `${ids[field]}-error` : hasHint ? `${ids[field]}-hint` : undefined
      const hasErrors = Object.values(errors).some(Boolean)
-     const alert = hasErrors
-          ? t.errorSummary
-          : state.formError
-            ? t.errors[state.formError]
-            : undefined
+     const alert = captchaMissing
+          ? t.errors.captcha
+          : hasErrors
+            ? t.errorSummary
+            : state.formError
+              ? t.errors[state.formError]
+              : undefined
 
      return (
           <form noValidate onSubmit={onSubmit} className="flex flex-1 flex-col">
@@ -245,6 +262,13 @@ export function SignupForm({ loginHref }: { loginHref: string }) {
 
                {/* Primary action anchored at the bottom of the card — thumb zone on mobile (guide p.23) */}
                <div className="mt-auto pt-8">
+                    <Turnstile
+                         action="signup"
+                         locale={locale}
+                         resetKey={captchaReset}
+                         onToken={onCaptchaToken}
+                         className="mb-4"
+                    />
                     <SubmitButton pending={pending} label={t.submit} pendingLabel={t.submitting} />
                     <p className="mt-4 text-center text-sm text-ink-2">
                          {t.haveAccount}{' '}

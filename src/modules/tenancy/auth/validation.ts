@@ -3,7 +3,7 @@
 export type LoginField = 'email' | 'password'
 
 export type LoginErrorCode =
-     'required' | 'emailInvalid' | 'invalidCredentials' | 'locked' | 'generic'
+     'required' | 'emailInvalid' | 'invalidCredentials' | 'locked' | 'captcha' | 'generic'
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
