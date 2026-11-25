@@ -10,7 +10,7 @@ import { cn } from '@/shared/lib/utils'
 import {
      Field,
      FormAlert,
-     GoogleSignIn,
+     SocialSignIn,
      inputClass,
      PasswordInput,
      SubmitButton,
@@ -94,10 +94,11 @@ export function SignupForm({ loginHref }: { loginHref: string }) {
 
      return (
           <form noValidate onSubmit={onSubmit} className="flex flex-1 flex-col">
-               <GoogleSignIn
-                    id={`${uid}-google`}
-                    label={t.google}
-                    soonLabel={t.googleSoon}
+               <SocialSignIn
+                    id={`${uid}-social`}
+                    appleLabel={t.apple}
+                    googleLabel={t.google}
+                    soonLabel={t.socialSoon}
                     orLabel={t.or}
                />
 

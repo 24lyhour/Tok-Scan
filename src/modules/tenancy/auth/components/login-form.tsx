@@ -16,7 +16,7 @@ import { useTranslations } from '@/i18n/client'
 import {
      Field,
      FormAlert,
-     GoogleSignIn,
+     SocialSignIn,
      inputClass,
      PasswordInput,
      SubmitButton,
@@ -92,10 +92,11 @@ export function LoginForm({
           <form noValidate onSubmit={onSubmit} className="flex flex-1 flex-col">
                {next && <input type="hidden" name="next" value={next} />}
 
-               <GoogleSignIn
-                    id={`${uid}-google`}
-                    label={t.google}
-                    soonLabel={t.googleSoon}
+               <SocialSignIn
+                    id={`${uid}-social`}
+                    appleLabel={t.apple}
+                    googleLabel={t.google}
+                    soonLabel={t.socialSoon}
                     orLabel={t.or}
                />
 
