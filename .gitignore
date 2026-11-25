@@ -48,3 +48,9 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+
+# pdfs
+
+Mahob_UIUX_Design_Guide.pdf
+Mahob_Backend_API_Engineering_Guide.pdf
