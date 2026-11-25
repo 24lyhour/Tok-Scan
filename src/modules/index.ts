@@ -13,4 +13,4 @@ import { tenancyCollections } from './tenancy'
 export const collections: CollectionConfig[] = [...tenancyCollections, ...coreCollections]
 
 export { Users } from './tenancy'
-export { Media } from './core'
+export { adminI18n, localization, Media } from './core'

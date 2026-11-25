@@ -344,3 +344,20 @@ Do them in order. Run `yarn generate:types` after any schema change.
 2. **Staff app location:** should the staff screens from the guide (dashboard, KDS, POS) be built as a **custom Next.js staff app** (`/app/...`, styled with the guide) and Payload admin kept for super-admin and content only? Recommended: yes. It needs a decision before Module 6/7.
 3. **Self sign-up vs approval:** new organizations start as `active` for now; switch to `pending` with approval once Module 16 exists?
 4. **Per-outlet menus:** is the org-wide menu with per-outlet price and availability overrides enough, or do outlets need fully separate menus?
+
+---
+
+## 13. Changes from Tok_UIUX_Design_Guide v1.0 (p.20–27). These override the sections above where they differ.
+
+1. **Organization status:** a new organization starts as **`trial`** (14 days). The status values become `trial | pending_approval | active | overdue | suspended | closed`. Before approval, the restaurant can build everything and take **cash** orders. Online payments (KHQR, ABA) switch on only after tok-scan approves it (p.22 step 8, p.27).
+2. **URLs (p.20):**
+   - Customer QR: `tok-scan.app/r/{orgSlug}/t/{table}?k={key}`. The outlet is resolved from the table key, so the outlet slug isn't in the QR link. `/r/{orgSlug}/{outletSlug}` remains the browse-only menu.
+   - Staff app: `app.tok-scan.app/{orgSlug}/{outletSlug}/…` (for example `/mahob/bkk1/orders` or `/mahob/bkk1/kitchen`).
+   - Super-admin console: `console.tok-scan.app` (2FA).
+   - Custom domain (Premium and Chain plans): for example `menu.mahob.com.kh`.
+3. **Numbering (p.20):** numbers are unique per organization and include an org code, for example `INV-MHB-2611-00482` and `ORD-MHB-251125-0152`. Add `organizations.code`: 2–4 uppercase letters, unique, generated from the name.
+4. **Onboarding (p.23):** there are 4 screens: `/signup` (Google or email, phone/Telegram, password ≥ 10 characters, accept terms), then `/onboarding/organization` (business name, slug with a live availability check, logo, brand colour with a contrast check, business type: Restaurant / Café / Bar / Food court), then `/onboarding/outlet` (name, address, currency and rate, VAT, service charge, lighting tax, VAT TIN, opening hours), then `/onboarding/tables` (zone, table count, QR preview, download all QR codes as A6 stands). A 6-digit verification code by email or Telegram comes between sign-up and the organization step (p.22 step 3).
+5. **Dashboard setup checklist (p.22):** the dashboard shows "Get {org} live" with 6 steps (organization, first outlet, tables and QR, add menu items or import CSV, connect KHQR/ABA, invite staff) until all are done.
+6. **Branding (p.25):** a restaurant can set its logo, cover photo, name, primary colour (auto contrast check, falls back to tok-scan green), heading font (4 curated choices), menu languages (English, Khmer, Chinese) and receipt texts. The layout, payment screens and status colours always stay tok-scan's. The "Powered by tok-scan" footer can be removed on Premium and Chain plans.
+7. **Tenant states on customer pages (p.25):** an expired QR key shows "This QR code has expired" with a "Call a waiter" button. A suspended organization shows "Online menu temporarily unavailable". A closed outlet shows its opening hours. An unknown slug shows the tok-scan 404 page.
+8. **Members (p.24):** staff on kitchen and cashier devices can also sign in with a 4-digit PIN. The member list shows seats used against the plan limit.
