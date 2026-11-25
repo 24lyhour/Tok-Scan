@@ -1,19 +1,50 @@
+import type { Metadata, Viewport } from 'next'
+import { Inter, Kantumruy_Pro } from 'next/font/google'
 import React from 'react'
+
 import './styles.css'
 
-export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
+// Inter (with optical sizing so large headings render like Inter Display) + Khmer fallback — guide p.03
+const inter = Inter({
+     subsets: ['latin'],
+     axes: ['opsz'],
+     variable: '--font-inter',
+     display: 'swap',
+})
+
+const khmer = Kantumruy_Pro({
+     subsets: ['khmer'],
+     variable: '--font-kantumruy',
+     display: 'swap',
+})
+
+export const metadata: Metadata = {
+     title: {
+          default: 'tok·scan — QR ordering & billing for Cambodian restaurants',
+          template: '%s · tok·scan',
+     },
+     description:
+          'Guests order from their phone, the kitchen sees it instantly, and bills are paid by KHQR. One restaurant or twenty outlets.',
+     applicationName: 'tok-scan',
 }
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
-  const { children } = props
+export const viewport: Viewport = {
+     themeColor: '#0b2e24',
+}
 
-  return (
-    <html lang="en">
-      <body>
-        <main>{children}</main>
-      </body>
-    </html>
-  )
+export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+     return (
+          <html lang="en" className={`${inter.variable} ${khmer.variable}`}>
+               <head>
+                    {/* Scroll-reveal content must stay visible when JavaScript is off */}
+                    <noscript
+                         dangerouslySetInnerHTML={{
+                              __html: '<style>[data-reveal]{opacity:1!important;transform:none!important}</style>',
+                         }}
+                    />
+               </head>
+               {/* Browser extensions (e.g. WOT) inject attributes on <body> before React hydrates */}
+               <body suppressHydrationWarning>{children}</body>
+          </html>
+     )
 }
