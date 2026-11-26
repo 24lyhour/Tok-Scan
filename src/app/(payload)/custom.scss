@@ -12,13 +12,13 @@
      --hover-color: #fff;
 }
 
-/* Login, forgot password, first user: a card on rice paper (light theme only) */
+/* ── Login, forgot password, first user: same look as tok-scan's own /login ── */
 html[data-theme='light'] .template-minimal {
      background-color: var(--tok-paper);
 }
 .template-minimal--width-normal .template-minimal__wrap {
      max-width: 440px;
-     padding: 2.5rem 2rem;
+     padding: 2.5rem 2rem 2rem;
      border: 1px solid var(--theme-elevation-100);
      border-radius: 1.5rem;
      background: var(--theme-elevation-0);
@@ -26,9 +26,82 @@ html[data-theme='light'] .template-minimal {
 }
 @media (max-width: 480px) {
      .template-minimal--width-normal .template-minimal__wrap {
-          padding: 2rem 1.25rem;
+          padding: 2rem 1.25rem 1.5rem;
      }
 }
-.login__brand {
-     margin-bottom: 1.5rem;
+.template-minimal .login__brand {
+     justify-content: flex-start;
+     margin-bottom: 1.75rem;
+}
+
+.template-minimal {
+     .login__form__inputWrap {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+     }
+     .field-type {
+          margin: 0;
+     }
+     .field-label {
+          margin-bottom: 0.375rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: var(--theme-text);
+     }
+     .field-type input {
+          height: 3rem;
+          padding: 0 0.875rem;
+          border: 1px solid var(--theme-elevation-150);
+          border-radius: 11px;
+          box-shadow: none;
+          font-size: 0.9375rem;
+          transition:
+               border-color 120ms,
+               box-shadow 120ms;
+
+          &:hover {
+               border-color: var(--theme-elevation-250);
+          }
+          &:focus,
+          &:focus-visible {
+               outline: none;
+               border-color: var(--tok-brand-700);
+               box-shadow: 0 0 0 3px color-mix(in oklab, var(--tok-brand-700) 15%, transparent);
+          }
+     }
+     .btn--style-primary {
+          width: 100%;
+          margin: 0;
+          border-radius: 12px;
+          font-weight: 600;
+     }
+     .btn--size-large {
+          padding-block: 0;
+     }
+     .btn--size-large .btn__content {
+          min-height: 3rem;
+          justify-content: center;
+     }
+     .form-submit {
+          margin-top: 1.5rem;
+     }
+}
+
+/* "Forgot password?" sits under the password, right-aligned, brand green (as on /login) */
+.login__form > a {
+     display: block;
+     margin-top: 0.5rem;
+     text-align: right;
+     font-size: 0.8125rem;
+     font-weight: 600;
+     color: var(--tok-brand-700);
+     text-decoration: none;
+
+     &:hover {
+          text-decoration: underline;
+     }
+}
+html[data-theme='dark'] .login__form > a {
+     color: var(--theme-text);
 }

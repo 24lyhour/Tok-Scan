@@ -6,7 +6,9 @@ import type { OrgStatus } from '@/modules/tenancy'
 
 const en = {
      console: 'Platform console',
-     staffOnly: 'For the tok-scan team only.',
+     consoleBadge: 'Platform console · staff only',
+     loginTitle: 'Welcome back',
+     loginSubtitle: 'Log in with your tok-scan staff account.',
      ownerLogin: 'Restaurant owner?',
      ownerLoginLink: 'Log in to your restaurant',
      subtitle:
@@ -39,7 +41,9 @@ export type PlatformAdminKey = keyof typeof en
 
 const zh: Record<PlatformAdminKey, string> = {
      console: '平台控制台',
-     staffOnly: '仅限 tok-scan 团队使用。',
+     consoleBadge: '平台控制台 · 仅限员工',
+     loginTitle: '欢迎回来',
+     loginSubtitle: '使用您的 tok-scan 员工账号登录。',
      ownerLogin: '您是餐厅老板？',
      ownerLoginLink: '登录您的餐厅',
      subtitle: 'tok-scan 上的所有餐厅。只有 tok-scan 员工（超级管理员）可以打开此后台。',

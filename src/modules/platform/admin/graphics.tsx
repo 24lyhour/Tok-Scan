@@ -1,23 +1,28 @@
 import type { I18nClient } from '@payloadcms/translations'
+import { ShieldCheck } from 'lucide-react'
 
 import { authRoutes } from '@/modules/tenancy'
 import { LogoMark } from '@/shared/components/brand/logo'
 
 import styles from './console.module.css'
-import { tr } from './translations'
+import { type PlatformAdminKey, tr } from './translations'
 
-/** Login page logo: tok-scan mark + "Platform console" (Payload `admin.components.graphics.Logo`). */
-export function AdminLogo({ i18n }: { i18n?: I18nClient }) {
+/** Payload passes `i18n` to admin components; fall back to English outside the admin. */
+const text = (i18n: I18nClient | undefined, key: PlatformAdminKey, fallback: string) =>
+     i18n ? tr(i18n.t, key) : fallback
+
+/** Login / forgot-password logo: mark + tok·scan wordmark (Payload `admin.components.graphics.Logo`). */
+export function AdminLogo() {
      return (
           <span className={styles.brand}>
                <span className={styles.brandMark}>
                     <LogoMark tile title="" />
                </span>
                <span className={styles.brandText}>
-                    <span className={styles.brandName}>tok·scan</span>
-                    <span className={styles.brandTag}>
-                         {i18n ? tr(i18n.t, 'console') : 'Platform console'}
+                    <span className={styles.brandName}>
+                         tok<span className={styles.brandDot}>·</span>scan
                     </span>
+                    <span className={styles.brandTag}>SCAN · ORDER · PAY</span>
                </span>
           </span>
      )
@@ -28,18 +33,30 @@ export function AdminIcon() {
      return <LogoMark tile title="tok-scan" />
 }
 
-/**
- * Under the logo on /admin/login (Payload `admin.components.beforeLogin`): this login is for staff;
- * restaurant owners are sent to their own login.
- */
-export function AdminLoginNote({ i18n }: { i18n?: I18nClient }) {
-     const t = (key: Parameters<typeof tr>[1], fallback: string) =>
-          i18n ? tr(i18n.t, key) : fallback
+/** Above the login form (Payload `beforeLogin`): console badge (guide p.27) + heading. */
+export function AdminLoginIntro({ i18n }: { i18n?: I18nClient }) {
      return (
-          <p className={styles.loginNote}>
-               {t('staffOnly', 'For the tok-scan team only.')}{' '}
-               {t('ownerLogin', 'Restaurant owner?')}{' '}
-               <a href={authRoutes.login}>{t('ownerLoginLink', 'Log in to your restaurant')}</a>
+          <div className={styles.loginIntro}>
+               <span className={styles.consoleBadge}>
+                    <ShieldCheck aria-hidden size={14} />
+                    {text(i18n, 'consoleBadge', 'Platform console · staff only')}
+               </span>
+               <h1 className={styles.loginTitle}>{text(i18n, 'loginTitle', 'Welcome back')}</h1>
+               <p className={styles.loginSubtitle}>
+                    {text(i18n, 'loginSubtitle', 'Log in with your tok-scan staff account.')}
+               </p>
+          </div>
+     )
+}
+
+/** Under the login form (Payload `afterLogin`): restaurant owners go to their own login. */
+export function AdminOwnerLink({ i18n }: { i18n?: I18nClient }) {
+     return (
+          <p className={styles.ownerLink}>
+               {text(i18n, 'ownerLogin', 'Restaurant owner?')}{' '}
+               <a href={authRoutes.login}>
+                    {text(i18n, 'ownerLoginLink', 'Log in to your restaurant')}
+               </a>
           </p>
      )
 }

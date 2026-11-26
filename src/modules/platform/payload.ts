@@ -13,6 +13,7 @@ export const platformAdminComponents: NonNullable<NonNullable<Config['admin']>['
           Icon: '/modules/platform/admin/graphics#AdminIcon',
      },
      beforeDashboard: ['/modules/platform/admin/console-overview#ConsoleOverview'],
-     beforeLogin: ['/modules/platform/admin/graphics#AdminLoginNote'],
+     beforeLogin: ['/modules/platform/admin/graphics#AdminLoginIntro'],
+     afterLogin: ['/modules/platform/admin/graphics#AdminOwnerLink'],
      providers: ['/modules/platform/admin/theme#AdminTheme'],
 }
