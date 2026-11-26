@@ -9,13 +9,8 @@ import { Reveal } from '@/shared/components/motion/reveal'
 import { formatMoney, interpolate, localizeDigits } from '@/shared/i18n/format'
 import { cn } from '@/shared/lib/utils'
 
-import {
-     type BillingCycle,
-     type LandingContent,
-     type Plan,
-     plans,
-     yearlyMonthsCharged,
-} from '../content'
+import type { LandingContent } from '@/i18n/messages'
+import { type BillingCycle, type Plan, plans, yearlyMonthsCharged } from '../data'
 import { Container, CtaLink, SectionHeading } from './primitives'
 
 type PricingCopy = LandingContent['pricing']

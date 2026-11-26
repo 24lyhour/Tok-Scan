@@ -3,7 +3,7 @@ import 'server-only'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
-import { limitsFor, PLAN_NAMES, TRIAL_PLAN } from '@/modules/core'
+import { limitsFor } from '@/modules/core'
 import { orgIdsWithRole, type OrgRole } from '@/modules/core/payload'
 import {
      canPrintQr,
@@ -87,7 +87,7 @@ export const getWorkspaceContext = cache(async () => {
           role: roleIn(organization.id),
           organizations,
           outlets,
-          plan: { name: PLAN_NAMES[TRIAL_PLAN], limits: limitsFor(organization) },
+          plan: { limits: limitsFor(organization) },
           rows,
           qrUnlocked: canPrintQr(rows),
      }

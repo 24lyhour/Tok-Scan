@@ -5,6 +5,7 @@ import { TranslationsProvider } from '@/i18n/provider'
 import { getTranslations } from '@/i18n/server'
 import { AssistantWidget } from '@/modules/agents'
 import { authRoutes, LogoutButton } from '@/modules/tenancy'
+import { initials, ShellLayout } from '@/shared/components/shell'
 import { SUPPORT } from '@/shared/config/contact'
 import { formatDate, interpolate, localizeDigits } from '@/shared/i18n/format'
 
@@ -34,7 +35,7 @@ export async function AppShell({ children }: { children: ReactNode }) {
                     <p className="flex items-center justify-between gap-2">
                          <span className="flex items-center gap-1 font-semibold text-saffron-300">
                               <Sparkles aria-hidden className="size-3.5" />
-                              {interpolate(m.plan.trial, { plan: plan.name })}
+                              {m.plan.trial}
                          </span>
                          {plan.limits && (
                               <span className="text-white/60">
@@ -90,32 +91,31 @@ export async function AppShell({ children }: { children: ReactNode }) {
 
      return (
           <TranslationsProvider namespaces={['workspace', 'assistant']}>
-               <div className="min-h-dvh bg-paper lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)]">
-                    <Sidebar
-                         qrUnlocked={ctx.qrUnlocked}
-                         switcher={
-                              <Switcher
-                                   organizations={ctx.organizations}
-                                   outlets={ctx.outlets}
-                                   maxOutlets={plan.limits?.outlets ?? null}
-                              />
-                         }
-                         footer={footer}
-                    />
-
-                    <div className="flex min-w-0 flex-col">
+               <ShellLayout
+                    sidebar={
+                         <Sidebar
+                              qrUnlocked={ctx.qrUnlocked}
+                              switcher={
+                                   <Switcher
+                                        organizations={ctx.organizations}
+                                        outlets={ctx.outlets}
+                                        maxOutlets={plan.limits?.outlets ?? null}
+                                   />
+                              }
+                              footer={footer}
+                         />
+                    }
+                    topbar={
                          <Topbar
                               today={interpolate(m.topbar.today, {
                                    date: formatDate(new Date(), locale),
                               })}
-                              planBadge={interpolate(m.plan.trial, { plan: plan.name })}
+                              planBadge={m.plan.trial}
                          />
-
-                         <main id="main" className="flex-1 p-4 sm:p-6">
-                              {children}
-                         </main>
-                    </div>
-               </div>
+                    }
+               >
+                    {children}
+               </ShellLayout>
                <AssistantWidget
                     audience="owner"
                     name={name.split(/[\s@]/)[0]}
@@ -123,12 +123,4 @@ export async function AppShell({ children }: { children: ReactNode }) {
                />
           </TranslationsProvider>
      )
-}
-
-function initials(name: string) {
-     const parts = name
-          .replace(/@.*/, '')
-          .split(/[\s._-]+/)
-          .filter(Boolean)
-     return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || 'T'
 }

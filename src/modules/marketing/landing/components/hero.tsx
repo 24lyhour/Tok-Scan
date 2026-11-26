@@ -2,7 +2,8 @@ import { CalendarDays, Check, ChevronRight, QrCode } from 'lucide-react'
 
 import { Reveal } from '@/shared/components/motion/reveal'
 
-import { type LandingContent, links } from '../content'
+import type { LandingContent } from '@/i18n/messages'
+import { links } from '../data'
 import { HeroVisual } from './hero-visual'
 import { Container, CtaLink } from './primitives'
 

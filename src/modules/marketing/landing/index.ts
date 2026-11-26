@@ -3,4 +3,12 @@
  * Text: `landing` namespace of the global i18n catalog (src/i18n). Every primary CTA leads to `/signup`.
  */
 export { LandingPage } from './landing-page'
-export { links as landingLinks, type LandingContent } from './content'
+export {
+     featureIds,
+     footerColumns,
+     links as landingLinks,
+     navItems,
+     sampleOutlets,
+     stepIds,
+     type PlanId,
+} from './data'

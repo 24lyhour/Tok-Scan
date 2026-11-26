@@ -3,7 +3,7 @@ import { getTranslations } from '@/i18n/server'
 import { AssistantWidget } from '@/modules/agents'
 
 import { CookieBanner, getConsent } from '../consent'
-import { links, startingPrice } from './content'
+import { links, startingPrice } from './data'
 
 import { Hero } from './components/hero'
 import { Pricing } from './components/pricing'

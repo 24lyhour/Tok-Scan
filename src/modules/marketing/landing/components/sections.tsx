@@ -21,15 +21,8 @@ import { interpolate, localizeDigits, plural } from '@/shared/i18n/format'
 import type { Locale } from '@/shared/i18n/locales'
 import { cn } from '@/shared/lib/utils'
 
-import {
-     customerNames,
-     featureIds,
-     footerColumns,
-     type LandingContent,
-     links,
-     sampleOutlets,
-     stepIds,
-} from '../content'
+import type { LandingContent } from '@/i18n/messages'
+import { customerNames, featureIds, footerColumns, links, sampleOutlets, stepIds } from '../data'
 import { FakeQr } from './fake-qr'
 import { Container, CtaLink, Eyebrow, SectionHeading } from './primitives'
 

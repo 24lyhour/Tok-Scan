@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatMoney, formatTime, interpolate, localizeDigits, plural } from './format'
+import { formatMoney, formatMonth, formatTime, interpolate, localizeDigits, plural } from './format'
 
 describe('formatTime', () => {
      it('uses each language’s clock', () => {
@@ -31,5 +31,11 @@ describe('other formatters', () => {
           expect(formatMoney(19)).toBe('$19')
           expect(formatMoney(6.5)).toBe('$6.50')
           expect(formatMoney(26700, 'KHR')).toMatch(/^KHR\s26,700$/)
+     })
+})
+
+describe('formatMonth', () => {
+     it('shows month and year', () => {
+          expect(formatMonth('2026-08-14T10:00:00Z', 'en')).toBe('Aug 2026')
      })
 })

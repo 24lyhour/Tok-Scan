@@ -4,6 +4,7 @@ import { Check, ChevronsUpDown, LayoutGrid, MapPin, Plus } from 'lucide-react'
 import { Button, Dialog, DialogTrigger, Popover } from 'react-aria-components'
 
 import { useTranslations } from '@/i18n/client'
+import { OrgAvatar } from '@/shared/components/ui/org-avatar'
 import { interpolate, localizeDigits, plural } from '@/shared/i18n/format'
 import { cn } from '@/shared/lib/utils'
 
@@ -45,7 +46,7 @@ export function Switcher({
                     aria-label={copy.label}
                     className="flex w-full items-center gap-2.5 rounded-xl border border-saffron-500/50 bg-white/5 p-2 text-left outline-none hover:bg-white/10 data-[focus-visible]:ring-3 data-[focus-visible]:ring-white/30"
                >
-                    <OrgTile name={org.name} color={org.color} />
+                    <OrgAvatar name={org.name} color={org.color} />
                     <span className="min-w-0 flex-1">
                          <span className="block truncate text-sm font-semibold text-white">
                               {org.name}
@@ -77,7 +78,7 @@ export function Switcher({
                                              o.current && 'bg-brand-50',
                                         )}
                                    >
-                                        <OrgTile name={o.name} color={o.color} />
+                                        <OrgAvatar name={o.name} color={o.color} />
                                         <span className="min-w-0 flex-1">
                                              <span className="block truncate text-sm font-semibold text-ink">
                                                   {o.name}
@@ -160,18 +161,5 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
           <p className="px-4 pt-3 pb-1.5 text-[0.6875rem] font-semibold tracking-[0.12em] text-ink-3 uppercase">
                {children}
           </p>
-     )
-}
-
-/** Organization initial on its brand colour (logo upload shows later) */
-function OrgTile({ name, color }: { name: string; color: string }) {
-     return (
-          <span
-               aria-hidden
-               className="flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white"
-               style={{ backgroundColor: color }}
-          >
-               {(name.trim()[0] ?? 'T').toUpperCase()}
-          </span>
      )
 }

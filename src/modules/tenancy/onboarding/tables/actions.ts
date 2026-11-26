@@ -27,7 +27,7 @@ export async function saveTables(
      const result = validate(tablesSchema, formValues(formData))
      if (!result.ok) return { status: 'error', fieldErrors: result.fieldErrors }
      const { zone, count, returnTo } = result.data
-     // Plan limit (free trial = Growth: 60 tables) — checked here too, never trust the browser
+     // Plan limit (free trial: 5 tables) — checked here too, never trust the browser
      if (count > (await maxTablesFor(ctx))) {
           return { status: 'error', fieldErrors: { count: 'tableLimit' } }
      }

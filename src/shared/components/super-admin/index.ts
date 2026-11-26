@@ -8,16 +8,10 @@
  *   login-panel.tsx   charcoal grid panel beside the staff login
  *   login-intro.tsx   LoginIntro (badge + heading), LoginSwitchLink
  *   captcha.tsx       Turnstile for Payload's login API (token in a short-lived cookie)
- *   console.tsx       ConsoleView (stat cards + list panels), StatusBadge
+ *   console-banner.tsx  "Open the console" banner on the Payload data admin home
  */
 export { AdminLoginCaptcha } from './captcha'
-export {
-     ConsoleView,
-     StatusBadge,
-     type ConsolePanel,
-     type ConsoleRow,
-     type ConsoleStat,
-} from './console'
+export { ConsoleBanner } from './console-banner'
 export { LoginIntro, LoginSwitchLink } from './login-intro'
 export { LoginPanel } from './login-panel'
 export { AdminIcon, AdminLogo } from './logo'

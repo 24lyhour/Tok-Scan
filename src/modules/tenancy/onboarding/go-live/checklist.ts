@@ -1,4 +1,4 @@
-import type { OnboardingContent } from '../content'
+import type { OnboardingContent } from '@/i18n/messages'
 import { APP_ROUTES } from '@/shared/config/app-routes'
 
 import { onboardingRoutes } from '../routes'

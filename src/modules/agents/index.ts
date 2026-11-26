@@ -3,4 +3,4 @@
  *
  *   assistant/   TOKSCAN chat widget (landing page + app shell)
  */
-export { AssistantWidget, type AssistantLinks, type Audience } from './assistant'
+export { AssistantWidget, type AssistantLinks, type Audience, type TopicId } from './assistant'

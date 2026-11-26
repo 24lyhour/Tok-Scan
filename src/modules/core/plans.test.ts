@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest'
 
-import { limitsFor, PLAN_LIMITS, TRIAL_PLAN } from './plans'
+import { limitsFor, PLAN_LIMITS, TRIAL_LIMITS } from './plans'
 
 describe('plans', () => {
-     it('the free trial gets Growth limits', () => {
-          expect(TRIAL_PLAN).toBe('growth')
-          expect(limitsFor({ status: 'trial' })).toEqual({ outlets: 3, tables: 60, staff: 25 })
+     it('the free trial is 1 outlet and 5 tables', () => {
+          expect(TRIAL_LIMITS).toEqual({ outlets: 1, tables: 5, staff: 3 })
+          expect(limitsFor({ status: 'trial' })).toEqual(TRIAL_LIMITS)
+     })
+
+     it('the trial never allows more than the smallest paid plan', () => {
+          const starter = PLAN_LIMITS.starter!
+          expect(TRIAL_LIMITS.tables).toBeLessThanOrEqual(starter.tables)
+          expect(TRIAL_LIMITS.outlets).toBeLessThanOrEqual(starter.outlets)
      })
 
      it('bigger plans never allow less', () => {

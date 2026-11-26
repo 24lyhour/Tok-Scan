@@ -7,4 +7,4 @@
  *   content/      en · km · zh (`assistant` namespace)
  */
 export { AssistantWidget } from './components/assistant-widget'
-export type { AssistantLinks, Audience } from './topics'
+export type { AssistantLinks, Audience, TopicId } from './topics'

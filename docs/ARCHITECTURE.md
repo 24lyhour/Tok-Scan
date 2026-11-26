@@ -27,7 +27,8 @@ src/
 ├─ shared/                       # used by 2+ modules, NO business rules, never imports modules
 │  ├─ components/ui/             # shadcn + StatCard · Legend · Note (reusable building blocks)
 │  ├─ components/form/           # Field, inputs, Toggle, Stepper, ChoiceChips, useActionForm
-│  ├─ components/super-admin/    # super-admin console UI: logo, login panel, ConsoleView (texts as props)
+│  ├─ components/shell/          # app frame for both apps: ShellSidebar (green | charcoal) · ShellTopbar · ShellLayout
+│  ├─ components/super-admin/    # super-admin only: logo, theme, login panel, Turnstile, console banner
 │  ├─ components/{brand,i18n,illustrations,motion,security}/
 │  ├─ lib/                       # utils (cn) · validation (Zod helpers) · payload (exists, relationId…)
 │  └─ i18n/ · config/ · security/

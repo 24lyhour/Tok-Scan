@@ -1,7 +1,8 @@
 /**
  * Core — platform-wide building blocks shared by every module.
  *
- *   plans.ts       plan limits (outlets, tables, staff) + the free-trial plan   ← public (index.ts)
+ *   plans.ts       plan limits (outlets, tables, staff) + the free-trial limits ← public (index.ts)
+ *   plan-limits.ts hook that refuses creates over the plan limit            ← backend (payload.ts)
  *   access.ts      who-can-do-what rules used by every collection          ← backend (payload.ts)
  *   collections/   data: media (+ Vercel Blob storage)                     ← backend (payload.ts)
  *   i18n/          Payload content localization + admin UI languages       ← backend (payload.ts)

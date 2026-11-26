@@ -1,37 +1,29 @@
 /**
- * Global message catalog — every translated namespace, for every locale (en · km · zh).
+ * Global message catalog — every text of the site, one folder per language:
  *
- * Add a namespace in ONE place: create a `content/` folder in your module (en.ts · km.ts · zh.ts +
- * index.ts exporting `Translations<…>`), then add it to `catalog` below. Import the content folder
- * directly (not the module index) to avoid import cycles. Types update automatically.
+ *   src/i18n/en/   English — the source of truth (each file's type is what km and zh must match)
+ *   src/i18n/km/   Khmer
+ *   src/i18n/zh/   Chinese
+ *
+ * Add a namespace: create `<name>.ts` in en/, km/ and zh/, then export it from each folder's
+ * index.ts. A missing namespace, key or language is a type error.
  */
-import { assistantContent } from '@/modules/agents/assistant/content'
-import { consentContent } from '@/modules/marketing/consent/content'
-import { landingContent } from '@/modules/marketing/landing/content'
-import { authContent } from '@/modules/tenancy/auth/content'
-import { onboardingContent } from '@/modules/tenancy/onboarding/content'
-import { workspaceContent } from '@/modules/workspace/content'
-import type { Locale, Translations } from '@/shared/i18n/locales'
+import type { Locale } from '@/shared/i18n/locales'
 
-import { commonMessages } from './common'
+import * as en from './en'
+import * as km from './km'
+import * as zh from './zh'
 
-const catalog = {
-     common: commonMessages,
-     landing: landingContent,
-     onboarding: onboardingContent,
-     auth: authContent,
-     assistant: assistantContent,
-     consent: consentContent,
-     workspace: workspaceContent,
-} satisfies Record<string, Translations<object>>
-
-type Catalog = typeof catalog
+type Catalog = typeof en
 export type Namespace = keyof Catalog
-export type Messages = { [N in Namespace]: Catalog[N][Locale] }
+export type Messages = { [N in Namespace]: Catalog[N] }
+
+/** Every language must provide every namespace with the English shape. */
+const catalog: Record<Locale, Catalog> = { en, km, zh }
 
 /** One namespace in one locale. */
 export function getNamespace<N extends Namespace>(locale: Locale, namespace: N): Messages[N] {
-     return catalog[namespace][locale] as Messages[N]
+     return catalog[locale][namespace]
 }
 
 /** Only the namespaces a page needs — what gets serialized to the browser. */
@@ -44,3 +36,15 @@ export function getMessages<N extends Namespace>(
           N
      >
 }
+
+/** Text types for components that receive copy as props, e.g. `m: ConsoleContent`. */
+export type {
+     AssistantContent,
+     AuthContent,
+     CommonMessages,
+     ConsentContent,
+     ConsoleContent,
+     LandingContent,
+     OnboardingContent,
+     WorkspaceContent,
+} from './en'

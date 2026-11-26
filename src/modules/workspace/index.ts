@@ -10,3 +10,4 @@
  */
 export { DashboardPage, dashboardMetadata } from './dashboard/page'
 export { AppShell } from './shell/app-shell'
+export type { NavGroupId, NavItemId } from './shell/nav'

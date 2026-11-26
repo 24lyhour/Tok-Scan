@@ -5,7 +5,7 @@ import type { Locale } from '@/shared/i18n/locales'
 import { cn } from '@/shared/lib/utils'
 
 import { AuthShell } from '../../shared/auth-shell'
-import type { OnboardingContent } from '../content'
+import type { OnboardingContent } from '@/i18n/messages'
 
 export const ONBOARDING_STEPS = 4
 

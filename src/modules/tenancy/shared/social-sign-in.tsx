@@ -2,7 +2,7 @@
 
 import { cn } from '@/shared/lib/utils'
 
-import type { AuthContent } from '../auth/content'
+import type { AuthContent } from '@/i18n/messages'
 
 function GoogleIcon() {
      return (

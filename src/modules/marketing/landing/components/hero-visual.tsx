@@ -5,7 +5,7 @@ import { KitchenTicket } from '@/shared/components/illustrations/kitchen-ticket'
 import { formatMoney } from '@/shared/i18n/format'
 import { cn } from '@/shared/lib/utils'
 
-import type { LandingContent } from '../content'
+import type { LandingContent } from '@/i18n/messages'
 
 import { FakeQr } from './fake-qr'
 

@@ -1,0 +1,78 @@
+import type { WorkspaceContent } from '../en/workspace'
+
+export const workspace: WorkspaceContent = {
+     nav: {
+          main: '主导航',
+          open: '打开菜单',
+          locked: '请先添加菜单',
+          groups: {
+               overview: '概览',
+               catalogue: '目录',
+               operations: '运营',
+               people: '人员与分析',
+          },
+          items: {
+               dashboard: '控制台',
+               menu: '菜单管理',
+               categories: '分类',
+               products: '商品',
+               orders: '订单',
+               billing: '账单',
+               payments: '付款',
+               tables: '餐桌',
+               qr: '二维码',
+               customers: '顾客',
+               staff: '员工',
+               reports: '销售报表',
+               settings: '设置',
+          },
+     },
+     switcher: {
+          label: '切换机构或门店',
+          current: '{outlet} · 第 {index} / {total} 家门店',
+          organizations: '机构',
+          membership: '{role} · {outlets}',
+          outletCount: { other: '{count} 家门店' },
+          outletsOf: '门店 · {org}',
+          tables: '{count} 张桌',
+          allOutlets: '全部门店',
+          reportsOnly: '仅报表',
+          createOutlet: '创建门店',
+          used: '已用 {used} / {max}',
+          roles: { owner: '所有者', admin: '管理员', member: '成员' },
+     },
+     plan: {
+          trial: '免费试用',
+          outlets: '{used}/{max} 家门店',
+          ends: '{date} 结束',
+          choose: '选择套餐',
+     },
+     topbar: {
+          today: '今天，{date}',
+          search: '搜索订单、餐桌、发票…',
+          notifications: '通知',
+     },
+     user: {
+          role: '{role} · {org}',
+     },
+     dashboard: {
+          kpi: {
+               revenue: '总收入',
+               orders: '订单总数',
+               pending: '待处理订单',
+               completed: '已完成',
+               customers: '顾客',
+               avgTicket: '平均客单价',
+          },
+          noOrders: '还没有订单——客人开始点餐后，数据会显示在这里。',
+          liveTables: '实时餐桌',
+          inUse: '{total} 张中 {used} 张使用中',
+          legend: {
+               available: '空闲',
+               occupied: '就座',
+               ordering: '点餐中',
+               awaiting: '待付款',
+          },
+          editTables: '编辑餐桌',
+     },
+}

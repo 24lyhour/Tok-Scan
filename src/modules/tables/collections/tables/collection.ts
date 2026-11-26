@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import {
      ADMIN_GROUPS,
+     enforcePlanLimit,
      requireTenantManager,
      tenantManagers,
      tenantManagersCreate,
@@ -30,7 +31,8 @@ export const Tables: CollectionConfig = {
           update: tenantManagers,
           delete: tenantManagers,
      },
-     hooks: { beforeChange: [requireTenantManager] },
+     // Plan limit (free trial: 1 outlet, 5 tables) — also for the API and the Payload admin
+     hooks: { beforeChange: [requireTenantManager, enforcePlanLimit('tables')] },
      fields: [
           {
                name: 'outlet',

@@ -66,15 +66,15 @@ test('a new owner sets up a restaurant', async ({ page, context }) => {
      })
 
      await test.step('step 4 · tables (no printing before the menu exists)', async () => {
-          await expect(page.locator('figure svg')).toHaveCount(6) // QR previews
+          await expect(page.locator('figure svg')).toHaveCount(5) // QR previews (starts at the trial's 5)
           await expect(page.getByRole('button', { name: /Download all QR/ })).toHaveCount(0)
-          // Free trial = Growth: max 60 tables
-          await expect(page.getByText('Free trial: up to 60 tables')).toBeVisible()
+          // Free trial: max 5 tables
+          await expect(page.getByText('Free trial: up to 5 tables')).toBeVisible()
           const count = page.getByRole('spinbutton', { name: 'Tables' })
           await count.fill('99')
-          await expect(count).toHaveValue('60')
-          await count.fill('10')
-          await page.getByRole('button', { name: 'Fewer tables' }).click() // 10 → 9
+          await expect(count).toHaveValue('5')
+          await expect(page.getByRole('button', { name: 'More tables' })).toBeDisabled()
+          await page.getByRole('button', { name: 'Fewer tables' }).click() // 5 → 4
           await page.getByRole('textbox', { name: 'Zone' }).fill('') // optional → "Indoor"
           await page.getByRole('button', { name: 'Finish & open dashboard' }).click()
      })
@@ -85,7 +85,7 @@ test('a new owner sets up a restaurant', async ({ page, context }) => {
           await expect(page.getByText('Get E2E Mahob Kitchen live')).toBeVisible()
           await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible()
           await expect(page.getByText('Live tables')).toBeVisible()
-          await expect(page.getByText('0 of 9 in use')).toBeVisible()
+          await expect(page.getByText('0 of 4 in use')).toBeVisible()
           if (process.env.E2E_SCREENSHOTS) {
                await page.screenshot({
                     path: `${process.env.E2E_SCREENSHOTS}/dashboard.png`,
@@ -112,10 +112,11 @@ test('a new owner sets up a restaurant', async ({ page, context }) => {
           await expect(page).toHaveURL(/\/tables$/)
           await expect(page.getByRole('heading', { level: 1 })).toHaveText('Tables') // from the menu
           await expect(page.getByText(/^Operations ·/)).toBeVisible()
-          await page.getByRole('button', { name: 'More tables' }).click() // 9 → 10
+          await page.getByRole('button', { name: 'More tables' }).click() // 4 → 5
           await page.getByRole('button', { name: 'Save tables' }).click()
           await expect(page).toHaveURL(/\/tables$/)
-          await expect(page.getByRole('spinbutton', { name: 'Tables' })).toHaveValue('10')
+          await expect(page.getByRole('spinbutton', { name: 'Tables' })).toHaveValue('5')
+          await expect(page.getByRole('button', { name: 'More tables' })).toBeDisabled() // trial max
      })
 
      await test.step('Khmer', async () => {

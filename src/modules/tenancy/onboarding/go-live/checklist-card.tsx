@@ -5,7 +5,7 @@ import { interpolate, localizeDigits } from '@/shared/i18n/format'
 import type { Locale } from '@/shared/i18n/locales'
 import { cn } from '@/shared/lib/utils'
 
-import type { OnboardingContent } from '../content'
+import type { OnboardingContent } from '@/i18n/messages'
 import type { GoLiveRow } from './checklist'
 
 /**

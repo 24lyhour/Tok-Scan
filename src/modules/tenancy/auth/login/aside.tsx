@@ -3,7 +3,7 @@ import { Check, CircleCheck } from 'lucide-react'
 import { LogoMark } from '@/shared/components/brand/logo'
 import { KitchenTicket } from '@/shared/components/illustrations/kitchen-ticket'
 
-import type { AuthContent } from '../content'
+import type { AuthContent } from '@/i18n/messages'
 
 /** Brand panel beside the login card on large screens: promise + a small live-ticket illustration. */
 export function LoginAside({ m }: { m: AuthContent['aside'] }) {

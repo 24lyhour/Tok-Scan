@@ -5,7 +5,7 @@ import { TranslationsProvider } from '@/i18n/provider'
 import type { Namespace } from '@/i18n/messages'
 import { getTranslations } from '@/i18n/server'
 
-import type { OnboardingContent } from '../content'
+import type { OnboardingContent } from '@/i18n/messages'
 import { OnboardingShell } from './onboarding-shell'
 
 /** Content sections that are a full page (they have title + metaTitle) */

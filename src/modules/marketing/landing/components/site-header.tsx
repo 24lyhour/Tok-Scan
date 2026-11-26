@@ -11,7 +11,7 @@ import { cn } from '@/shared/lib/utils'
 
 import { formatMoney } from '@/shared/i18n/format'
 
-import { links, navItems, plans } from '../content'
+import { links, navItems, plans } from '../data'
 import { Container, CtaLink } from './primitives'
 
 const premium = plans.find((p) => p.id === 'premium')

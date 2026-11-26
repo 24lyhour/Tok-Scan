@@ -24,13 +24,19 @@ export const PLAN_LIMITS: Record<PlanId, PlanLimits | null> = {
      chain: null,
 }
 
-/** The 14-day free trial includes Growth (decided 2026-11-26). */
-export const TRIAL_PLAN: PlanId = 'growth'
+/**
+ * The 14-day free trial: enough to try QR ordering in one outlet (decided 2026-11-26 — replaces
+ * "trial = Growth"). Upgrading lifts these limits.
+ */
+export const TRIAL_LIMITS: PlanLimits = { outlets: 1, tables: 5, staff: 3 }
+
+/** Limits a plan-limited resource can be checked against */
+export type LimitedResource = keyof PlanLimits
 
 /**
  * Limits for an organization, or null for no fixed limit. Organizations don't store a plan yet
  * (Module 15), so everyone is on the free trial for now.
  */
 export function limitsFor(_organization?: { status?: string | null }): PlanLimits | null {
-     return PLAN_LIMITS[TRIAL_PLAN]
+     return TRIAL_LIMITS
 }

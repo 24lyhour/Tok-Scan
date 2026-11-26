@@ -85,3 +85,27 @@ export async function ensureTestSuperAdmin(): Promise<void> {
           })
      }
 }
+
+export const testPendingOrg = { name: 'E2E Pending Cafe', slug: 'e2e-pending-cafe', code: 'E2EPND' }
+
+/**
+ * A restaurant waiting for approval, owned by the test owner (so resetTestOwner() removes it).
+ * Call after resetTestOwner().
+ */
+export async function createTestPendingOrg(): Promise<void> {
+     const payload = await getPayload({ config: await config })
+     const { docs } = await payload.find({
+          collection: 'users',
+          where: { email: { equals: testOwner.email } },
+          limit: 1,
+          depth: 0,
+          overrideAccess: true,
+     })
+     const owner = docs[0]
+     if (!owner) throw new Error('Run resetTestOwner() first')
+     await payload.create({
+          collection: 'organizations',
+          data: { ...testPendingOrg, owner: owner.id, status: 'pending_approval' },
+          overrideAccess: true,
+     })
+}

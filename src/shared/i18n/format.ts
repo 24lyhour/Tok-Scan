@@ -67,6 +67,17 @@ export function formatDate(value: string | Date, locale: Locale): string {
      )
 }
 
+/** "Aug 2026" — month and year (lists that show when something started). */
+export function formatMonth(value: string | Date, locale: Locale): string {
+     return localizeDigits(
+          new Intl.DateTimeFormat(getLocaleConfig(locale).intl, {
+               month: 'short',
+               year: 'numeric',
+          }).format(new Date(value)),
+          locale,
+     )
+}
+
 /**
  * "22:00" → "10:00 PM" (en) · "២២:០០" (km) · "22:00" (zh) — the reader's own clock style.
  * Khmer uses the 24-hour clock: ICU's 12-hour Khmer format mixes in a Latin "PM".

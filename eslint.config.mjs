@@ -34,8 +34,8 @@ export default defineConfig([
                          patterns: [
                               {
                                    // Allowed: @/modules/<module> (public), @/modules/<module>/payload (backend:
-                                   // collections, access rules) and content/ folders (i18n registry)
-                                   regex: '^@/modules/[^/]+/(?!payload$)(?!(.+/)?content$).+',
+                                   // collections, access rules)
+                                   regex: '^@/modules/[^/]+/(?!payload$).+',
                                    message: 'Import another module through an entry point: @/modules/<module> (public) or @/modules/<module>/payload (backend). Inside a module, use relative imports.',
                               },
                          ],
