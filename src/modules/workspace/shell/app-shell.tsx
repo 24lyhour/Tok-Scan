@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 import { TranslationsProvider } from '@/i18n/provider'
 import { getTranslations } from '@/i18n/server'
-import { AssistantWidget } from '@/modules/assistant'
+import { AssistantWidget } from '@/modules/agents'
 import { authRoutes, LogoutButton } from '@/modules/tenancy'
 import { SUPPORT } from '@/shared/config/contact'
 import { formatDate, interpolate, localizeDigits } from '@/shared/i18n/format'

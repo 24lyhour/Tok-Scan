@@ -1,0 +1,34 @@
+/*
+ * tok-scan look for the Payload admin (super-admin console, guide p.27).
+ * Colours: --tok-* variables come from src/shared/config/colors.ts via
+ * src/modules/platform/admin/theme.tsx — never write hex values here.
+ */
+
+/* Primary buttons in brand green (Approve, Save, Log in …) */
+.btn--style-primary:not(.btn--disabled) {
+     --bg-color: var(--tok-brand-700);
+     --hover-bg: var(--tok-brand-900);
+     --color: #fff;
+     --hover-color: #fff;
+}
+
+/* Login, forgot password, first user: a card on rice paper (light theme only) */
+html[data-theme='light'] .template-minimal {
+     background-color: var(--tok-paper);
+}
+.template-minimal--width-normal .template-minimal__wrap {
+     max-width: 440px;
+     padding: 2.5rem 2rem;
+     border: 1px solid var(--theme-elevation-100);
+     border-radius: 1.5rem;
+     background: var(--theme-elevation-0);
+     box-shadow: 0 12px 40px -20px rgb(0 0 0 / 0.18);
+}
+@media (max-width: 480px) {
+     .template-minimal--width-normal .template-minimal__wrap {
+          padding: 2rem 1.25rem;
+     }
+}
+.login__brand {
+     margin-bottom: 1.5rem;
+}

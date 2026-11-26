@@ -4,6 +4,7 @@ import React from 'react'
 
 import { TranslationsProvider } from '@/i18n/provider'
 import { getTranslations } from '@/i18n/server'
+import { COLORS } from '@/shared/config/colors'
 import { getLocaleConfig } from '@/shared/i18n/locales'
 
 import './styles.css'
@@ -46,7 +47,7 @@ const staticMetadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-     themeColor: '#0b2e24',
+     themeColor: COLORS['brand-900'],
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {

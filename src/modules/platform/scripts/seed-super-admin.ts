@@ -1,0 +1,65 @@
+/**
+ * Seed a tok-scan staff login (super-admin) for local development:
+ *   yarn seed:admin
+ * Reads SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD (and optional SEED_ADMIN_NAME) from .env — never
+ * commit real values. Creates the account, or resets its password and makes it super-admin if it
+ * already exists. Safe to run again.
+ *
+ * Only runs against a local database. For a deployed database use `yarn super-admin <email>` on an
+ * account with a strong password (or pass --remote if you really mean it).
+ */
+import config from '@payload-config'
+import { getPayload } from 'payload'
+
+const email = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase()
+const password = process.env.SEED_ADMIN_PASSWORD
+const name = process.env.SEED_ADMIN_NAME?.trim() || 'tok-scan admin'
+
+if (!email || !password) {
+     console.error('Set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD in .env, then run yarn seed:admin')
+     process.exit(1)
+}
+
+const dbHost = (() => {
+     try {
+          return new URL(process.env.DATABASE_URL ?? '').hostname
+     } catch {
+          return ''
+     }
+})()
+const isLocal = ['localhost', '127.0.0.1', '::1', '[::1]'].includes(dbHost)
+if (!isLocal && !process.argv.includes('--remote')) {
+     console.error(
+          `Refusing to seed a non-local database (${dbHost || 'unknown host'}). Use --remote to override.`,
+     )
+     process.exit(1)
+}
+
+const payload = await getPayload({ config })
+const { docs } = await payload.find({
+     collection: 'users',
+     where: { email: { equals: email } },
+     limit: 1,
+     depth: 0,
+     overrideAccess: true,
+})
+const existing = docs[0]
+
+if (existing) {
+     await payload.update({
+          collection: 'users',
+          id: existing.id,
+          data: { password, platformRole: 'super-admin' },
+          overrideAccess: true,
+     })
+     console.log(`Updated ${email}: super-admin, password reset from SEED_ADMIN_PASSWORD.`)
+} else {
+     await payload.create({
+          collection: 'users',
+          data: { email, password, name, platformRole: 'super-admin' },
+          overrideAccess: true,
+     })
+     console.log(`Created super-admin ${email}.`)
+}
+console.log('Log in at /admin.')
+process.exit(0)

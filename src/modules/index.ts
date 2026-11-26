@@ -6,9 +6,16 @@
  *   index.ts    public API: pages, components, helpers               ← imported by src/app + other modules
  * Conventions: docs/ARCHITECTURE.md
  */
+import type { I18nOptions } from '@payloadcms/translations'
 import type { CollectionConfig, Plugin } from 'payload'
 
-import { coreCollections, coreTenantScoped, mediaStorage } from './core/payload'
+import {
+     adminI18n as coreAdminI18n,
+     coreCollections,
+     coreTenantScoped,
+     mediaStorage,
+} from './core/payload'
+import { platformAdminComponents, platformAdminTranslations } from './platform/payload'
 import { tablesCollections, tablesTenantScoped } from './tables/payload'
 import { tenancyCollections, tenancyPlugin, tenancyTenantScoped } from './tenancy/payload'
 
@@ -23,5 +30,15 @@ const tenantScoped = { ...tenancyTenantScoped, ...tablesTenantScoped, ...coreTen
 
 export const plugins: Plugin[] = [tenancyPlugin(tenantScoped), mediaStorage()]
 
-export { adminI18n, localization, Media } from './core/payload'
+/** Payload admin = tok-scan's super-admin console: languages + our console texts. */
+export const adminI18n: I18nOptions = {
+     ...coreAdminI18n,
+     // Payload merges custom keys into its own language packs; its type expects full packs
+     translations: platformAdminTranslations as unknown as I18nOptions['translations'],
+}
+
+/** tok-scan logo + console home in the Payload admin */
+export const adminComponents = platformAdminComponents
+
+export { localization, Media } from './core/payload'
 export { Users } from './tenancy/payload'

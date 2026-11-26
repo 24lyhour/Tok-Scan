@@ -15,7 +15,7 @@ export function Hero({ m }: { m: LandingContent['hero'] }) {
                {/* soft green glow behind the product, as on the guide cover */}
                <div
                     aria-hidden
-                    className="absolute inset-0 -z-10 bg-[radial-gradient(60%_70%_at_80%_40%,rgb(31_122_92/0.45),transparent_70%)]"
+                    className="absolute inset-0 -z-10 bg-[radial-gradient(60%_70%_at_80%_40%,var(--color-glow-brand),transparent_70%)]"
                />
                <Container className="grid items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-8 lg:py-24">
                     <Reveal>

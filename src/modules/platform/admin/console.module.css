@@ -1,0 +1,166 @@
+/* Super-admin console inside the Payload admin — uses Payload's theme variables (light + dark). */
+.brand {
+     display: flex;
+     align-items: center;
+     gap: 0.75rem;
+}
+.brandMark {
+     display: block;
+     flex-shrink: 0;
+     width: 2.75rem;
+     height: 2.75rem;
+}
+.brandMark svg {
+     display: block;
+     width: 100%;
+     height: 100%;
+}
+.brandText {
+     white-space: nowrap;
+     display: flex;
+     flex-direction: column;
+     line-height: 1.1;
+}
+.brandName {
+     font-weight: 700;
+     font-size: 1.25rem;
+}
+.brandTag {
+     margin-top: 0.2rem;
+     font-size: 0.75rem;
+     font-weight: 600;
+     letter-spacing: 0.08em;
+     text-transform: uppercase;
+     color: var(--theme-elevation-500);
+}
+
+.console {
+     margin-bottom: 2rem;
+}
+.title {
+     margin: 0;
+     font-size: 1.5rem;
+     font-weight: 700;
+}
+.subtitle {
+     margin: 0.25rem 0 1.25rem;
+     color: var(--theme-elevation-500);
+}
+
+.stats {
+     display: grid;
+     grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+     gap: 0.75rem;
+     margin-bottom: 1.5rem;
+}
+.stat {
+     display: block;
+     padding: 0.9rem 1rem;
+     border: 1px solid var(--theme-elevation-150);
+     border-radius: 12px;
+     background: var(--theme-elevation-0);
+     color: inherit;
+     text-decoration: none;
+}
+.stat:hover {
+     border-color: var(--theme-elevation-400);
+}
+.statLabel {
+     font-size: 0.8rem;
+     color: var(--theme-elevation-500);
+}
+.statValue {
+     margin-top: 0.25rem;
+     font-size: 1.6rem;
+     font-weight: 700;
+     font-variant-numeric: tabular-nums;
+}
+.statWarn .statValue {
+     color: var(--theme-warning-650);
+}
+
+.panels {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+     gap: 1rem;
+}
+.panel {
+     border: 1px solid var(--theme-elevation-150);
+     border-radius: 12px;
+     background: var(--theme-elevation-0);
+     overflow: hidden;
+}
+.panelHead {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 0.8rem 1rem;
+     border-bottom: 1px solid var(--theme-elevation-100);
+     font-weight: 600;
+}
+.panelHead a {
+     font-size: 0.8rem;
+     font-weight: 500;
+}
+.empty {
+     padding: 1rem;
+     color: var(--theme-elevation-500);
+}
+.table {
+     width: 100%;
+     border-collapse: collapse;
+     font-size: 0.85rem;
+}
+.table th {
+     text-align: left;
+     font-weight: 500;
+     color: var(--theme-elevation-500);
+     padding: 0.5rem 1rem;
+}
+.table td {
+     padding: 0.55rem 1rem;
+     border-top: 1px solid var(--theme-elevation-100);
+}
+.muted {
+     color: var(--theme-elevation-500);
+}
+.badge {
+     display: inline-block;
+     padding: 0.1rem 0.5rem;
+     border-radius: 999px;
+     font-size: 0.75rem;
+     font-weight: 600;
+     background: var(--theme-elevation-100);
+}
+/* Payload's own theme colours, so badges also work in the admin's dark mode */
+.badge_trial {
+     background: var(--theme-elevation-800);
+     color: var(--theme-elevation-0);
+}
+.badge_pending_approval {
+     background: var(--theme-warning-100);
+     color: var(--theme-warning-800);
+}
+.badge_active {
+     background: var(--theme-success-100);
+     color: var(--theme-success-800);
+}
+.badge_suspended {
+     background: var(--theme-error-100);
+     color: var(--theme-error-800);
+}
+.badge_closed {
+     background: var(--theme-elevation-100);
+     color: var(--theme-elevation-600);
+}
+
+.loginNote {
+     margin: 0 0 1.5rem;
+     text-align: center;
+     font-size: 0.8125rem;
+     color: var(--theme-elevation-500);
+}
+.loginNote a {
+     font-weight: 600;
+     color: var(--theme-text);
+}

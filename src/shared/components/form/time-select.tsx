@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, ChevronDown, Clock, Moon } from 'lucide-react'
+import { Check, ChevronDown, Clock, type LucideIcon } from 'lucide-react'
 import {
      Button,
      ListBox,
@@ -11,33 +11,19 @@ import {
      type Key,
 } from 'react-aria-components'
 
-import { getLocaleConfig, type Locale } from '@/shared/i18n/locales'
-import { localizeDigits } from '@/shared/i18n/format'
+import { formatTime } from '@/shared/i18n/format'
+import type { Locale } from '@/shared/i18n/locales'
+import { timeSlots } from '@/shared/lib/time'
 import { cn } from '@/shared/lib/utils'
-
-/** "00:00", "00:30" … "23:30" — every `step` minutes */
-export function timeSlots(step = 30): string[] {
-     return Array.from({ length: (24 * 60) / step }, (_, i) => {
-          const minutes = i * step
-          return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
-     })
-}
-
-/** "22:00" → "10:00 PM" (en) · "២២:០០" (km) · "22:00" (zh) — the reader's own clock style */
-export function formatTime(value: string, locale: Locale): string {
-     const [h = 0, m = 0] = value.split(':').map(Number)
-     const text = new Intl.DateTimeFormat(getLocaleConfig(locale).intl, {
-          hour: 'numeric',
-          minute: '2-digit',
-     }).format(new Date(2000, 0, 1, h, m))
-     return localizeDigits(text, locale)
-}
 
 /**
  * Time dropdown (guide p.03 "Controls") — replaces the browser's <input type="time">, which looks
  * different in every browser and is fiddly on phones.
- * - 30-minute steps, opens scrolled to the current value, full keyboard support (react-aria).
+ * - 30-minute steps (`step`), optionally only between `min` and `max`; opens scrolled to the
+ *   current value; full keyboard support (react-aria).
  * - Posts "HH:MM" (24 h) with the form under `name`.
+ * Reuse anywhere: opening hours, bookings, staff shifts …
+ *   <TimeSelect id={…} name="opens" label="Opens" value={v} onChange={setV} locale={locale} />
  */
 export function TimeSelect({
      id,
@@ -47,7 +33,10 @@ export function TimeSelect({
      onChange,
      locale,
      step = 30,
+     min,
+     max,
      note,
+     noteIcon: NoteIcon,
      invalid,
      required,
 }: {
@@ -59,13 +48,18 @@ export function TimeSelect({
      onChange: (next: string) => void
      locale: Locale
      step?: number
+     /** Earliest / latest time offered, "HH:MM" (e.g. a booking within opening hours) */
+     min?: string
+     max?: string
      /** Short line under the button, e.g. "Closes after midnight (next day)" */
      note?: string
+     /** Icon before the note */
+     noteIcon?: LucideIcon
      invalid?: boolean
      required?: boolean
 }) {
-     const slots = timeSlots(step)
-     // Keep a saved value that isn't on the grid (e.g. 10:15) selectable
+     const slots = timeSlots(step, { min, max })
+     // Keep a saved value that isn't offered (off the grid, e.g. 10:15, or outside min/max) selectable
      const options = slots.includes(value) ? slots : [...slots, value].sort()
 
      return (
@@ -103,7 +97,7 @@ export function TimeSelect({
                     </Button>
                     <Popover
                          offset={6}
-                         className="z-50 w-(--trigger-width) overflow-hidden rounded-xl border border-line bg-white shadow-[0_16px_40px_-16px_rgb(22_24_29/0.35)] data-[entering]:animate-in data-[entering]:fade-in data-[entering]:zoom-in-95"
+                         className="z-50 w-(--trigger-width) overflow-hidden rounded-xl border border-line bg-white shadow-popover data-[entering]:animate-in data-[entering]:fade-in data-[entering]:zoom-in-95"
                     >
                          <ListBox
                               data-time-list={id}
@@ -134,7 +128,9 @@ export function TimeSelect({
                </Select>
                {note && (
                     <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-ink-2">
-                         <Moon aria-hidden className="size-3.5 text-saffron-600" />
+                         {NoteIcon && (
+                              <NoteIcon aria-hidden className="size-3.5 text-saffron-600" />
+                         )}
                          {note}
                     </p>
                )}

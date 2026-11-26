@@ -12,5 +12,6 @@ import type { I18nOptions } from '@payloadcms/translations'
 export const adminI18n: I18nOptions = {
      supportedLanguages: { en, zh },
      fallbackLanguage: 'en',
-     // tok-scan specific admin strings go here, e.g. translations: { en: { custom: { ... } } }
+     // tok-scan's own admin texts are added by the registry (src/modules/index.ts) from each
+     // module, e.g. the super-admin console (src/modules/platform/admin/translations.ts).
 }

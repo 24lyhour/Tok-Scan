@@ -1,6 +1,12 @@
 import type { CollectionConfig } from 'payload'
 
-import { nobody, orgManagersUpdate, orgMembersRead, superAdminOnly } from '@/modules/core/payload'
+import {
+     ADMIN_GROUPS,
+     nobody,
+     orgManagersUpdate,
+     orgMembersRead,
+     superAdminOnly,
+} from '@/modules/core/payload'
 import {
      BUSINESS_TYPES,
      DEFAULT_BRAND_COLOR,
@@ -8,6 +14,7 @@ import {
      ORG_STATUSES,
      ORGANIZATION_LIMITS,
 } from './constants'
+import { trackStatusChange } from './hooks/track-status-change'
 import { checkSlugFormat, slugify } from './slug'
 
 /**
@@ -18,9 +25,12 @@ export const Organizations: CollectionConfig = {
      slug: 'organizations',
      admin: {
           useAsTitle: 'name',
-          defaultColumns: ['name', 'slug', 'status', 'businessType', 'createdAt'],
-          group: 'Platform',
+          // Super-admin console: who signed up, their state, when
+          defaultColumns: ['name', 'slug', 'status', 'owner', 'trialEndsAt', 'createdAt'],
+          listSearchableFields: ['name', 'slug', 'code'],
+          group: ADMIN_GROUPS.platform,
      },
+     hooks: { beforeChange: [trackStatusChange] },
      access: {
           read: orgMembersRead,
           // Created by the onboarding action (server code); never deleted — closed instead
@@ -80,7 +90,26 @@ export const Organizations: CollectionConfig = {
                defaultValue: 'trial',
                options: [...ORG_STATUSES],
                access: { update: superAdminOnly },
-               admin: { position: 'sidebar' },
+               admin: {
+                    position: 'sidebar',
+                    description:
+                         'Approve: pending approval → active. Only tok-scan staff can change it.',
+               },
+          },
+          {
+               name: 'statusChangedAt',
+               type: 'date',
+               // Written by trackStatusChange when a super-admin changes the status
+               access: { update: superAdminOnly },
+               admin: { position: 'sidebar', readOnly: true },
+          },
+          {
+               name: 'statusChangedBy',
+               type: 'relationship',
+               relationTo: 'users',
+               // Written by trackStatusChange when a super-admin changes the status
+               access: { update: superAdminOnly },
+               admin: { position: 'sidebar', readOnly: true },
           },
           { name: 'trialEndsAt', type: 'date', admin: { position: 'sidebar' } },
           {

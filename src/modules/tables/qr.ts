@@ -4,12 +4,14 @@
  */
 import QRCode from 'qrcode'
 
+import { COLORS } from '@/shared/config/colors'
+
 /** One look for every QR code: ink on white, medium error correction, small quiet zone. */
 const QR_OPTIONS = {
      type: 'svg',
      margin: 1,
      errorCorrectionLevel: 'M',
-     color: { dark: '#16181D', light: '#FFFFFF' },
+     color: { dark: COLORS.ink, light: '#ffffff' },
 } as const
 
 /** QR code as an SVG string. */

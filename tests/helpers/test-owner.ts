@@ -53,3 +53,35 @@ export async function resetTestOwner(): Promise<void> {
      }
      await payload.create({ collection: 'users', data: testOwner, overrideAccess: true })
 }
+
+export const testSuperAdmin = {
+     email: 'e2e-admin@test.tok-scan.local',
+     password: 'e2e-password-123',
+     name: 'E2E Platform Admin',
+}
+
+/** A tok-scan staff account (platformRole super-admin) for console tests — created once, reused. */
+export async function ensureTestSuperAdmin(): Promise<void> {
+     const payload = await getPayload({ config: await config })
+     const { docs } = await payload.find({
+          collection: 'users',
+          where: { email: { equals: testSuperAdmin.email } },
+          limit: 1,
+          depth: 0,
+          overrideAccess: true,
+     })
+     if (docs[0]) {
+          await payload.update({
+               collection: 'users',
+               id: docs[0].id,
+               data: { platformRole: 'super-admin', password: testSuperAdmin.password },
+               overrideAccess: true,
+          })
+     } else {
+          await payload.create({
+               collection: 'users',
+               data: { ...testSuperAdmin, platformRole: 'super-admin' },
+               overrideAccess: true,
+          })
+     }
+}

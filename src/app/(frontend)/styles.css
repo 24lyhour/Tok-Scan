@@ -42,6 +42,24 @@
      --color-progress: #7c3aed;
      --color-khqr: #e1232e;
 
+     /* Kitchen display (dark screen + "Mark ready") and illustrations */
+     --color-kds: #14171a;
+     --color-kds-ready: #0f766e;
+     --color-herb: #5f8f3a;
+
+     /* Soft brand glows behind hero areas */
+     --color-glow-brand: color-mix(in oklab, var(--color-brand-500) 45%, transparent);
+     --color-glow-saffron: color-mix(in oklab, var(--color-saffron-500) 25%, transparent);
+
+     /* Shadows — one per kind of surface, all tinted with ink: shadow-card, shadow-popover … */
+     --shadow-header: 0 1px 12px color-mix(in oklab, var(--color-ink) 6%, transparent);
+     --shadow-raised: 0 6px 18px color-mix(in oklab, var(--color-ink) 10%, transparent);
+     --shadow-card: 0 12px 40px -20px color-mix(in oklab, var(--color-ink) 18%, transparent);
+     --shadow-popover: 0 16px 44px -16px color-mix(in oklab, var(--color-ink) 38%, transparent);
+     --shadow-dialog: 0 24px 64px -20px color-mix(in oklab, var(--color-ink) 45%, transparent);
+     --shadow-device: 0 28px 56px -18px rgb(0 0 0 / 0.58);
+     --shadow-fab: 0 12px 32px -8px color-mix(in oklab, var(--color-brand-700) 60%, transparent);
+
      /* Motion (p.28) */
      --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
      --default-transition-duration: 200ms;

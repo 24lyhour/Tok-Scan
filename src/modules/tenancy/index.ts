@@ -11,5 +11,9 @@
  * Public API — what routes in src/app import.
  */
 export * from './auth'
-export { DEFAULT_BRAND_COLOR } from './collections/organizations/constants'
+export {
+     DEFAULT_BRAND_COLOR,
+     ORG_STATUSES,
+     type OrgStatus,
+} from './collections/organizations/constants'
 export * from './onboarding'

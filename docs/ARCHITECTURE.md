@@ -22,6 +22,7 @@ src/
 │  ├─ tables/                    # Module 10 — collections/tables · qr.ts · components/qr-code
 │  ├─ workspace/                 # signed-in app: AppShell (sidebar, switcher, top bar) + dashboard
 │  ├─ assistant/                 # TOKSCAN chat — reusable (landing: visitor · app: owner)
+│  ├─ platform/                  # super-admin console (Payload admin, super-admins only) — Module 16
 │  └─ marketing/landing/         # public landing page (guide p.21–22)
 ├─ shared/                       # used by 2+ modules, NO business rules, never imports modules
 │  ├─ components/ui/             # shadcn + StatCard · Legend · Note (reusable building blocks)

@@ -1,6 +1,6 @@
 import { TranslationsProvider } from '@/i18n/provider'
 import { getTranslations } from '@/i18n/server'
-import { AssistantWidget } from '@/modules/assistant'
+import { AssistantWidget } from '@/modules/agents'
 
 import { CookieBanner, getConsent } from '../consent'
 import { links, startingPrice } from './content'

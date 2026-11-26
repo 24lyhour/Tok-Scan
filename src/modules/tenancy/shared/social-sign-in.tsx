@@ -35,13 +35,16 @@ function AppleIcon() {
      )
 }
 
+/** Flip to true once the Apple Developer account is set up (Sign in with Apple). */
+const APPLE_READY = false
+
 const socialButton =
      'inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-xl text-[0.9375rem] font-semibold disabled:cursor-not-allowed disabled:opacity-60'
 
 /**
  * "Continue with Apple" + "Continue with Google", followed by an "or" divider.
  * - Google is a real link to /auth/google when `googleHref` is set (env configured), else disabled.
- * - Apple stays disabled until an Apple Developer account is set up.
+ * - Apple is hidden until `APPLE_READY` (a disabled first button looked broken).
  * Apple's button is black with the Apple logo and the same size as Google's (Apple HIG).
  */
 export function SocialSignIn({
@@ -58,20 +61,17 @@ export function SocialSignIn({
      /** Show "By continuing with Google you agree to the Terms…" (sign-up) */
      showTerms?: boolean
 }) {
-     const note = googleHref ? copy.appleSoon : copy.soon
+     // Only explain what's missing: Google not configured (Apple is simply not shown yet)
+     const note = googleHref ? null : copy.soon
      return (
           <>
                <div className="space-y-2.5">
-                    <button
-                         type="button"
-                         disabled
-                         title={copy.appleSoon}
-                         aria-describedby={`${id}-soon`}
-                         className={cn(socialButton, 'bg-black text-white')}
-                    >
-                         <AppleIcon />
-                         {copy.apple}
-                    </button>
+                    {APPLE_READY && (
+                         <button type="button" className={cn(socialButton, 'bg-black text-white')}>
+                              <AppleIcon />
+                              {copy.apple}
+                         </button>
+                    )}
                     {googleHref ? (
                          // Plain link: the browser does a full navigation to Google's account chooser
                          <a
@@ -97,9 +97,11 @@ export function SocialSignIn({
                          </button>
                     )}
                </div>
-               <p id={`${id}-soon`} className="mt-2 text-center text-xs text-ink-3">
-                    {note}
-               </p>
+               {note && (
+                    <p id={`${id}-soon`} className="mt-2 text-center text-xs text-ink-3">
+                         {note}
+                    </p>
+               )}
                {googleHref && showTerms && (
                     <p className="mt-1 text-center text-xs text-ink-3">{copy.terms}</p>
                )}

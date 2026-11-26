@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import {
+     ADMIN_GROUPS,
      requireTenantManager,
      tenantManagers,
      tenantManagersCreate,
@@ -18,7 +19,11 @@ import { TABLE_DEFAULTS, TABLE_LIMITS } from './constants'
  */
 export const Tables: CollectionConfig = {
      slug: 'tables',
-     admin: { useAsTitle: 'label', defaultColumns: ['label', 'zone', 'seats', 'outlet', 'active'] },
+     admin: {
+          group: ADMIN_GROUPS.restaurant,
+          useAsTitle: 'label',
+          defaultColumns: ['label', 'zone', 'seats', 'outlet', 'active'],
+     },
      access: {
           read: tenantMembers,
           create: tenantManagersCreate,

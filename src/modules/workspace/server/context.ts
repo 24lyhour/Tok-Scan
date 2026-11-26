@@ -31,41 +31,53 @@ export const getWorkspaceContext = cache(async () => {
           (await payload.count({ collection, where: where as never, overrideAccess: true }))
                .totalDocs
 
-     const orgDocs = await payload.find({
-          collection: 'organizations',
-          where: { id: { in: orgIdsWithRole(user) } },
-          sort: 'name',
-          depth: 0,
-          pagination: false,
-          overrideAccess: true,
-     })
-     const organizations = await Promise.all(
-          orgDocs.docs.map(async (org) => ({
-               id: org.id,
-               name: org.name,
-               color: org.brand?.primaryColor ?? DEFAULT_BRAND_COLOR,
-               role: roleIn(org.id),
-               outlets: await count('outlets', { tenant: { equals: org.id } }),
-               current: org.id === organization.id,
-          })),
-     )
-
-     const outletDocs = await payload.find({
-          collection: 'outlets',
-          where: { tenant: { equals: organization.id } },
-          sort: 'createdAt',
-          depth: 0,
-          pagination: false,
-          overrideAccess: true,
-     })
-     const outlets = await Promise.all(
-          outletDocs.docs.map(async (o) => ({
-               id: o.id,
-               name: o.name,
-               tables: await count('tables', { outlet: { equals: o.id } }),
-               current: o.id === outlet.id,
-          })),
-     )
+     // Independent lookups run together (each is a database round trip)
+     const [orgDocs, outletDocs] = await Promise.all([
+          payload.find({
+               collection: 'organizations',
+               where: { id: { in: orgIdsWithRole(user) } },
+               sort: 'name',
+               depth: 0,
+               pagination: false,
+               overrideAccess: true,
+          }),
+          payload.find({
+               collection: 'outlets',
+               where: { tenant: { equals: organization.id } },
+               sort: 'createdAt',
+               depth: 0,
+               pagination: false,
+               overrideAccess: true,
+          }),
+     ])
+     const [organizations, outlets] = await Promise.all([
+          Promise.all(
+               orgDocs.docs.map(async (org) => ({
+                    id: org.id,
+                    name: org.name,
+                    color: org.brand?.primaryColor ?? DEFAULT_BRAND_COLOR,
+                    role: roleIn(org.id),
+                    // The current organization's outlets are already loaded
+                    outlets:
+                         org.id === organization.id
+                              ? outletDocs.docs.length
+                              : await count('outlets', { tenant: { equals: org.id } }),
+                    current: org.id === organization.id,
+               })),
+          ),
+          Promise.all(
+               outletDocs.docs.map(async (o) => ({
+                    id: o.id,
+                    name: o.name,
+                    // The current outlet's tables are already loaded by the onboarding context
+                    tables:
+                         o.id === outlet.id
+                              ? ctx.tables.length
+                              : await count('tables', { outlet: { equals: o.id } }),
+                    current: o.id === outlet.id,
+               })),
+          ),
+     ])
 
      const rows = goLiveRows(ctx)
      return {

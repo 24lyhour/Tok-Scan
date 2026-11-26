@@ -1,6 +1,7 @@
-import { Bell, Plus, Star } from 'lucide-react'
+import { Plus, Star } from 'lucide-react'
 import type { ReactNode } from 'react'
 
+import { KitchenTicket } from '@/shared/components/illustrations/kitchen-ticket'
 import { formatMoney } from '@/shared/i18n/format'
 import { cn } from '@/shared/lib/utils'
 
@@ -12,7 +13,7 @@ function Phone({ className, children }: { className?: string; children: ReactNod
      return (
           <div
                className={cn(
-                    'absolute rounded-[2rem] bg-ink p-1.5 shadow-[0_30px_60px_-20px_rgb(0_0_0/0.55)] ring-1 ring-white/10 sm:rounded-[2.4rem] sm:p-2',
+                    'absolute rounded-[2rem] bg-ink p-1.5 shadow-device ring-1 ring-white/10 sm:rounded-[2.4rem] sm:p-2',
                     className,
                )}
           >
@@ -28,13 +29,13 @@ function Phone({ className, children }: { className?: string; children: ReactNod
 function Dish({ className }: { className?: string }) {
      return (
           <div className={cn('relative aspect-square', className)}>
-               <div className="absolute inset-[6%] rounded-full bg-white shadow-[0_8px_20px_rgb(0_0_0/0.12)]" />
+               <div className="absolute inset-[6%] rounded-full bg-white shadow-raised" />
                <div className="absolute inset-[16%] rounded-full bg-gradient-to-br from-saffron-300 to-saffron-600" />
                <div className="absolute top-[30%] left-[26%] size-[20%] rounded-full bg-saffron-100/90" />
                <div className="absolute top-[48%] left-[50%] size-[16%] rounded-full bg-saffron-100/80" />
                <div className="absolute top-[52%] left-[28%] size-[13%] rounded-full bg-saffron-50/70" />
-               <div className="absolute -top-[2%] right-[-6%] h-[26%] w-[50%] rotate-[-8deg] rounded-[50%] bg-[#5f8f3a]" />
-               <div className="absolute bottom-[8%] left-[-4%] h-[18%] w-[34%] rotate-[10deg] rounded-[50%] bg-[#5f8f3a]" />
+               <div className="absolute -top-[2%] right-[-6%] h-[26%] w-[50%] rotate-[-8deg] rounded-[50%] bg-herb" />
+               <div className="absolute bottom-[8%] left-[-4%] h-[18%] w-[34%] rotate-[10deg] rounded-[50%] bg-herb" />
           </div>
      )
 }
@@ -71,7 +72,7 @@ function MenuScreen({ m }: { m: VisualCopy }) {
 function KhqrScreen({ m }: { m: VisualCopy }) {
      return (
           <div className="flex h-full flex-col items-center justify-center gap-3 bg-paper px-2.5 pt-6 pb-3 sm:px-3">
-               <div className="w-full overflow-hidden rounded-xl bg-white shadow-[0_4px_16px_rgb(22_24_29/0.08)] ring-1 ring-line">
+               <div className="w-full overflow-hidden rounded-xl bg-white shadow-raised ring-1 ring-line">
                     <div className="relative bg-khqr px-2.5 py-1.5 text-[0.625rem] font-bold tracking-wide text-white sm:text-xs">
                          KHQR
                     </div>
@@ -90,33 +91,6 @@ function KhqrScreen({ m }: { m: VisualCopy }) {
                <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-[0.625rem] font-semibold text-success sm:text-xs">
                     <span className="size-1.5 rounded-full bg-success" /> {m.paid}
                </span>
-          </div>
-     )
-}
-
-function KitchenTicket({ m, className }: { m: VisualCopy; className?: string }) {
-     return (
-          <div
-               className={cn(
-                    'absolute overflow-hidden rounded-xl bg-[#14171a] text-white shadow-[0_24px_48px_-16px_rgb(0_0_0/0.6)] ring-1 ring-white/10',
-                    className,
-               )}
-          >
-               <div className="flex items-center justify-between border-b-2 border-progress px-2.5 py-2 sm:px-3">
-                    <span className="rounded-md bg-progress px-1.5 py-0.5 text-xs font-bold sm:text-sm">
-                         T07
-                    </span>
-                    <span className="tabular text-xs font-bold sm:text-sm">8:04</span>
-               </div>
-               <div className="space-y-1.5 p-2.5 sm:p-3">
-                    <p className="text-xs font-semibold sm:text-sm">{m.ticketItem}</p>
-                    <p className="rounded-md bg-saffron-500/15 px-2 py-1 text-[0.625rem] font-medium text-saffron-300 sm:text-xs">
-                         {m.ticketNote}
-                    </p>
-                    <span className="mt-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#0f766e] py-1.5 text-[0.625rem] font-semibold sm:py-2 sm:text-xs">
-                         <Bell aria-hidden className="size-3" /> {m.markReady}
-                    </span>
-               </div>
           </div>
      )
 }
@@ -143,7 +117,13 @@ export function HeroVisual({
                <Phone className="top-[12%] right-0 h-[76%] w-[36%]">
                     <KhqrScreen m={m} />
                </Phone>
-               <KitchenTicket m={m} className="bottom-[2%] left-0 w-[42%]" />
+               <KitchenTicket
+                    table="T07"
+                    item={m.ticketItem}
+                    note={m.ticketNote}
+                    action={m.markReady}
+                    className="absolute bottom-[2%] left-0 w-[42%]"
+               />
           </div>
      )
 }

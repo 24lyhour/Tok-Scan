@@ -326,7 +326,7 @@ export function FinalCta({ m }: { m: LandingContent['finalCta'] }) {
                     <Reveal className="relative isolate overflow-hidden rounded-3xl bg-brand-700 px-6 py-10 sm:px-12 sm:py-14">
                          <div
                               aria-hidden
-                              className="absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_100%_0%,rgb(224_159_62/0.25),transparent_70%)]"
+                              className="absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_100%_0%,var(--color-glow-saffron),transparent_70%)]"
                          />
                          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
                               <div>

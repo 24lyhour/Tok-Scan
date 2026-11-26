@@ -52,7 +52,9 @@ export function AuthShell({
 
                     {progress}
 
-                    <main className="mt-6 flex flex-1 flex-col rounded-3xl border border-line bg-white p-5 shadow-[0_12px_40px_-20px_rgb(22_24_29/0.18)] sm:mt-8 sm:p-8">
+                    {/* Phones: the card fills the screen so the main button sits in the thumb zone.
+                        Larger screens: the card is as tall as its content (no empty gap). */}
+                    <main className="mt-6 flex flex-1 flex-col rounded-3xl border border-line bg-white p-5 shadow-card sm:mt-8 sm:flex-none sm:p-8">
                          {children}
                     </main>
                </div>

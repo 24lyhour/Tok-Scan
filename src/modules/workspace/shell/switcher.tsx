@@ -63,7 +63,7 @@ export function Switcher({
                <Popover
                     placement="bottom start"
                     offset={8}
-                    className="z-50 w-[19rem] overflow-hidden rounded-2xl border border-line bg-white shadow-[0_20px_48px_-16px_rgb(22_24_29/0.4)] data-[entering]:animate-in data-[entering]:fade-in data-[entering]:zoom-in-95"
+                    className="z-50 w-[19rem] overflow-hidden rounded-2xl border border-line bg-white shadow-popover data-[entering]:animate-in data-[entering]:fade-in data-[entering]:zoom-in-95"
                >
                     <Dialog aria-label={copy.label} className="outline-none">
                          <SectionTitle>{copy.organizations}</SectionTitle>

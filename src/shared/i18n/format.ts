@@ -66,3 +66,19 @@ export function formatDate(value: string | Date, locale: Locale): string {
           locale,
      )
 }
+
+/**
+ * "22:00" → "10:00 PM" (en) · "២២:០០" (km) · "22:00" (zh) — the reader's own clock style.
+ * Khmer uses the 24-hour clock: ICU's 12-hour Khmer format mixes in a Latin "PM".
+ */
+export function formatTime(value: string, locale: Locale): string {
+     const [h = 0, m = 0] = value.split(':').map(Number)
+     return localizeDigits(
+          new Intl.DateTimeFormat(getLocaleConfig(locale).intl, {
+               hour: 'numeric',
+               minute: '2-digit',
+               ...(locale === 'km' ? { hourCycle: 'h23' as const } : {}),
+          }).format(new Date(2000, 0, 1, h, m)),
+          locale,
+     )
+}

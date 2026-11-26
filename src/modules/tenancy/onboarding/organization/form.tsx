@@ -189,8 +189,11 @@ export function OrganizationForm({
                     >
                          <div className="flex items-center gap-3">
                               <span
-                                   className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-line text-white"
-                                   style={{ backgroundColor: logoPreview ? '#fff' : brandColor }}
+                                   className={cn(
+                                        'flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-line text-white',
+                                        logoPreview && 'bg-white',
+                                   )}
+                                   style={logoPreview ? undefined : { backgroundColor: brandColor }}
                               >
                                    {logoPreview ? (
                                         // eslint-disable-next-line @next/next/no-img-element -- local blob preview

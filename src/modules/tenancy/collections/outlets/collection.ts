@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import {
+     ADMIN_GROUPS,
      requireTenantManager,
      tenantManagers,
      tenantManagersCreate,
@@ -18,7 +19,11 @@ const percent = (name: string, defaultValue: number) =>
  */
 export const Outlets: CollectionConfig = {
      slug: 'outlets',
-     admin: { useAsTitle: 'name', defaultColumns: ['name', 'address', 'status', 'createdAt'] },
+     admin: {
+          group: ADMIN_GROUPS.restaurant,
+          useAsTitle: 'name',
+          defaultColumns: ['name', 'address', 'status', 'createdAt'],
+     },
      access: {
           read: tenantMembers,
           create: tenantManagersCreate,

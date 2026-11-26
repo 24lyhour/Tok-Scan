@@ -77,6 +77,8 @@ export function Turnstile({
                          sitekey: turnstileSiteKey,
                          action,
                          theme: 'light',
+                         // Invisible for almost everyone; a checkbox appears only if Cloudflare is unsure
+                         appearance: 'interaction-only',
                          // 'flexible' needs ≥300px; small phones get the compact widget instead
                          size: containerRef.current.offsetWidth >= 300 ? 'flexible' : 'compact',
                          language: getLocaleConfig(locale).turnstile,
@@ -102,6 +104,6 @@ export function Turnstile({
      }, [resetKey])
 
      if (!turnstileSiteKey) return null
-     // min-h reserves the widget's height so the button below doesn't jump when it appears
-     return <div ref={containerRef} className={cn('min-h-[65px] w-full', className)} />
+     // Empty (no height) until Cloudflare needs a click — then the checkbox appears here
+     return <div ref={containerRef} className={cn('w-full', className)} />
 }

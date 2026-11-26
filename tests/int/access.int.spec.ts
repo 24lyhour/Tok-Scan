@@ -7,12 +7,13 @@ import { getPayload, type Payload } from 'payload'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 import config from '@/payload.config'
+import { Users } from '@/modules/tenancy/payload'
 import type { Organization, Outlet, Table, User } from '@/payload-types'
 
 const run = Date.now().toString(36)
 let payload: Payload
 let orgA: Organization, orgB: Organization
-let ownerA: User, staffA: User, ownerB: User
+let ownerA: User, staffA: User, ownerB: User, platformAdmin: User
 let outletA: Outlet, outletB: Outlet, tableA: Table
 
 /** Payload's "not allowed" (Forbidden) or "not found" (hidden by access rules) — never a validation error */
@@ -59,11 +60,18 @@ async function join(user: User, org: Organization, orgRole: 'owner' | 'admin' | 
 
 beforeAll(async () => {
      payload = await getPayload({ config: await config })
-     ;[ownerA, staffA, ownerB] = await Promise.all([
+     ;[ownerA, staffA, ownerB, platformAdmin] = await Promise.all([
           makeUser('owner-a'),
           makeUser('staff-a'),
           makeUser('owner-b'),
+          makeUser('platform-admin'),
      ])
+     platformAdmin = await payload.update({
+          collection: 'users',
+          id: platformAdmin.id,
+          data: { platformRole: 'super-admin' },
+          overrideAccess: true,
+     })
      orgA = await makeOrg('a', ownerA)
      orgB = await makeOrg('b', ownerB)
      ownerA = await join(ownerA, orgA, 'owner')
@@ -99,7 +107,7 @@ afterAll(async () => {
           where: { tenant: { in: orgs } },
           overrideAccess: true,
      })
-     const users = [ownerA, staffA, ownerB].filter(Boolean)
+     const users = [ownerA, staffA, ownerB, platformAdmin].filter(Boolean)
      // users.tenants → organization and organization.owner → user: unlink first
      for (const u of users) {
           await payload.update({
@@ -240,5 +248,48 @@ describe('accounts', () => {
           expect(fresh.name).toBe('Staff renamed')
           expect(fresh.tenants?.[0]?.orgRole).toBe('member')
           expect(fresh.platformRole).not.toBe('super-admin')
+     })
+})
+
+describe('super-admin console (Payload admin)', () => {
+     const canOpenAdmin = (user: User) =>
+          (Users.access!.admin as (args: unknown) => boolean)({ req: { user } })
+
+     it('only tok-scan staff can open /admin', () => {
+          expect(canOpenAdmin(platformAdmin)).toBe(true)
+          expect(canOpenAdmin(ownerA)).toBe(false)
+          expect(canOpenAdmin(staffA)).toBe(false)
+     })
+
+     it('approving a restaurant records who did it', async () => {
+          await payload.update({
+               collection: 'organizations',
+               id: orgB.id,
+               data: { status: 'pending_approval' },
+               overrideAccess: true,
+          })
+          const approved = await payload.update({
+               collection: 'organizations',
+               id: orgB.id,
+               data: { status: 'active' },
+               ...as(platformAdmin),
+               depth: 0,
+          })
+          expect(approved.status).toBe('active')
+          expect(approved.statusChangedBy).toBe(platformAdmin.id)
+          expect(approved.statusChangedAt).toBeTruthy()
+     })
+
+     it("owners can't approve themselves", async () => {
+          const result = await payload.update({
+               collection: 'organizations',
+               id: orgA.id,
+               data: { status: 'active', statusChangedBy: ownerA.id },
+               ...as(ownerA),
+               depth: 0,
+          })
+          // Field access silently ignores both values
+          expect(result.status).not.toBe('active')
+          expect(result.statusChangedBy ?? null).toBeNull()
      })
 })

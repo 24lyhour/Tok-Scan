@@ -1,6 +1,7 @@
-import { Bell, Check, CircleCheck } from 'lucide-react'
+import { Check, CircleCheck } from 'lucide-react'
 
 import { LogoMark } from '@/shared/components/brand/logo'
+import { KitchenTicket } from '@/shared/components/illustrations/kitchen-ticket'
 
 import type { AuthContent } from '../content'
 
@@ -10,7 +11,7 @@ export function LoginAside({ m }: { m: AuthContent['aside'] }) {
           <>
                <div
                     aria-hidden
-                    className="absolute inset-0 bg-[radial-gradient(60%_60%_at_30%_30%,rgb(31_122_92/0.45),transparent_70%)]"
+                    className="absolute inset-0 bg-[radial-gradient(60%_60%_at_30%_30%,var(--color-glow-brand),transparent_70%)]"
                />
                <LogoMark
                     title=""
@@ -34,23 +35,13 @@ export function LoginAside({ m }: { m: AuthContent['aside'] }) {
 
                     {/* Decorative: a kitchen ticket and a paid badge, like the product screens */}
                     <div aria-hidden className="mt-12 flex items-end gap-4">
-                         <div className="w-64 overflow-hidden rounded-xl bg-[#14171a] shadow-2xl ring-1 ring-white/10">
-                              <div className="flex items-center justify-between border-b-2 border-progress px-3 py-2">
-                                   <span className="rounded-md bg-progress px-1.5 py-0.5 text-sm font-bold">
-                                        {m.ticketTable}
-                                   </span>
-                                   <span className="tabular text-sm font-bold">8:04</span>
-                              </div>
-                              <div className="space-y-2 p-3">
-                                   <p className="text-sm font-semibold">{m.ticketItem}</p>
-                                   <p className="rounded-md bg-saffron-500/15 px-2 py-1 text-xs font-medium text-saffron-300">
-                                        {m.ticketNote}
-                                   </p>
-                                   <span className="flex items-center justify-center gap-1.5 rounded-lg bg-[#0f766e] py-2 text-xs font-semibold">
-                                        <Bell className="size-3" /> {m.markReady}
-                                   </span>
-                              </div>
-                         </div>
+                         <KitchenTicket
+                              table={m.ticketTable}
+                              item={m.ticketItem}
+                              note={m.ticketNote}
+                              action={m.markReady}
+                              className="w-64"
+                         />
                          <span className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-success shadow-lg">
                               <CircleCheck className="size-3.5" /> {m.paid}
                          </span>

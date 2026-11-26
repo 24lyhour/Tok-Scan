@@ -4,5 +4,6 @@
  * rules that every module's collections use.
  */
 export * from './access'
+export { ADMIN_GROUPS } from './admin-groups'
 export { coreCollections, coreTenantScoped, Media, mediaStorage } from './collections'
 export { adminI18n, localization } from './i18n'

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { anyone, requireTenantManager, tenantManagers, tenantManagersCreate } from '../../access'
+import { ADMIN_GROUPS } from '../../admin-groups'
 
 /**
  * Media — uploaded images (logos, menu photos). Tenant-scoped: each file belongs to one
@@ -9,6 +10,7 @@ import { anyone, requireTenantManager, tenantManagers, tenantManagersCreate } fr
  */
 export const Media: CollectionConfig = {
      slug: 'media',
+     admin: { group: ADMIN_GROUPS.restaurant },
      access: {
           read: anyone,
           create: tenantManagersCreate,

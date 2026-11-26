@@ -191,7 +191,7 @@ export function AssistantWidget({
                               'pointer-events-auto flex origin-bottom-right flex-col overflow-hidden bg-white motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95',
                               expanded
                                    ? 'fixed inset-0 h-dvh w-screen'
-                                   : 'h-[min(36rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-2rem))] rounded-3xl border border-line shadow-[0_24px_64px_-20px_rgb(22_24_29/0.45)]',
+                                   : 'h-[min(36rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-2rem))] rounded-3xl border border-line shadow-dialog',
                          )}
                     >
                          <header className="flex items-center gap-3 bg-brand-700 px-4 py-3 text-white">
@@ -335,7 +335,7 @@ export function AssistantWidget({
                               <button
                                    type="button"
                                    onClick={openPanel}
-                                   className="block rounded-2xl rounded-br-md bg-white px-4 py-3 text-left text-sm text-ink shadow-[0_12px_32px_-12px_rgb(22_24_29/0.4)] ring-1 ring-line hover:ring-brand-300"
+                                   className="block rounded-2xl rounded-br-md bg-white px-4 py-3 text-left text-sm text-ink shadow-popover ring-1 ring-line hover:ring-brand-300"
                               >
                                    <span className="block font-semibold">
                                         {interpolate(m.greeting[audience].hello, {
@@ -371,7 +371,7 @@ export function AssistantWidget({
                          aria-controls={open ? panelId : undefined}
                          aria-label={open ? m.launcher.close : m.launcher.open}
                          className={cn(
-                              'pointer-events-auto relative flex size-14 items-center justify-center rounded-full bg-brand-700 text-white shadow-[0_12px_32px_-8px_rgb(20_81_63/0.6)] ring-4 ring-white transition-transform duration-[120ms] hover:scale-105 focus-visible:ring-brand-300 focus-visible:outline-none',
+                              'pointer-events-auto relative flex size-14 items-center justify-center rounded-full bg-brand-700 text-white shadow-fab ring-4 ring-white transition-transform duration-[120ms] hover:scale-105 focus-visible:ring-brand-300 focus-visible:outline-none',
                               // Full screen has its own close button
                               expanded && 'hidden',
                          )}

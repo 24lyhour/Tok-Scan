@@ -185,7 +185,12 @@ export interface Organization {
   };
   businessType?: ('restaurant' | 'cafe' | 'bar' | 'food_court' | 'other') | null;
   businessTypeOther?: string | null;
+  /**
+   * Approve: pending approval → active. Only tok-scan staff can change it.
+   */
   status?: ('trial' | 'pending_approval' | 'active' | 'suspended' | 'closed') | null;
+  statusChangedAt?: string | null;
+  statusChangedBy?: (number | null) | User;
   trialEndsAt?: string | null;
   onboarding?: {
     step?: ('organization' | 'outlet' | 'tables' | 'done') | null;
@@ -418,6 +423,8 @@ export interface OrganizationsSelect<T extends boolean = true> {
   businessType?: T;
   businessTypeOther?: T;
   status?: T;
+  statusChangedAt?: T;
+  statusChangedBy?: T;
   trialEndsAt?: T;
   onboarding?:
     | T

@@ -45,7 +45,7 @@ Read the full spec in [Module 14](./modules/14-organization-tenant.md) before yo
 | 13     | Settings & Audit          | org / outlet             | p.18–19       | —                                                                | not started    |
 | **14** | **Organization / Tenant** | platform                 | p.20, 23–25   | [14-organization-tenant.md](./modules/14-organization-tenant.md) | **spec ready** |
 | 15     | Subscription & Plans      | platform                 | p.26          | —                                                                | not started    |
-| 16     | Platform Super-admin      | platform                 | p.27          | —                                                                | not started    |
+| 16     | Platform Super-admin      | platform                 | p.27          | `src/modules/platform`                                           | **phase 1** (Payload admin = console) |
 | M      | Marketing / Landing       | public                   | p.21–22       | `src/modules/marketing/landing`                                  | **built**      |
 
 **Build order:** 14 → 12 → 13 → 8 → 10 → 1 → 2 → 6 → 3 → 4 → 5 → 7 → 9 → 11 → 15 → 16

@@ -1,5 +1,6 @@
 'use client'
 
+import { Moon } from 'lucide-react'
 import { useState } from 'react'
 
 import { useTranslations } from '@/i18n/client'
@@ -13,6 +14,7 @@ import {
      Toggle,
      useActionForm,
 } from '@/shared/components/form'
+import { isOvernight } from '@/shared/lib/time'
 import { formValues } from '@/shared/lib/validation'
 import { cn } from '@/shared/lib/utils'
 
@@ -75,8 +77,8 @@ export function OutletForm({ initial }: { initial: OutletFormValues }) {
      })
      const [days, setDays] = useState<Weekday[]>(initial.days)
      const [hours, setHours] = useState({ opens: initial.opens, closes: initial.closes })
-     // Closing at or before opening time = after midnight (e.g. a bar open 18:00 → 02:00)
-     const overnight = hours.closes <= hours.opens
+     // Closing at or before opening = after midnight (a bar open 18:00 → 02:00)
+     const overnight = isOvernight(hours.opens, hours.closes)
 
      const msg = (field: OutletField) => (errors[field] ? m.errors[errors[field]] : undefined)
      /** Plain text/number input with the hook's id/name/aria props */
@@ -249,6 +251,7 @@ export function OutletForm({ initial }: { initial: OutletFormValues }) {
                                    }}
                                    locale={locale}
                                    note={overnight ? copy.nextDay : undefined}
+                                   noteIcon={Moon}
                                    invalid={Boolean(errors.closes)}
                                    required
                               />

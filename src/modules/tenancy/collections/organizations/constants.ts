@@ -4,18 +4,22 @@ export const BUSINESS_TYPES = ['restaurant', 'cafe', 'bar', 'food_court', 'other
 export type BusinessType = (typeof BUSINESS_TYPES)[number]
 
 export const ORG_STATUSES = ['trial', 'pending_approval', 'active', 'suspended', 'closed'] as const
+export type OrgStatus = (typeof ORG_STATUSES)[number]
 
 /** Onboarding progress, in order (guide p.23). `done` = finished. */
 export const ONBOARDING_STEPS = ['organization', 'outlet', 'tables', 'done'] as const
 export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
 
-/** Brand colours offered in onboarding (guide p.23) — all pass WCAG AA with white text. */
+/**
+ * Brand colours offered in onboarding (guide p.23) — all pass WCAG AA with white text.
+ * Stored upper-case in the database; green and ink are tok-scan's own tokens.
+ */
 export const BRAND_COLORS = {
-     green: '#14513F',
+     green: '#14513F', // = COLORS['brand-700']
      maroon: '#7A2E3A',
      blue: '#1D4ED8',
      orange: '#B4431A',
-     ink: '#16181D',
+     ink: '#16181D', // = COLORS.ink
 } as const
 export type BrandColorId = keyof typeof BRAND_COLORS
 export type BrandColor = (typeof BRAND_COLORS)[BrandColorId]

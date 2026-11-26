@@ -5,7 +5,7 @@
  * index.ts exporting `Translations<…>`), then add it to `catalog` below. Import the content folder
  * directly (not the module index) to avoid import cycles. Types update automatically.
  */
-import { assistantContent } from '@/modules/assistant/content'
+import { assistantContent } from '@/modules/agents/assistant/content'
 import { consentContent } from '@/modules/marketing/consent/content'
 import { landingContent } from '@/modules/marketing/landing/content'
 import { authContent } from '@/modules/tenancy/auth/content'

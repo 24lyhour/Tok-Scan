@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { selfOrSuperAdmin, superAdminOnly, usersRead } from '@/modules/core/payload'
+import { ADMIN_GROUPS, selfOrSuperAdmin, superAdminOnly, usersRead } from '@/modules/core/payload'
 
 /**
  * Users — one login per person; a person can belong to many organizations (Module 14 §3.3).
@@ -9,11 +9,14 @@ import { selfOrSuperAdmin, superAdminOnly, usersRead } from '@/modules/core/payl
 export const Users: CollectionConfig = {
      slug: 'users',
      admin: {
+          group: ADMIN_GROUPS.platform,
           useAsTitle: 'email',
           defaultColumns: ['name', 'email', 'phone', 'createdAt'],
      },
      auth: true,
      access: {
+          /** The Payload admin (/admin) is tok-scan's console: super-admins only. Owners use /dashboard. */
+          admin: superAdminOnly,
           read: usersRead,
           // Sign-up and invitations create users in server actions; the API can't
           create: superAdminOnly,
