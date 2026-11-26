@@ -117,50 +117,78 @@ const socialButton =
 
 /**
  * "Continue with Apple" + "Continue with Google", followed by an "or" divider.
- * Both are disabled until the providers are configured (Apple needs an Apple Developer account,
- * Google an OAuth client). Apple's button is black with the Apple logo and the same size as
- * Google's, as Apple's Human Interface Guidelines require.
+ * - Google is a real link to /auth/google when `googleHref` is set (env configured), else disabled.
+ * - Apple stays disabled until an Apple Developer account is set up.
+ * Apple's button is black with the Apple logo and the same size as Google's (Apple HIG).
  */
 export function SocialSignIn({
      id,
      appleLabel,
      googleLabel,
+     googleHref,
      soonLabel,
+     appleSoonLabel,
+     termsLabel,
      orLabel,
 }: {
      id: string
      appleLabel: string
      googleLabel: string
+     /** null/undefined → Google not configured, show it as "coming soon" */
+     googleHref?: string | null
+     /** "Apple and Google … coming soon" — used while Google is off */
      soonLabel: string
+     /** "Apple … coming soon" — used once Google works */
+     appleSoonLabel: string
+     /** Optional note under the buttons, e.g. "By continuing with Google you agree to the Terms…" */
+     termsLabel?: string
      orLabel: string
 }) {
+     const note = googleHref ? appleSoonLabel : soonLabel
      return (
           <>
                <div className="space-y-2.5">
                     <button
                          type="button"
                          disabled
-                         title={soonLabel}
+                         title={appleSoonLabel}
                          aria-describedby={`${id}-soon`}
                          className={cn(socialButton, 'bg-black text-white')}
                     >
                          <AppleIcon />
                          {appleLabel}
                     </button>
-                    <button
-                         type="button"
-                         disabled
-                         title={soonLabel}
-                         aria-describedby={`${id}-soon`}
-                         className={cn(socialButton, 'border border-line bg-white text-ink')}
-                    >
-                         <GoogleIcon />
-                         {googleLabel}
-                    </button>
+                    {googleHref ? (
+                         // Plain link: the browser does a full navigation to Google's account chooser
+                         <a
+                              href={googleHref}
+                              className={cn(
+                                   socialButton,
+                                   'border border-line bg-white text-ink transition-colors duration-[120ms] outline-none hover:bg-paper focus-visible:ring-3 focus-visible:ring-brand-300',
+                              )}
+                         >
+                              <GoogleIcon />
+                              {googleLabel}
+                         </a>
+                    ) : (
+                         <button
+                              type="button"
+                              disabled
+                              title={soonLabel}
+                              aria-describedby={`${id}-soon`}
+                              className={cn(socialButton, 'border border-line bg-white text-ink')}
+                         >
+                              <GoogleIcon />
+                              {googleLabel}
+                         </button>
+                    )}
                </div>
                <p id={`${id}-soon`} className="mt-2 text-center text-xs text-ink-3">
-                    {soonLabel}
+                    {note}
                </p>
+               {googleHref && termsLabel && (
+                    <p className="mt-1 text-center text-xs text-ink-3">{termsLabel}</p>
+               )}
                <div className="my-5 flex items-center gap-3 text-xs text-ink-3" aria-hidden>
                     <span className="h-px flex-1 bg-line" />
                     {orLabel}

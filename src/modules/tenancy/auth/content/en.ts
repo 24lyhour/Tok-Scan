@@ -3,6 +3,7 @@
  * other language must have exactly the same keys.
  */
 import type { LoginErrorCode } from '../validation'
+import type { GoogleErrorCode } from '../google/config'
 
 export const en = {
      login: {
@@ -12,6 +13,15 @@ export const en = {
           google: 'Continue with Google',
           apple: 'Continue with Apple',
           socialSoon: 'Apple and Google sign-in are coming soon',
+          appleSoon: 'Apple sign-in is coming soon',
+          socialTerms: 'By continuing with Google, you agree to the Terms and Privacy Policy.',
+          googleErrors: {
+               cancelled: 'Google sign-in was cancelled.',
+               failed: 'Google sign-in didn’t work. Please try again, or use your email.',
+               unverified:
+                    'Your Google account’s email isn’t verified yet. Verify it with Google, or use your email.',
+               unavailable: 'Google sign-in isn’t available right now. Please use your email.',
+          } satisfies Record<GoogleErrorCode, string>,
           or: 'or',
           email: 'Email',
           emailPlaceholder: 'you@restaurant.com',

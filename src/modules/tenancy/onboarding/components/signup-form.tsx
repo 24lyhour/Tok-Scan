@@ -16,6 +16,7 @@ import {
      PasswordInput,
      SubmitButton,
 } from '../../shared/form'
+import type { GoogleErrorCode } from '../../auth/google/config'
 import { signupAction, type SignupState } from '../actions'
 import { PASSWORD_MIN, type SignupErrorCode, type SignupField, validateSignup } from '../validation'
 
@@ -23,7 +24,17 @@ type Errors = Partial<Record<SignupField, SignupErrorCode>>
 
 const FIELD_ORDER: SignupField[] = ['name', 'email', 'phone', 'password', 'terms']
 
-export function SignupForm({ loginHref }: { loginHref: string }) {
+export function SignupForm({
+     loginHref,
+     googleHref,
+     oauthError,
+}: {
+     loginHref: string
+     /** Link to /auth/google, or null when Google sign-in isn't configured */
+     googleHref?: string | null
+     /** `?error=` sent back by the Google callback */
+     oauthError?: GoogleErrorCode
+}) {
      const { m, locale } = useTranslations('onboarding')
      const copy = m.signup
      const uid = useId()
@@ -107,7 +118,9 @@ export function SignupForm({ loginHref }: { loginHref: string }) {
             ? copy.errorSummary
             : state.formError
               ? copy.errors[state.formError]
-              : undefined
+              : oauthError && state.status === 'idle'
+                ? copy.googleErrors[oauthError]
+                : undefined
 
      return (
           <form noValidate onSubmit={onSubmit} className="flex flex-1 flex-col">
@@ -115,7 +128,10 @@ export function SignupForm({ loginHref }: { loginHref: string }) {
                     id={`${uid}-social`}
                     appleLabel={copy.apple}
                     googleLabel={copy.google}
+                    googleHref={googleHref}
                     soonLabel={copy.socialSoon}
+                    appleSoonLabel={copy.appleSoon}
+                    termsLabel={copy.socialTerms}
                     orLabel={copy.or}
                />
 

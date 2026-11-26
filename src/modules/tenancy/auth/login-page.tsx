@@ -9,15 +9,9 @@ import { getTranslations } from '@/i18n/server'
 import { AuthShell } from '../shared/auth-shell'
 import { LoginAside } from './components/login-aside'
 import { LoginForm } from './components/login-form'
+import { googleStartHref, isGoogleEnabled, isGoogleErrorCode } from './google/config'
+import { authRoutes } from './paths'
 import { safeNextPath } from './validation'
-
-export const authRoutes = {
-     login: '/login',
-     signup: '/signup',
-     // TODO: replace with a branded reset-password flow (Payload's admin one works meanwhile)
-     forgotPassword: '/admin/forgot',
-     afterLogin: '/onboarding/organization',
-} as const
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>
 
@@ -34,6 +28,8 @@ export async function LoginPage({ searchParams }: { searchParams: SearchParams }
      const { m } = await getTranslations('auth')
      const common = (await getTranslations('common')).m
      const email = typeof params.email === 'string' ? params.email.slice(0, 254) : ''
+     const oauthError = isGoogleErrorCode(params.error) ? params.error : undefined
+     const googleHref = isGoogleEnabled() ? googleStartHref(authRoutes.login, next) : null
 
      return (
           <TranslationsProvider namespaces={['auth']}>
@@ -47,6 +43,8 @@ export async function LoginPage({ searchParams }: { searchParams: SearchParams }
                          defaultEmail={email}
                          signupHref={authRoutes.signup}
                          forgotHref={authRoutes.forgotPassword}
+                         googleHref={googleHref}
+                         oauthError={oauthError}
                     />
                </AuthShell>
           </TranslationsProvider>

@@ -15,6 +15,15 @@ export const km: OnboardingContent = {
           google: 'បន្តជាមួយ Google',
           apple: 'បន្តជាមួយ Apple',
           socialSoon: 'ការចូលតាម Apple និង Google នឹងមានឆាប់ៗនេះ',
+          appleSoon: 'ការចូលតាម Apple នឹងមានឆាប់ៗនេះ',
+          socialTerms: 'ការបន្តជាមួយ Google មានន័យថាអ្នកយល់ព្រមតាមលក្ខខណ្ឌប្រើប្រាស់ និងគោលការណ៍ឯកជនភាព។',
+          googleErrors: {
+               cancelled: 'ការចូលតាម Google ត្រូវបានបោះបង់។',
+               failed: 'ការចូលតាម Google មិនដំណើរការទេ។ សូមព្យាយាមម្តងទៀត ឬប្រើអ៊ីមែលរបស់អ្នក។',
+               unverified:
+                    'អ៊ីមែលគណនី Google របស់អ្នកមិនទាន់បានផ្ទៀងផ្ទាត់ទេ។ សូមផ្ទៀងផ្ទាត់ជាមួយ Google ឬប្រើអ៊ីមែលរបស់អ្នក។',
+               unavailable: 'ការចូលតាម Google មិនអាចប្រើបានទេពេលនេះ។ សូមប្រើអ៊ីមែលរបស់អ្នក។',
+          },
           or: 'ឬ',
           name: 'ឈ្មោះពេញ',
           namePlaceholder: 'សុខ ដារា',

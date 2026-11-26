@@ -1,10 +1,10 @@
 'use server'
 
 import config from '@payload-config'
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 
+import { setAuthCookie } from '@/modules/tenancy/auth/server/session'
 import { verifyTurnstile } from '@/shared/security/verify-turnstile'
 import { TURNSTILE_FIELD } from '@/shared/security/turnstile-config'
 
@@ -68,13 +68,7 @@ export async function signupAction(_prev: SignupState, formData: FormData): Prom
           })
 
           if (token) {
-               ;(await cookies()).set(`${payload.config.cookiePrefix}-token`, token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'lax',
-                    path: '/',
-                    ...(exp ? { expires: new Date(exp * 1000) } : {}),
-               })
+               await setAuthCookie(payload, token, exp)
           }
      } catch (error) {
           // Unique-email race between the check above and create()

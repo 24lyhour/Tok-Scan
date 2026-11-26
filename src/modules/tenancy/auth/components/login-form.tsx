@@ -23,6 +23,7 @@ import {
      SubmitButton,
 } from '../../shared/form'
 import { loginAction, type LoginState } from '../actions'
+import type { GoogleErrorCode } from '../google/config'
 import { type LoginErrorCode, type LoginField, validateLogin } from '../validation'
 
 type Errors = Partial<Record<LoginField, LoginErrorCode>>
@@ -32,12 +33,18 @@ export function LoginForm({
      defaultEmail = '',
      signupHref,
      forgotHref,
+     googleHref,
+     oauthError,
 }: {
      /** Where to go after logging in (validated again on the server) */
      next?: string
      defaultEmail?: string
      signupHref: string
      forgotHref: string
+     /** Link to /auth/google, or null when Google sign-in isn't configured */
+     googleHref?: string | null
+     /** `?error=` sent back by the Google callback */
+     oauthError?: GoogleErrorCode
 }) {
      const { m, locale } = useTranslations('auth')
      const copy = m.login
@@ -105,7 +112,9 @@ export function LoginForm({
           ? copy.errors.captcha
           : !hasFieldErrors && state.formError
             ? copy.errors[state.formError]
-            : undefined
+            : oauthError && state.status === 'idle'
+              ? copy.googleErrors[oauthError]
+              : undefined
 
      return (
           <form noValidate onSubmit={onSubmit} className="flex flex-1 flex-col">
@@ -115,7 +124,9 @@ export function LoginForm({
                     id={`${uid}-social`}
                     appleLabel={copy.apple}
                     googleLabel={copy.google}
+                    googleHref={googleHref}
                     soonLabel={copy.socialSoon}
+                    appleSoonLabel={copy.appleSoon}
                     orLabel={copy.or}
                />
 

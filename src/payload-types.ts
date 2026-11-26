@@ -128,6 +128,7 @@ export interface User {
    * E.164 format, e.g. +85512345678 — used for Telegram verification
    */
   phone?: string | null;
+  googleSub?: string | null;
   acceptedTermsAt?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -249,6 +250,7 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   phone?: T;
+  googleSub?: T;
   acceptedTermsAt?: T;
   updatedAt?: T;
   createdAt?: T;
