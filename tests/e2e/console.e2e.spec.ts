@@ -22,24 +22,11 @@ test.beforeAll(async () => {
      await createTestPendingOrg()
 })
 
-test('a super-admin sees the data admin with a link to the console', async ({ page }) => {
+test('/admin opens the one console', async ({ page }) => {
      await apiLogin(page, testSuperAdmin)
-
      await page.goto('/admin')
-     await expect(page.getByRole('heading', { name: 'Platform console' })).toBeVisible()
-     // The data admin points to the real console
-     await expect(page.getByRole('link', { name: /Open the console/ })).toHaveAttribute(
-          'href',
-          '/console/organizations',
-     )
-     // Menu groups
-     await expect(page.getByText('Restaurant data').first()).toBeVisible()
-     if (process.env.E2E_SCREENSHOTS) {
-          await page.screenshot({
-               path: `${process.env.E2E_SCREENSHOTS}/console.png`,
-               fullPage: true,
-          })
-     }
+     await expect(page).toHaveURL(/\/console\/organizations$/)
+     await expect(page.getByRole('heading', { name: 'Organizations' })).toBeVisible()
 })
 
 test('a restaurant owner cannot open /admin', async ({ page }) => {
@@ -47,7 +34,8 @@ test('a restaurant owner cannot open /admin', async ({ page }) => {
 
      await page.goto('/admin')
      await expect(page.getByRole('heading', { name: 'Platform console' })).toHaveCount(0)
-     await expect(page).toHaveURL(/\/admin\/(unauthorized|login)/)
+     // /admin → /console → owners are sent back to their own app
+     await expect(page).not.toHaveURL(/\/(admin|console)/)
 })
 
 test('the login API refuses requests without the bot check', async ({ page }) => {
@@ -68,7 +56,9 @@ test('a super-admin logs in on the branded /admin/login', async ({ page }) => {
      await page.getByLabel('Email').fill(testSuperAdmin.email)
      await page.getByLabel('Password').fill(testSuperAdmin.password)
      await page.getByRole('button', { name: 'Login' }).click()
-     await expect(page.getByRole('heading', { name: 'Platform console' })).toBeVisible()
+     // Lands in the one console
+     await expect(page).toHaveURL(/\/console\/organizations$/)
+     await expect(page.getByRole('heading', { name: 'Organizations' })).toBeVisible()
 })
 
 test('console: a super-admin approves, then suspends, a restaurant (guide p.27)', async ({

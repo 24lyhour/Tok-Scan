@@ -5,7 +5,6 @@ import { AdminIcon as AdminIcon_3bcde8b357f08c83ace54e6030282853 } from '../../.
 import { AdminLogo as AdminLogo_3bcde8b357f08c83ace54e6030282853 } from '../../../shared/components/super-admin'
 import { AdminLoginCaptcha as AdminLoginCaptcha_3bcde8b357f08c83ace54e6030282853 } from '../../../shared/components/super-admin'
 import { AdminOwnerLink as AdminOwnerLink_9de202c6b7c7e655eec1c0fbb9fcea9b } from '../../../modules/super-admin/admin/login'
-import { ConsoleLink as ConsoleLink_a36b0cfeef783f475447c5eac9edc25b } from '../../../modules/super-admin/admin/console-link'
 import { AdminLoginPanel as AdminLoginPanel_9de202c6b7c7e655eec1c0fbb9fcea9b } from '../../../modules/super-admin/admin/login'
 import { AdminLoginIntro as AdminLoginIntro_9de202c6b7c7e655eec1c0fbb9fcea9b } from '../../../modules/super-admin/admin/login'
 import { TenantSelector as TenantSelector_d6d5f193a167989e2ee7d14202901e62 } from '@payloadcms/plugin-multi-tenant/rsc'
@@ -23,7 +22,6 @@ export const importMap = {
   "/shared/components/super-admin#AdminLogo": AdminLogo_3bcde8b357f08c83ace54e6030282853,
   "/shared/components/super-admin#AdminLoginCaptcha": AdminLoginCaptcha_3bcde8b357f08c83ace54e6030282853,
   "/modules/super-admin/admin/login#AdminOwnerLink": AdminOwnerLink_9de202c6b7c7e655eec1c0fbb9fcea9b,
-  "/modules/super-admin/admin/console-link#ConsoleLink": ConsoleLink_a36b0cfeef783f475447c5eac9edc25b,
   "/modules/super-admin/admin/login#AdminLoginPanel": AdminLoginPanel_9de202c6b7c7e655eec1c0fbb9fcea9b,
   "/modules/super-admin/admin/login#AdminLoginIntro": AdminLoginIntro_9de202c6b7c7e655eec1c0fbb9fcea9b,
   "@payloadcms/plugin-multi-tenant/rsc#TenantSelector": TenantSelector_d6d5f193a167989e2ee7d14202901e62,

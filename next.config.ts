@@ -21,13 +21,19 @@ const nextConfig: NextConfig = {
      // tok-scans.vercel.app/... and www.tok-scan.store/... → https://tok-scan.store/... (308, keeps the path)
      // Preview deployments have their own *.vercel.app addresses and are not affected.
      async redirects() {
-          if (!canonicalHost) return []
-          return aliasHosts.map((host) => ({
-               source: '/:path*',
-               has: [{ type: 'host' as const, value: host }],
-               destination: `https://${canonicalHost}/:path*`,
-               permanent: true,
-          }))
+          // One console for tok-scan staff: Payload's dashboard (/admin) opens /console instead.
+          // Payload's record pages (/admin/collections/…) stay for editing raw data.
+          const consoleHome = { source: '/admin', destination: '/console', permanent: false }
+          if (!canonicalHost) return [consoleHome]
+          return [
+               consoleHome,
+               ...aliasHosts.map((host) => ({
+                    source: '/:path*',
+                    has: [{ type: 'host' as const, value: host }],
+                    destination: `https://${canonicalHost}/:path*`,
+                    permanent: true,
+               })),
+          ]
      },
      images: {
           localPatterns: [

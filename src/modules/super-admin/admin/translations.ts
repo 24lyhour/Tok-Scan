@@ -5,7 +5,6 @@
 import type { OrgStatus } from '@/modules/tenancy'
 
 const en = {
-     console: 'Platform console',
      consoleBadge: 'Platform console · staff only',
      loginTitle: 'Welcome back',
      loginSubtitle: 'Log in with your tok-scan staff account.',
@@ -17,9 +16,6 @@ const en = {
      panelApprove: 'Approve',
      ownerLogin: 'Restaurant owner?',
      ownerLoginLink: 'Log in to your restaurant',
-     subtitle:
-          'This is the raw data admin. Approve, suspend and support restaurants in the console.',
-     openConsole: 'Open the console',
      status_trial: 'Trial',
      status_pending_approval: 'Pending approval',
      status_active: 'Active',
@@ -30,7 +26,6 @@ const en = {
 export type PlatformAdminKey = keyof typeof en
 
 const zh: Record<PlatformAdminKey, string> = {
-     console: '平台控制台',
      consoleBadge: '平台控制台 · 仅限员工',
      loginTitle: '欢迎回来',
      loginSubtitle: '使用您的 tok-scan 员工账号登录。',
@@ -42,8 +37,6 @@ const zh: Record<PlatformAdminKey, string> = {
      panelApprove: '批准',
      ownerLogin: '您是餐厅老板？',
      ownerLoginLink: '登录您的餐厅',
-     subtitle: '这里是原始数据后台。请在控制台中审核、暂停和支持餐厅。',
-     openConsole: '打开控制台',
      status_trial: '试用',
      status_pending_approval: '待审核',
      status_active: '已启用',

@@ -63,8 +63,7 @@ src/modules/<module>/
 │  ├─ actions.ts               # 'use server': user → validate → write → log → redirect
 │  └─ schema.test.ts           # unit tests next to the code
 ├─ server/                     # server-only helpers — first line `import 'server-only'`
-├─ routes.ts · errors.ts       # URLs · error codes + validator
-└─ content/                    # en · km · zh
+└─ routes.ts · errors.ts       # URLs · error codes + validator
 ```
 
 ### Access rules (`src/modules/core/access.ts`)
@@ -83,7 +82,7 @@ Server actions write with `overrideAccess: true` **after** checking the user the
 ### Forms
 
 - Validation is **Zod** (`src/shared/lib/validation.ts`). Schema messages are error **codes**
-  (`'required'`, `'slugTaken'`), translated in the feature's `content/` → `errors`.
+  (`'required'`, `'slugTaken'`), translated in `src/i18n/<lang>/<namespace>.ts` → `errors`.
 - Every form uses `useActionForm` from `@/shared/components/form`: `<form {...form.formProps}>`,
   `<Field required>` shows the red `*`, `<SubmitButton disabled={!form.ready}>` stays disabled until
   every required field has a value.
@@ -134,7 +133,7 @@ A page renders only its content. To add one (e.g. Menu):
 1. Copy the module layout above; write `README.md` (routes + who can do what).
 2. `collections/<name>/collection.ts` + `constants.ts`, access from `@/modules/core`; list it in `collections/index.ts`.
 3. `payload.ts` → add it to `src/modules/index.ts`.
-4. `content/` en·km·zh → register in `src/i18n/messages.ts`.
+4. Texts: `src/i18n/en/<name>.ts` + `km/` + `zh/`, exported from each folder's `index.ts`.
 5. Each screen: `schema.ts` (+ test) → `actions.ts` → `form.tsx` → `page.tsx` → thin route in `src/app/`.
 6. `yarn payload migrate:create <name>` · `yarn generate:types` · access test in `tests/int` · e2e for the main flow.
 
@@ -147,27 +146,24 @@ src/shared/i18n/
   locales.ts      ← THE language list (codes, labels, Intl tags, <html lang>). Add a language here only.
   format.ts       ← interpolate · plural · formatNumber · formatMoney · localizeDigits
   get-locale.ts   ← server: read the cookie
-src/i18n/         ← app-level catalog — the only place that knows every namespace
-  messages.ts     ← registry: add a namespace in ONE place
-  common/         ← `common` namespace (site meta, skip link, buttons, states) — loaded on every page
+src/i18n/         ← every text of the site + the engine
+  messages.ts     ← registry (getNamespace / getMessages) + text types (ConsoleContent …)
+  en/             ← English — the source of truth: common.ts · landing.ts · auth.ts · onboarding.ts ·
+                    workspace.ts · console.ts · assistant.ts · consent.ts · index.ts
+  km/ · zh/       ← the same files, each typed against en (`export const console: ConsoleContent`)
   server.ts       ← getTranslations()
   client.tsx      ← useTranslations(), useLocale()
   provider.tsx    ← <TranslationsProvider namespaces={[…]}>
-src/modules/<module>/<submodule>/content/     ← that feature's text, one file per language
-  index.ts        ← assembles { en, km, zh } as Translations<…> (+ re-exports data and types)
-  en.ts           ← English — the source of truth (`type XContent = typeof en`)
-  km.ts · zh.ts   ← `export const km: XContent = { … }` — must match en exactly
-  data.ts         ← optional: links, prices, ids, numbers (never translated)
-  types.ts        ← optional: an explicit content type when keys come from data ids
 src/modules/core/i18n/                        ← Payload: content `localization` + admin UI `i18n`
 ```
 
 ### Rules
 
-1. **Text lives next to its feature** in a `content/` folder with **one file per language** (`en.ts`, `km.ts`, `zh.ts`). `en.ts` is the source of truth; `km.ts` and `zh.ts` are typed against it, so a missing key or language is a compile error. A translator edits one file, and git diffs show exactly which language changed. Don't create global per-language files (`src/i18n/km.ts` with every feature).
-2. **Copy and data are separate.** Links, prices, ids and counts live in `content/data.ts` (or the feature's code). Language files hold text only.
+1. **All text lives in `src/i18n/`, one folder per language** (`en/`, `km/`, `zh/`), one file per namespace. `en/` is the source of truth; `km/` and `zh/` are typed against it, so a missing key, namespace or language is a compile error. A translator works in one folder.
+2. **Copy and data are separate.** Links, prices, ids and counts live in the module (e.g. `marketing/landing/data.ts`). Language files hold text only; when their keys come from module ids, they `import type` those ids from the module's entry point.
+6. **Words used in many places** (Save, Soon, Log out …) live once in `common`.
 3. **Key items by id, never by position.** Use `steps: { scan: {…}, cook: {…} }`, not an array matched to icons by index. Plain lists with no paired data (FAQ items, bullet points) can stay arrays.
-4. **Register a new namespace once** in `src/i18n/messages.ts` (`catalog`). Import the module's `content` folder directly, not the module's `index.ts`.
+4. **Add a namespace** by creating `<name>.ts` in `en/`, `km/` and `zh/` and exporting it from each `index.ts`. Components that take text as props use the types from `@/i18n/messages`.
 5. **Reading text**
    - Server: `const { m, t, locale } = await getTranslations('ns')`
    - Client: `const { m, t, locale } = useTranslations('ns')`

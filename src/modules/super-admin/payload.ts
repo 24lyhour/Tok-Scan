@@ -4,7 +4,6 @@
  *
  *   admin/translations.ts      en · zh texts
  *   admin/login.tsx            /admin/login slots (texts → shared components)
- *   admin/console-link.tsx     /admin home: banner to the real console (/console)
  * The look itself is global: src/shared/components/super-admin.
  */
 import type { Config } from 'payload'
@@ -20,5 +19,4 @@ export const superAdminComponents: NonNullable<NonNullable<Config['admin']>['com
      graphics: { Logo: ui('AdminLogo'), Icon: ui('AdminIcon') },
      beforeLogin: [admin('login', 'AdminLoginPanel'), admin('login', 'AdminLoginIntro')],
      afterLogin: [ui('AdminLoginCaptcha'), admin('login', 'AdminOwnerLink')],
-     beforeDashboard: [admin('console-link', 'ConsoleLink')],
 }
