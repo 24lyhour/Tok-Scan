@@ -1,13 +1,14 @@
 /**
- * Global message catalog — every translated namespace, for every site locale (en · km · zh).
+ * Global message catalog — every translated namespace, for every locale (en · km · zh).
  *
- * To add a namespace: create `content.ts` in your module exporting `Translations<YourContent>`,
- * then register it below. Import the content file directly (not the module index) to avoid cycles.
+ * Add a namespace in ONE place: create a `content/` folder in your module (en.ts · km.ts · zh.ts +
+ * index.ts exporting `Translations<…>`), then add it to `catalog` below. Import the content folder
+ * directly (not the module index) to avoid import cycles. Types update automatically.
  */
 import { landingContent } from '@/modules/marketing/landing/content'
 import { authContent } from '@/modules/tenancy/auth/content'
 import { onboardingContent } from '@/modules/tenancy/onboarding/content'
-import type { SiteLocale } from '@/shared/i18n/site-locale'
+import type { Locale, Translations } from '@/shared/i18n/locales'
 
 import { commonMessages } from './common'
 
@@ -16,18 +17,24 @@ const catalog = {
      landing: landingContent,
      onboarding: onboardingContent,
      auth: authContent,
-}
+} satisfies Record<string, Translations<object>>
 
 type Catalog = typeof catalog
 export type Namespace = keyof Catalog
-export type Messages = { [N in Namespace]: Catalog[N][SiteLocale] }
+export type Messages = { [N in Namespace]: Catalog[N][Locale] }
 
-/** All namespaces for one locale — what the client provider receives. */
-export function getMessages(locale: SiteLocale): Messages {
-     return {
-          common: catalog.common[locale],
-          landing: catalog.landing[locale],
-          onboarding: catalog.onboarding[locale],
-          auth: catalog.auth[locale],
-     }
+/** One namespace in one locale. */
+export function getNamespace<N extends Namespace>(locale: Locale, namespace: N): Messages[N] {
+     return catalog[namespace][locale] as Messages[N]
+}
+
+/** Only the namespaces a page needs — what gets serialized to the browser. */
+export function getMessages<N extends Namespace>(
+     locale: Locale,
+     namespaces: readonly N[],
+): Pick<Messages, N> {
+     return Object.fromEntries(namespaces.map((n) => [n, getNamespace(locale, n)])) as Pick<
+          Messages,
+          N
+     >
 }

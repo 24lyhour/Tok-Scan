@@ -1,7 +1,10 @@
 import { Bell, Plus, Star } from 'lucide-react'
 import type { ReactNode } from 'react'
 
+import { formatMoney } from '@/shared/i18n/format'
 import { cn } from '@/shared/lib/utils'
+
+import type { LandingContent } from '../content'
 
 import { FakeQr } from './fake-qr'
 
@@ -36,7 +39,9 @@ function Dish({ className }: { className?: string }) {
      )
 }
 
-function MenuScreen() {
+type VisualCopy = LandingContent['hero']['visual']
+
+function MenuScreen({ m }: { m: VisualCopy }) {
      return (
           <div className="flex h-full flex-col">
                <div className="flex flex-[1.1] items-center justify-center bg-gradient-to-b from-saffron-100 to-saffron-50 pt-6">
@@ -44,18 +49,18 @@ function MenuScreen() {
                </div>
                <div className="flex flex-1 flex-col gap-1.5 p-3 sm:p-4">
                     <span className="inline-flex w-fit items-center gap-1 rounded-full bg-saffron-50 px-2 py-0.5 text-[0.625rem] font-semibold text-saffron-600 ring-1 ring-saffron-300">
-                         <Star aria-hidden className="size-2.5" /> Signature
+                         <Star aria-hidden className="size-2.5" /> {m.signature}
                     </span>
-                    <p className="text-sm font-bold text-ink sm:text-lg">Fish Amok</p>
+                    <p className="text-sm font-bold text-ink sm:text-lg">{m.dish}</p>
                     <p className="line-clamp-2 text-[0.625rem] leading-snug text-ink-3 sm:text-xs">
-                         Steamed fish in coconut-kroeung curry, banana leaf.
+                         {m.dishDescription}
                     </p>
                     <div className="mt-auto flex items-center justify-between">
                          <span className="tabular text-sm font-bold text-ink sm:text-base">
                               $6.50
                          </span>
                          <span className="inline-flex items-center gap-1 rounded-lg bg-brand-700 px-2 py-1 text-[0.625rem] font-semibold text-white sm:px-2.5 sm:text-xs">
-                              <Plus aria-hidden className="size-3" /> Add
+                              <Plus aria-hidden className="size-3" /> {m.add}
                          </span>
                     </div>
                </div>
@@ -63,7 +68,7 @@ function MenuScreen() {
      )
 }
 
-function KhqrScreen() {
+function KhqrScreen({ m }: { m: VisualCopy }) {
      return (
           <div className="flex h-full flex-col items-center justify-center gap-3 bg-paper px-2.5 pt-6 pb-3 sm:px-3">
                <div className="w-full overflow-hidden rounded-xl bg-white shadow-[0_4px_16px_rgb(22_24_29/0.08)] ring-1 ring-line">
@@ -74,20 +79,22 @@ function KhqrScreen() {
                          <p className="text-[0.5rem] font-medium tracking-wider text-ink-3 uppercase sm:text-[0.5625rem]">
                               Tok-Scans
                          </p>
-                         <p className="tabular text-sm font-bold text-ink sm:text-lg">$30.67</p>
+                         <p className="tabular text-sm font-bold text-ink sm:text-lg">
+                              {formatMoney(30.67)}
+                         </p>
                          <div className="mt-2 border-t border-dashed border-line pt-2">
                               <FakeQr seed={11} className="w-full" />
                          </div>
                     </div>
                </div>
                <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-[0.625rem] font-semibold text-success sm:text-xs">
-                    <span className="size-1.5 rounded-full bg-success" /> Paid
+                    <span className="size-1.5 rounded-full bg-success" /> {m.paid}
                </span>
           </div>
      )
 }
 
-function KitchenTicket({ className }: { className?: string }) {
+function KitchenTicket({ m, className }: { m: VisualCopy; className?: string }) {
      return (
           <div
                className={cn(
@@ -102,12 +109,12 @@ function KitchenTicket({ className }: { className?: string }) {
                     <span className="tabular text-xs font-bold sm:text-sm">8:04</span>
                </div>
                <div className="space-y-1.5 p-2.5 sm:p-3">
-                    <p className="text-xs font-semibold sm:text-sm">2× Fish Amok</p>
+                    <p className="text-xs font-semibold sm:text-sm">{m.ticketItem}</p>
                     <p className="rounded-md bg-saffron-500/15 px-2 py-1 text-[0.625rem] font-medium text-saffron-300 sm:text-xs">
-                         No chilli · extra rice
+                         {m.ticketNote}
                     </p>
                     <span className="mt-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#0f766e] py-1.5 text-[0.625rem] font-semibold sm:py-2 sm:text-xs">
-                         <Bell aria-hidden className="size-3" /> Mark ready
+                         <Bell aria-hidden className="size-3" /> {m.markReady}
                     </span>
                </div>
           </div>
@@ -115,7 +122,15 @@ function KitchenTicket({ className }: { className?: string }) {
 }
 
 /** Hero illustration: guest menu, KHQR bill and kitchen ticket — "show the product" (guide p.21). */
-export function HeroVisual({ className, label }: { className?: string; label: string }) {
+export function HeroVisual({
+     className,
+     label,
+     m,
+}: {
+     className?: string
+     label: string
+     m: VisualCopy
+}) {
      return (
           <div
                role="img"
@@ -123,12 +138,12 @@ export function HeroVisual({ className, label }: { className?: string; label: st
                className={cn('relative mx-auto aspect-[10/9] w-full max-w-[520px]', className)}
           >
                <Phone className="top-0 left-[8%] h-[88%] w-[46%]">
-                    <MenuScreen />
+                    <MenuScreen m={m} />
                </Phone>
                <Phone className="top-[12%] right-0 h-[76%] w-[36%]">
-                    <KhqrScreen />
+                    <KhqrScreen m={m} />
                </Phone>
-               <KitchenTicket className="bottom-[2%] left-0 w-[42%]" />
+               <KitchenTicket m={m} className="bottom-[2%] left-0 w-[42%]" />
           </div>
      )
 }

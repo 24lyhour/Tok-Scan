@@ -1,4 +1,4 @@
-import { format } from '@/shared/i18n/site-locale'
+import { interpolate } from '@/shared/i18n/format'
 
 /** Dot-paths to every string leaf: 'signup.errors.required', 'hero.title', … (arrays excluded) */
 export type MessageKey<T> = {
@@ -32,6 +32,6 @@ export function createTranslator<T>(messages: T, namespace: string): Translator<
                }
                return key
           }
-          return values ? format(node, values) : node
+          return values ? interpolate(node, values) : node
      }
 }

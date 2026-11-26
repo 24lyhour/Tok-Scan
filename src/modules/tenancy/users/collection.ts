@@ -27,6 +27,15 @@ export const Users: CollectionConfig = {
                },
           },
           {
+               // Google account id (OIDC `sub`) — set by "Continue with Google", never changes.
+               // Hidden: not returned by the API or shown in the admin.
+               name: 'googleSub',
+               type: 'text',
+               unique: true,
+               index: true,
+               hidden: true,
+          },
+          {
                name: 'acceptedTermsAt',
                type: 'date',
                admin: { readOnly: true, position: 'sidebar' },

@@ -1,10 +1,10 @@
 'use server'
 
 import config from '@payload-config'
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { AuthenticationError, getPayload, LockedAuth } from 'payload'
 
+import { setAuthCookie } from './server/session'
 import { verifyTurnstile } from '@/shared/security/verify-turnstile'
 import { TURNSTILE_FIELD } from '@/shared/security/turnstile-config'
 
@@ -38,13 +38,7 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
           const { token, exp } = await payload.login({ collection: 'users', data: result.data })
           if (!token) return { status: 'error', formError: 'generic' }
 
-          ;(await cookies()).set(`${payload.config.cookiePrefix}-token`, token, {
-               httpOnly: true,
-               secure: process.env.NODE_ENV === 'production',
-               sameSite: 'lax',
-               path: '/',
-               ...(exp ? { expires: new Date(exp * 1000) } : {}),
-          })
+          await setAuthCookie(payload, token, exp)
      } catch (error) {
           // Same message for "no such user" and "wrong password" — don't reveal which emails exist.
           if (error instanceof LockedAuth) return { status: 'error', formError: 'locked' }

@@ -18,29 +18,27 @@ export async function OrganizationStepPage() {
      const { user } = await payload.auth({ headers: await headers() })
      if (!user) redirect('/signup')
 
-     const { m: t, t: translate, locale } = await getTranslations('onboarding')
+     const { m, t, locale } = await getTranslations('onboarding')
      const name = (user as { name?: string | null }).name || user.email
 
      return (
-          <OnboardingShell step={2} locale={locale} t={t.shell}>
+          <OnboardingShell step={2} locale={locale} m={m.shell}>
                <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
                     <CircleCheck aria-hidden className="size-6" />
                </span>
                <h1 className="mt-5 text-2xl font-bold tracking-tight text-ink sm:text-[1.75rem]">
-                    {t.organization.title}
+                    {m.organization.title}
                </h1>
-               <p className="mt-3 font-medium text-ink">
-                    {translate('organization.welcome', { name })}
-               </p>
+               <p className="mt-3 font-medium text-ink">{t('organization.welcome', { name })}</p>
                <p className="mt-2 text-sm leading-relaxed text-ink-2">
-                    {t.organization.comingNext}
+                    {m.organization.comingNext}
                </p>
                <div className="mt-auto pt-8">
                     <Link
                          href="/"
                          className="inline-flex h-12 w-full items-center justify-center rounded-xl border border-line bg-white text-[0.9375rem] font-semibold text-ink hover:bg-paper"
                     >
-                         {t.organization.backHome}
+                         {m.organization.backHome}
                     </Link>
                </div>
           </OnboardingShell>

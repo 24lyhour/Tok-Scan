@@ -5,12 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 
 import { useTranslations } from '@/i18n/client'
-import {
-     SITE_LOCALE_COOKIE,
-     siteLocaleLabels,
-     siteLocales,
-     type SiteLocale,
-} from '@/shared/i18n/site-locale'
+import { LOCALE_COOKIE, locales, type Locale } from '@/shared/i18n/locales'
 import { cn } from '@/shared/lib/utils'
 
 /** EN / ខ្មែរ / 中文 switch — saves the choice in a cookie and re-renders the page on the server. */
@@ -19,9 +14,9 @@ export function LanguageToggle({ className }: { className?: string }) {
      const router = useRouter()
      const [pending, startTransition] = useTransition()
 
-     const choose = (next: SiteLocale) => {
+     const choose = (next: Locale) => {
           if (next === locale) return
-          document.cookie = `${SITE_LOCALE_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`
+          document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`
           startTransition(() => router.refresh())
      }
 
@@ -37,14 +32,14 @@ export function LanguageToggle({ className }: { className?: string }) {
                )}
           >
                <Globe aria-hidden className="mx-1.5 size-3.5 text-ink-3" />
-               {siteLocales.map((l) => {
+               {locales.map(({ code: l, short, nativeLabel }) => {
                     const active = l === locale
                     return (
                          <button
                               key={l}
                               type="button"
                               lang={l}
-                              title={t(`languages.${l}`)}
+                              title={nativeLabel}
                               aria-pressed={active}
                               onClick={() => choose(l)}
                               className={cn(
@@ -56,7 +51,7 @@ export function LanguageToggle({ className }: { className?: string }) {
                                         : 'text-ink-3 hover:text-ink',
                               )}
                          >
-                              {siteLocaleLabels[l]}
+                              {short}
                          </button>
                     )
                })}

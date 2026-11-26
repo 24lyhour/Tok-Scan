@@ -58,3 +58,43 @@ src/modules/<module>/<submodule>/
 6. **Design tokens.** Use the Tailwind tokens defined in `src/app/(frontend)/styles.css`: `brand-*`, `saffron-*`, `ink`, `ink-2`, `ink-3`, `line`, `paper`, `success`, `warning`, `error`, `info`, `progress`, `khqr`. Don't hard-code hex values in components. Never put white text on saffron.
 7. **Formatting.** Prettier with **5-space indentation** (`tabWidth: 5`). Run `npx prettier --write <files>` on what you change.
 8. **Package manager.** Use Yarn only (`yarn add`). Never use npm in this repo.
+
+## Translations (i18n)
+
+Languages: **English (`en`) · Khmer (`km`) · Chinese (`zh`)**. The visitor's choice is kept in the `tok-locale` cookie.
+
+```
+src/shared/i18n/
+  locales.ts      ← THE language list (codes, labels, Intl tags, <html lang>). Add a language here only.
+  format.ts       ← interpolate · plural · formatNumber · formatMoney · localizeDigits
+  get-locale.ts   ← server: read the cookie
+src/i18n/         ← app-level catalog — the only place that knows every namespace
+  messages.ts     ← registry: add a namespace in ONE place
+  common/         ← `common` namespace (site meta, skip link, buttons, states) — loaded on every page
+  server.ts       ← getTranslations()
+  client.tsx      ← useTranslations(), useLocale()
+  provider.tsx    ← <TranslationsProvider namespaces={[…]}>
+src/modules/<module>/<submodule>/content/     ← that feature's text, one file per language
+  index.ts        ← assembles { en, km, zh } as Translations<…> (+ re-exports data and types)
+  en.ts           ← English — the source of truth (`type XContent = typeof en`)
+  km.ts · zh.ts   ← `export const km: XContent = { … }` — must match en exactly
+  data.ts         ← optional: links, prices, ids, numbers (never translated)
+  types.ts        ← optional: an explicit content type when keys come from data ids
+src/modules/core/i18n/                        ← Payload: content `localization` + admin UI `i18n`
+```
+
+### Rules
+
+1. **Text lives next to its feature** in a `content/` folder with **one file per language** (`en.ts`, `km.ts`, `zh.ts`). `en.ts` is the source of truth; `km.ts` and `zh.ts` are typed against it, so a missing key or language is a compile error. A translator edits one file, and git diffs show exactly which language changed. Don't create global per-language files (`src/i18n/km.ts` with every feature).
+2. **Copy and data are separate.** Links, prices, ids and counts live in `content/data.ts` (or the feature's code). Language files hold text only.
+3. **Key items by id, never by position.** Use `steps: { scan: {…}, cook: {…} }`, not an array matched to icons by index. Plain lists with no paired data (FAQ items, bullet points) can stay arrays.
+4. **Register a new namespace once** in `src/i18n/messages.ts` (`catalog`). Import the module's `content` folder directly, not the module's `index.ts`.
+5. **Reading text**
+   - Server: `const { m, t, locale } = await getTranslations('ns')`
+   - Client: `const { m, t, locale } = useTranslations('ns')`
+   - Use `m.section.key` to read copy, and `t('section.key', { name })` when you need `{placeholders}`.
+   - **`t` is always the function.** Name text objects `m`, or `copy` for one screen's slice. Never write `const { m: t }`.
+6. **Send only what a page needs to the browser.** The root layout loads `common`. A page wraps itself in `<TranslationsProvider namespaces={['auth']}>` when its client components need that namespace. Server components don't need a provider.
+7. **Use the helpers for numbers and money:** `formatMoney(19)` → `$19`, `formatMoney(26700, 'KHR')` → `KHR 26,700`, `plural(locale, n, { one, other })`, and `localizeDigits` for counts (Khmer numerals). Don't build `$` strings by hand.
+8. **Page titles and descriptions** come from `generateMetadata` plus `getTranslations`. Never hard-code English metadata.
+9. **No hard-coded UI text in components.** That includes illustrations and `aria-label`s. Brand names like tok-scan stay as they are.

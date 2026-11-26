@@ -1,9 +1,10 @@
 import type { LocalizationConfig } from 'payload'
 
-import { defaultLocale, locales } from './locales'
+import { defaultLocale, locales } from '@/shared/i18n/locales'
 
 /**
  * Payload content localization — fields marked `localized: true` store one value per locale.
+ * Same language list as the website (src/shared/i18n/locales.ts).
  * https://payloadcms.com/docs/configuration/localization
  *
  * Postgres note: localized fields live in `<collection>_locales` tables, so turning
@@ -12,7 +13,7 @@ import { defaultLocale, locales } from './locales'
 export const localization: LocalizationConfig = {
      locales: locales.map((l) => ({
           code: l.code,
-          // Label shown in the admin locale switcher, per admin UI language
+          // Label in the admin locale switcher, per admin UI language
           label: { en: `${l.label} (${l.nativeLabel})`, zh: l.nativeLabel },
      })),
      defaultLocale,

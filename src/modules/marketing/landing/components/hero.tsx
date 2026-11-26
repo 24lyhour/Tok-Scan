@@ -6,7 +6,7 @@ import { type LandingContent, links } from '../content'
 import { HeroVisual } from './hero-visual'
 import { Container, CtaLink } from './primitives'
 
-export function Hero({ t }: { t: LandingContent['hero'] }) {
+export function Hero({ m }: { m: LandingContent['hero'] }) {
      return (
           <section
                aria-labelledby="hero-title"
@@ -21,21 +21,21 @@ export function Hero({ t }: { t: LandingContent['hero'] }) {
                     <Reveal>
                          <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-saffron-300">
                               <QrCode aria-hidden className="size-3.5" />
-                              {t.eyebrow}
+                              {m.eyebrow}
                          </p>
 
                          <h1
                               id="hero-title"
                               className="mt-6 text-[2.625rem] leading-[1.02] font-bold tracking-[-0.04em] sm:text-6xl lg:text-[4.25rem]"
                          >
-                              {t.titleLine1}
+                              {m.titleLine1}
                               <br />
-                              <span className="text-saffron-500">{t.titleLine2}</span>
+                              <span className="text-saffron-500">{m.titleLine2}</span>
                          </h1>
 
                          <p className="mt-6 max-w-xl text-base text-pretty text-white/75 sm:text-lg">
-                              <span className="sm:hidden">{t.bodyShort}</span>
-                              <span className="hidden sm:inline">{t.body}</span>
+                              <span className="sm:hidden">{m.bodyShort}</span>
+                              <span className="hidden sm:inline">{m.body}</span>
                          </p>
 
                          {/* Stacked full-width on mobile so the CTA sits in the thumb zone (guide L01) */}
@@ -46,7 +46,7 @@ export function Hero({ t }: { t: LandingContent['hero'] }) {
                                    size="lg"
                                    className="w-full sm:w-auto"
                               >
-                                   {t.primaryCta}
+                                   {m.primaryCta}
                                    <ChevronRight aria-hidden />
                               </CtaLink>
                               <CtaLink
@@ -56,12 +56,12 @@ export function Hero({ t }: { t: LandingContent['hero'] }) {
                                    className="w-full sm:w-auto"
                               >
                                    <CalendarDays aria-hidden />
-                                   {t.secondaryCta}
+                                   {m.secondaryCta}
                               </CtaLink>
                          </div>
 
                          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/70">
-                              {t.checks.map((c) => (
+                              {m.checks.map((c) => (
                                    <li key={c} className="inline-flex items-center gap-1.5">
                                         <Check aria-hidden className="size-4 text-brand-300" />
                                         {c}
@@ -69,8 +69,8 @@ export function Hero({ t }: { t: LandingContent['hero'] }) {
                               ))}
                          </ul>
 
-                         <ul aria-label={t.paymentsLabel} className="mt-6 flex flex-wrap gap-2">
-                              {t.payments.map((p) => (
+                         <ul aria-label={m.paymentsLabel} className="mt-6 flex flex-wrap gap-2">
+                              {m.payments.map((p) => (
                                    <li
                                         key={p}
                                         className="rounded-lg border border-white/15 px-2.5 py-1 text-xs font-semibold text-white/85"
@@ -82,7 +82,7 @@ export function Hero({ t }: { t: LandingContent['hero'] }) {
                     </Reveal>
 
                     <Reveal delay={150}>
-                         <HeroVisual label={t.visualLabel} />
+                         <HeroVisual label={m.visualLabel} m={m.visual} />
                     </Reveal>
                </Container>
           </section>

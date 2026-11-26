@@ -1,25 +1,24 @@
-import { getSiteLocale } from '@/shared/i18n/get-site-locale'
-import type { SiteLocale } from '@/shared/i18n/site-locale'
+import { getLocale } from '@/shared/i18n/get-locale'
+import type { Locale } from '@/shared/i18n/locales'
 
-import { getMessages, type Messages, type Namespace } from './messages'
+import { getNamespace, type Messages, type Namespace } from './messages'
 import { createTranslator, type Translator } from './translator'
 
 /**
- * Server components, server actions, route handlers, generateMetadata:
+ * Server components, server actions, route handlers, generateMetadata.
+ * Works for any namespace — no provider needed on the server.
  *
- *   const { t, m, locale } = await getTranslations('onboarding')
- *   t('signup.title')                 // typed key → string
- *   t('shell.step', { n: 1, total: 4 })
- *   m.signup.errors                   // raw objects/arrays when you need them
+ *   const { m, t, locale } = await getTranslations('onboarding')
+ *   m.signup.title                       // read copy (typed)
+ *   t('shell.step', { n: 1, total: 4 })  // when you need {placeholders}
  */
 export async function getTranslations<N extends Namespace>(
      namespace: N,
-     locale?: SiteLocale,
-): Promise<{ locale: SiteLocale; t: Translator<Messages[N]>; m: Messages[N] }> {
-     const activeLocale = locale ?? (await getSiteLocale())
-     const m = getMessages(activeLocale)[namespace]
-     return { locale: activeLocale, t: createTranslator(m, namespace), m }
+     locale?: Locale,
+): Promise<{ locale: Locale; m: Messages[N]; t: Translator<Messages[N]> }> {
+     const activeLocale = locale ?? (await getLocale())
+     const m = getNamespace(activeLocale, namespace)
+     return { locale: activeLocale, m, t: createTranslator(m, namespace) }
 }
 
-export { getSiteLocale as getLocale }
-export { getMessages }
+export { getLocale }

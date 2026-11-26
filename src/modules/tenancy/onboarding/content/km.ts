@@ -1,0 +1,68 @@
+/** Khmer — have a native speaker review before launch. */
+import type { OnboardingContent } from './en'
+
+export const km: OnboardingContent = {
+     shell: {
+          step: 'ជំហានទី {n} នៃ {total}',
+          home: 'ទំព័រដើម tok-scan',
+          language: 'ភាសា',
+          progress: 'វឌ្ឍនភាពនៃការចុះឈ្មោះ',
+     },
+     signup: {
+          metaTitle: 'បង្កើតគណនី',
+          title: 'បង្កើតគណនីរបស់អ្នក',
+          subtitle: 'សាកល្បងឥតគិតថ្លៃ ១៤ ថ្ងៃ · មិនត្រូវការកាត',
+          google: 'បន្តជាមួយ Google',
+          apple: 'បន្តជាមួយ Apple',
+          socialSoon: 'ការចូលតាម Apple និង Google នឹងមានឆាប់ៗនេះ',
+          appleSoon: 'ការចូលតាម Apple នឹងមានឆាប់ៗនេះ',
+          socialTerms: 'ការបន្តជាមួយ Google មានន័យថាអ្នកយល់ព្រមតាមលក្ខខណ្ឌប្រើប្រាស់ និងគោលការណ៍ឯកជនភាព។',
+          googleErrors: {
+               cancelled: 'ការចូលតាម Google ត្រូវបានបោះបង់។',
+               failed: 'ការចូលតាម Google មិនដំណើរការទេ។ សូមព្យាយាមម្តងទៀត ឬប្រើអ៊ីមែលរបស់អ្នក។',
+               unverified:
+                    'អ៊ីមែលគណនី Google របស់អ្នកមិនទាន់បានផ្ទៀងផ្ទាត់ទេ។ សូមផ្ទៀងផ្ទាត់ជាមួយ Google ឬប្រើអ៊ីមែលរបស់អ្នក។',
+               unavailable: 'ការចូលតាម Google មិនអាចប្រើបានទេពេលនេះ។ សូមប្រើអ៊ីមែលរបស់អ្នក។',
+          },
+          or: 'ឬ',
+          name: 'ឈ្មោះពេញ',
+          namePlaceholder: 'សុខ ដារា',
+          email: 'អ៊ីមែលការងារ',
+          emailPlaceholder: 'you@restaurant.com',
+          phone: 'លេខទូរស័ព្ទ (Telegram)',
+          phoneHint: 'យើងនឹងផ្ញើលេខកូដផ្ទៀងផ្ទាត់មកលេខនេះ។',
+          password: 'ពាក្យសម្ងាត់',
+          passwordHint: 'យ៉ាងហោចណាស់ ១០ តួអក្សរ',
+          showPassword: 'បង្ហាញពាក្យសម្ងាត់',
+          hidePassword: 'លាក់ពាក្យសម្ងាត់',
+          termsBefore: 'ខ្ញុំយល់ព្រមតាម',
+          terms: 'លក្ខខណ្ឌប្រើប្រាស់',
+          termsAnd: 'និង',
+          privacy: 'គោលការណ៍ឯកជនភាព',
+          termsAfter: '',
+          submit: 'បង្កើតគណនី',
+          submitting: 'កំពុងបង្កើតគណនី…',
+          haveAccount: 'មានគណនីរួចហើយ?',
+          login: 'ចូលគណនី',
+          errorSummary: 'សូមកែព័ត៌មានដែលបានគូសបញ្ជាក់។',
+          errors: {
+               required: 'សូមបំពេញព័ត៌មាននេះ។',
+               nameTooLong: 'ឈ្មោះត្រូវតិចជាង ៨០ តួអក្សរ។',
+               emailInvalid: 'សូមបញ្ចូលអ៊ីមែលឲ្យបានត្រឹមត្រូវ ដូចជា you@restaurant.com។',
+               phoneInvalid: 'សូមបញ្ចូលលេខទូរស័ព្ទកម្ពុជា ឧទាហរណ៍ 12 345 678។',
+               passwordShort: 'សូមប្រើយ៉ាងហោចណាស់ ១០ តួអក្សរ។',
+               termsRequired: 'សូមយល់ព្រមតាមលក្ខខណ្ឌប្រើប្រាស់ ដើម្បីបន្ត។',
+               emailTaken: 'មានគណនីប្រើអ៊ីមែលនេះរួចហើយ។ សូមចូលគណនីវិញ។',
+               captcha: 'សូមបញ្ចប់ការត្រួតពិនិត្យសុវត្ថិភាពខាងលើប៊ូតុង រួចព្យាយាមម្តងទៀត។',
+               generic: 'មានបញ្ហាអ្វីមួយ។ សូមព្យាយាមម្តងទៀត។',
+          },
+     },
+     organization: {
+          metaTitle: 'ស្ថាប័នរបស់អ្នក',
+          title: 'ស្ថាប័នរបស់អ្នក',
+          welcome: 'សូមស្វាគមន៍ {name}! គណនីរបស់អ្នករួចរាល់ហើយ។',
+          comingNext:
+               'បន្ទាប់មក អ្នកនឹងដាក់ឈ្មោះអាជីវកម្ម ជ្រើសរើសអាសយដ្ឋានគេហទំព័រ និងបន្ថែមឡូហ្គោ។ ជំហាននេះកំពុងត្រូវបានបង្កើត។',
+          backHome: 'ត្រឡប់ទៅទំព័រដើម',
+     },
+}
