@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 import { ADMIN_GROUPS, selfOrSuperAdmin, superAdminOnly, usersRead } from '@/modules/core/payload'
 
+import { requireCaptchaOnApiLogin } from './hooks/require-captcha'
+
 /**
  * Users — one login per person; a person can belong to many organizations (Module 14 §3.3).
  * Self sign-up goes through the onboarding server action (tenancy/onboarding), not public REST create.
@@ -22,6 +24,10 @@ export const Users: CollectionConfig = {
           create: superAdminOnly,
           update: selfOrSuperAdmin,
           delete: superAdminOnly,
+     },
+     hooks: {
+          // /admin login form + anyone calling /api/users/login must pass the bot check
+          beforeOperation: [requireCaptchaOnApiLogin],
      },
      fields: [
           // email + password are added by `auth: true`

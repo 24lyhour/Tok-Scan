@@ -13,5 +13,5 @@ export const adminI18n: I18nOptions = {
      supportedLanguages: { en, zh },
      fallbackLanguage: 'en',
      // tok-scan's own admin texts are added by the registry (src/modules/index.ts) from each
-     // module, e.g. the super-admin console (src/modules/platform/admin/translations.ts).
+     // module, e.g. the super-admin console (src/modules/super-admin/admin/translations.ts).
 }

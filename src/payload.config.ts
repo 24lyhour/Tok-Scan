@@ -15,7 +15,7 @@ const dirname = path.dirname(filename)
 export default buildConfig({
      admin: {
           user: Users.slug,
-          // tok-scan super-admin console: logo + platform overview (src/modules/platform)
+          // tok-scan super-admin console: logo + platform overview (src/modules/super-admin)
           components: adminComponents,
           importMap: {
                baseDir: path.resolve(dirname),

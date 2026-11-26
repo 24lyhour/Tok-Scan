@@ -4,6 +4,7 @@
  */
 import { expect, test } from '@playwright/test'
 
+import { apiLogin } from '../helpers/api-login'
 import { resetTestOwner, testOwner } from '../helpers/test-owner'
 
 test.describe.configure({ mode: 'serial' })
@@ -14,10 +15,7 @@ test.beforeAll(async () => {
 
 test('a new owner sets up a restaurant', async ({ page, context }) => {
      // Sign in through the API (the login form has its own captcha-protected flow)
-     const login = await page.request.post('/api/users/login', {
-          data: { email: testOwner.email, password: testOwner.password },
-     })
-     expect(login.ok()).toBe(true)
+     await apiLogin(page, testOwner)
 
      await page.goto('/onboarding')
      await expect(page).toHaveURL(/\/onboarding\/organization$/)

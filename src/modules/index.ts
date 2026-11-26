@@ -15,7 +15,7 @@ import {
      coreTenantScoped,
      mediaStorage,
 } from './core/payload'
-import { platformAdminComponents, platformAdminTranslations } from './platform/payload'
+import { superAdminComponents, superAdminTranslations } from './super-admin/payload'
 import { tablesCollections, tablesTenantScoped } from './tables/payload'
 import { tenancyCollections, tenancyPlugin, tenancyTenantScoped } from './tenancy/payload'
 
@@ -34,11 +34,11 @@ export const plugins: Plugin[] = [tenancyPlugin(tenantScoped), mediaStorage()]
 export const adminI18n: I18nOptions = {
      ...coreAdminI18n,
      // Payload merges custom keys into its own language packs; its type expects full packs
-     translations: platformAdminTranslations as unknown as I18nOptions['translations'],
+     translations: superAdminTranslations as unknown as I18nOptions['translations'],
 }
 
 /** tok-scan logo + console home in the Payload admin */
-export const adminComponents = platformAdminComponents
+export const adminComponents = superAdminComponents
 
 export { localization, Media } from './core/payload'
 export { Users } from './tenancy/payload'

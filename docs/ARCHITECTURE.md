@@ -22,12 +22,13 @@ src/
 │  ├─ tables/                    # Module 10 — collections/tables · qr.ts · components/qr-code
 │  ├─ workspace/                 # signed-in app: AppShell (sidebar, switcher, top bar) + dashboard
 │  ├─ assistant/                 # TOKSCAN chat — reusable (landing: visitor · app: owner)
-│  ├─ platform/                  # super-admin console (Payload admin, super-admins only) — Module 16
+│  ├─ super-admin/               # super-admin console: texts, data, Payload wiring (UI in shared) — Module 16
 │  └─ marketing/landing/         # public landing page (guide p.21–22)
 ├─ shared/                       # used by 2+ modules, NO business rules, never imports modules
 │  ├─ components/ui/             # shadcn + StatCard · Legend · Note (reusable building blocks)
 │  ├─ components/form/           # Field, inputs, Toggle, Stepper, ChoiceChips, useActionForm
-│  ├─ components/{brand,i18n,motion,security}/
+│  ├─ components/super-admin/    # super-admin console UI: logo, login panel, ConsoleView (texts as props)
+│  ├─ components/{brand,i18n,illustrations,motion,security}/
 │  ├─ lib/                       # utils (cn) · validation (Zod helpers) · payload (exists, relationId…)
 │  └─ i18n/ · config/ · security/
 └─ payload.config.ts

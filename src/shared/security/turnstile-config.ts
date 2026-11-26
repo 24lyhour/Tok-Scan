@@ -15,4 +15,10 @@ export const turnstileSiteKey =
 export const TURNSTILE_FIELD = 'cf-turnstile-response'
 
 /** Turnstile action names — checked on the server so a login token can't be reused for sign-up. */
-export type TurnstileAction = 'login' | 'signup'
+export type TurnstileAction = 'login' | 'signup' | 'admin-login'
+
+/**
+ * Cookie that carries the token for Payload's own login API (/api/users/login), which the admin
+ * login form calls with JSON we can't add fields to. Short-lived, sent only to /api.
+ */
+export const TURNSTILE_COOKIE = 'tok-captcha'

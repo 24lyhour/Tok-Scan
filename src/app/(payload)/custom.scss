@@ -1,20 +1,36 @@
 /*
  * tok-scan look for the Payload admin (super-admin console, guide p.27).
- * Colours: --tok-* variables come from src/shared/config/colors.ts via
- * src/modules/platform/admin/theme.tsx — never write hex values here.
+ * Colours: --color-* variables (same names as Tailwind's tokens) come from
+ * src/shared/config/colors.ts via src/shared/components/super-admin/theme.tsx — never write hex here.
  */
 
 /* Primary buttons in brand green (Approve, Save, Log in …) */
 .btn--style-primary:not(.btn--disabled) {
-     --bg-color: var(--tok-brand-700);
-     --hover-bg: var(--tok-brand-900);
+     --bg-color: var(--color-brand-700);
+     --hover-bg: var(--color-brand-900);
      --color: #fff;
      --hover-color: #fff;
 }
 
 /* ── Login, forgot password, first user: same look as tok-scan's own /login ── */
 html[data-theme='light'] .template-minimal {
-     background-color: var(--tok-paper);
+     --grid-line: color-mix(in oklab, var(--color-ink) 6%, transparent);
+     background-color: var(--color-paper);
+     /* Soft fade in the middle, 32px grid around it (same grid as the brand panel) */
+     background-image:
+          radial-gradient(60% 55% at 50% 50%, var(--color-paper) 35%, transparent 80%),
+          linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+     background-size:
+          100% 100%,
+          32px 32px,
+          32px 32px;
+}
+/* Large screens: the brand panel (shared/components/super-admin/login-panel.tsx) fills the left */
+@media (min-width: 1024px) {
+     .login.template-minimal {
+          padding-left: calc(46vw + 1.5rem);
+     }
 }
 .template-minimal--width-normal .template-minimal__wrap {
      max-width: 440px;
@@ -66,8 +82,8 @@ html[data-theme='light'] .template-minimal {
           &:focus,
           &:focus-visible {
                outline: none;
-               border-color: var(--tok-brand-700);
-               box-shadow: 0 0 0 3px color-mix(in oklab, var(--tok-brand-700) 15%, transparent);
+               border-color: var(--color-brand-700);
+               box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-brand-700) 15%, transparent);
           }
      }
      .btn--style-primary {
@@ -95,7 +111,7 @@ html[data-theme='light'] .template-minimal {
      text-align: right;
      font-size: 0.8125rem;
      font-weight: 600;
-     color: var(--tok-brand-700);
+     color: var(--color-brand-700);
      text-decoration: none;
 
      &:hover {

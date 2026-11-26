@@ -9,6 +9,12 @@ const en = {
      consoleBadge: 'Platform console · staff only',
      loginTitle: 'Welcome back',
      loginSubtitle: 'Log in with your tok-scan staff account.',
+     panelTitle: 'Every restaurant on tok-scan, in one place.',
+     panelPoint1: 'Approve new restaurants before they take online payments',
+     panelPoint2: 'Help owners when they get stuck',
+     panelPoint3: 'Every action on restaurant data is logged',
+     panelPending: 'Pending approvals',
+     panelApprove: 'Approve',
      ownerLogin: 'Restaurant owner?',
      ownerLoginLink: 'Log in to your restaurant',
      subtitle:
@@ -44,6 +50,12 @@ const zh: Record<PlatformAdminKey, string> = {
      consoleBadge: '平台控制台 · 仅限员工',
      loginTitle: '欢迎回来',
      loginSubtitle: '使用您的 tok-scan 员工账号登录。',
+     panelTitle: 'tok-scan 上的所有餐厅，尽在一处。',
+     panelPoint1: '在餐厅开通在线收款前进行审核',
+     panelPoint2: '在店主遇到问题时提供帮助',
+     panelPoint3: '对餐厅数据的每一次操作都会被记录',
+     panelPending: '待审核',
+     panelApprove: '批准',
      ownerLogin: '您是餐厅老板？',
      ownerLoginLink: '登录您的餐厅',
      subtitle: 'tok-scan 上的所有餐厅。只有 tok-scan 员工（超级管理员）可以打开此后台。',
@@ -74,7 +86,7 @@ const zh: Record<PlatformAdminKey, string> = {
 /** Namespace used in `t('tokscan:…')` */
 export const ADMIN_NS = 'tokscan'
 
-export const platformAdminTranslations = { en: { [ADMIN_NS]: en }, zh: { [ADMIN_NS]: zh } }
+export const superAdminTranslations = { en: { [ADMIN_NS]: en }, zh: { [ADMIN_NS]: zh } }
 
 /** Typed shortcut: tr(i18n.t, 'console') */
 export function tr(t: (key: never) => string, key: PlatformAdminKey): string {

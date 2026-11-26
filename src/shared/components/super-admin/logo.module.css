@@ -1,0 +1,42 @@
+/* Admin logo — --color-* brand variables + Payload theme variables (light + dark). */
+.brand {
+     display: flex;
+     align-items: center;
+     gap: 0.625rem;
+}
+.brandMark {
+     display: block;
+     flex-shrink: 0;
+     width: 2.5rem;
+     height: 2.5rem;
+}
+.brandMark svg {
+     display: block;
+     width: 100%;
+     height: 100%;
+}
+.brandText {
+     display: flex;
+     flex-direction: column;
+     white-space: nowrap;
+     line-height: 1;
+}
+.brandName {
+     font-weight: 700;
+     font-size: 1.25rem;
+     letter-spacing: -0.01em;
+     color: var(--color-brand-700);
+}
+.brandDot {
+     color: var(--color-saffron-500);
+}
+.brandTag {
+     margin-top: 0.3rem;
+     font-size: 0.5625rem;
+     font-weight: 600;
+     letter-spacing: 0.2em;
+     color: var(--theme-elevation-500);
+}
+html[data-theme='dark'] .brandName {
+     color: var(--theme-text);
+}
