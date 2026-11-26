@@ -35,6 +35,10 @@ const nextConfig: NextConfig = {
                     pathname: '/api/media/file/**',
                },
           ],
+          // With Payload's serverURL set, media URLs are absolute (https://tok-scan.store/api/media/file/…)
+          remotePatterns: canonicalHost
+               ? [{ protocol: 'https', hostname: canonicalHost, pathname: '/api/media/file/**' }]
+               : [],
      },
      webpack: (webpackConfig) => {
           webpackConfig.resolve.extensionAlias = {

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { migrations } from './migrations'
+import { getServerURL } from './shared/config/server-url'
 import { adminI18n, collections, localization, Users } from './modules'
 
 const filename = fileURLToPath(import.meta.url)
@@ -36,6 +37,8 @@ export default buildConfig({
      i18n: adminI18n,
      editor: lexicalEditor(),
      secret: process.env.PAYLOAD_SECRET || '',
+     // https://tok-scan.store in production: absolute API/media/admin/email links + cookie CSRF check
+     serverURL: getServerURL(),
      typescript: {
           outputFile: path.resolve(dirname, 'payload-types.ts'),
      },
