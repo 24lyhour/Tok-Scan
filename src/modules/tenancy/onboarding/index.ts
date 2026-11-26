@@ -1,8 +1,23 @@
 /**
  * tenancy/onboarding — self-serve restaurant sign-up (guide p.22–23).
- * Step 1 /signup → step 2 /onboarding/organization → step 3 /onboarding/outlet → step 4 /onboarding/tables.
- * Text: `onboarding` namespace of the global i18n catalog (src/i18n).
+ *
+ *   /signup                    step 1  signup/        account
+ *   /onboarding/organization   step 2  organization/  business, web address, logo, colour
+ *   /onboarding/outlet         step 3  outlet/        first branch, currency, taxes, hours
+ *   /onboarding/tables         step 4  tables/        tables + QR codes (+ /print sheet)
+ *   /dashboard                         go-live/       "Get <restaurant> live" checklist
+ *   /onboarding                        resume.ts      → the step the owner is on
+ *
+ * Every step folder has the same files: page.tsx · form.tsx · schema.ts (Zod) · actions.ts.
+ * Shared: routes.ts (URLs) · errors.ts (error codes) · server/context.ts · components/.
+ * Text: `onboarding` namespace (content/en·km·zh.ts).
  */
-export { organizationMetadata, OrganizationStepPage } from './organization-page'
-export { SignupPage, signupMetadata } from './signup-page'
+export { GoLivePage, goLiveMetadata } from './go-live/page'
+export { organizationMetadata, OrganizationStepPage } from './organization/page'
+export { outletMetadata, OutletStepPage } from './outlet/page'
+export { ResumeOnboarding } from './resume'
+export { onboardingRoutes } from './routes'
+export { SignupPage, signupMetadata } from './signup/page'
+export { printQrMetadata, PrintQrPage } from './tables/print-page'
+export { tablesMetadata, TablesStepPage } from './tables/page'
 export type { OnboardingContent } from './content'

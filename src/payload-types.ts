@@ -68,6 +68,9 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    organizations: Organization;
+    outlets: Outlet;
+    tables: Table;
     media: Media;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -77,6 +80,9 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
+    outlets: OutletsSelect<false> | OutletsSelect<true>;
+    tables: TablesSelect<false> | TablesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -128,8 +134,16 @@ export interface User {
    * E.164 format, e.g. +85512345678 — used for Telegram verification
    */
   phone?: string | null;
+  platformRole?: ('none' | 'super-admin') | null;
   googleSub?: string | null;
   acceptedTermsAt?: string | null;
+  tenants?:
+    | {
+        tenant: number | Organization;
+        orgRole: 'owner' | 'admin' | 'member';
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -152,10 +166,42 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations".
+ */
+export interface Organization {
+  id: number;
+  name: string;
+  /**
+   * Menu web address: tok-scan.store/r/<slug>
+   */
+  slug: string;
+  /**
+   * Short code used in invoice and order numbers, e.g. MHB
+   */
+  code: string;
+  logo?: (number | null) | Media;
+  brand?: {
+    primaryColor?: string | null;
+  };
+  businessType?: ('restaurant' | 'cafe' | 'bar' | 'food_court' | 'other') | null;
+  businessTypeOther?: string | null;
+  status?: ('trial' | 'pending_approval' | 'active' | 'suspended' | 'closed') | null;
+  trialEndsAt?: string | null;
+  onboarding?: {
+    step?: ('organization' | 'outlet' | 'tables' | 'done') | null;
+    completedAt?: string | null;
+  };
+  owner: number | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
+  tenant?: (number | null) | Organization;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -168,6 +214,71 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "outlets".
+ */
+export interface Outlet {
+  id: number;
+  tenant?: (number | null) | Organization;
+  name: string;
+  address?: string | null;
+  phone?: string | null;
+  currency?: {
+    primary?: ('USD' | 'KHR') | null;
+    secondary?: ('KHR' | 'USD') | null;
+    /**
+     * KHR per 1 USD
+     */
+    exchangeRate?: number | null;
+  };
+  /**
+   * Calculation order: subtotal → discount → service → VAT → rounding
+   */
+  taxes?: {
+    vatEnabled?: boolean | null;
+    vatPercent?: number | null;
+    serviceChargeEnabled?: boolean | null;
+    serviceChargePercent?: number | null;
+    lightingTaxEnabled?: boolean | null;
+    lightingTaxPercent?: number | null;
+  };
+  /**
+   * Printed on every receipt
+   */
+  vatTin?: string | null;
+  openingHours?: {
+    days?: ('mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun')[] | null;
+    opens?: string | null;
+    closes?: string | null;
+  };
+  status?: ('active' | 'temporarily_closed' | 'archived') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tables".
+ */
+export interface Table {
+  id: number;
+  tenant?: (number | null) | Organization;
+  outlet: number | Outlet;
+  /**
+   * Shown to guests and staff, e.g. T07
+   */
+  label: string;
+  number: number;
+  zone?: string | null;
+  seats?: number | null;
+  /**
+   * Secret part of the QR link — regenerate to revoke printed codes
+   */
+  qrKey: string;
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -196,6 +307,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'organizations';
+        value: number | Organization;
+      } | null)
+    | ({
+        relationTo: 'outlets';
+        value: number | Outlet;
+      } | null)
+    | ({
+        relationTo: 'tables';
+        value: number | Table;
       } | null)
     | ({
         relationTo: 'media';
@@ -250,8 +373,16 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   phone?: T;
+  platformRole?: T;
   googleSub?: T;
   acceptedTermsAt?: T;
+  tenants?:
+    | T
+    | {
+        tenant?: T;
+        orgRole?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -272,9 +403,92 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations_select".
+ */
+export interface OrganizationsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  code?: T;
+  logo?: T;
+  brand?:
+    | T
+    | {
+        primaryColor?: T;
+      };
+  businessType?: T;
+  businessTypeOther?: T;
+  status?: T;
+  trialEndsAt?: T;
+  onboarding?:
+    | T
+    | {
+        step?: T;
+        completedAt?: T;
+      };
+  owner?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "outlets_select".
+ */
+export interface OutletsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  address?: T;
+  phone?: T;
+  currency?:
+    | T
+    | {
+        primary?: T;
+        secondary?: T;
+        exchangeRate?: T;
+      };
+  taxes?:
+    | T
+    | {
+        vatEnabled?: T;
+        vatPercent?: T;
+        serviceChargeEnabled?: T;
+        serviceChargePercent?: T;
+        lightingTaxEnabled?: T;
+        lightingTaxPercent?: T;
+      };
+  vatTin?: T;
+  openingHours?:
+    | T
+    | {
+        days?: T;
+        opens?: T;
+        closes?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tables_select".
+ */
+export interface TablesSelect<T extends boolean = true> {
+  tenant?: T;
+  outlet?: T;
+  label?: T;
+  number?: T;
+  zone?: T;
+  seats?: T;
+  qrKey?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  tenant?: T;
   alt?: T;
   updatedAt?: T;
   createdAt?: T;

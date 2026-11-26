@@ -1,11 +1,8 @@
 /**
- * Core — platform-wide building blocks shared by every module (uploads, languages, audit log later).
+ * Core — platform-wide building blocks shared by every module.
+ *
+ *   access.ts      who-can-do-what rules (roles) used by every collection
+ *   collections/   data: media (+ Vercel Blob storage)      (backend entry: payload.ts)
+ *   i18n/          Payload content localization + admin UI languages
  */
-import type { CollectionConfig } from 'payload'
-
-import { Media } from './media/collection'
-
-export const coreCollections: CollectionConfig[] = [Media]
-
-export { Media }
-export { adminI18n, localization } from './i18n'
+export * from './access'

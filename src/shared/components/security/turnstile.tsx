@@ -61,8 +61,11 @@ export function Turnstile({
 }) {
      const containerRef = useRef<HTMLDivElement>(null)
      const widgetIdRef = useRef<string | null>(null)
+     // Latest callback for the widget's events (updated after render, read later by the widget)
      const onTokenRef = useRef(onToken)
-     onTokenRef.current = onToken
+     useEffect(() => {
+          onTokenRef.current = onToken
+     }, [onToken])
 
      useEffect(() => {
           if (!turnstileSiteKey) return

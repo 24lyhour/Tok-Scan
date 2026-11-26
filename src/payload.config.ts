@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { migrations } from './migrations'
+import { adminI18n, collections, localization, plugins, Users } from './modules'
 import { getServerURL } from './shared/config/server-url'
 import { adminI18n, collections, localization, Users } from './modules'
 
@@ -51,5 +52,5 @@ export default buildConfig({
           prodMigrations: migrations,
      }),
      sharp,
-     plugins: [],
+     plugins,
 })
