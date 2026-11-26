@@ -8,56 +8,118 @@ src/
 │  ├─ (frontend)/                # public site, onboarding, customer QR pages, staff app
 │  └─ (payload)/                 # Payload admin + REST/GraphQL (generated, don't edit by hand)
 ├─ modules/
-│  ├─ index.ts                   # registry: the ONLY backend import used by payload.config.ts
+│  ├─ index.ts                   # registry: imports every module's payload.ts → payload.config.ts
 │  ├─ core/                      # platform-wide building blocks
-│  │  └─ media/collection.ts
+│  │  ├─ access.ts               # WHO CAN DO WHAT — role rules used by every collection
+│  │  ├─ collections/media/      # Media (tenant-scoped) + Vercel Blob storage
+│  │  └─ i18n/
 │  ├─ tenancy/                   # Module 14 — Organization / Tenant
-│  │  ├─ index.ts                # exports tenancyCollections
-│  │  ├─ users/collection.ts
-│  │  ├─ organizations/          # (next)
-│  │  ├─ outlets/                # (next)
-│  │  ├─ invitations/            # (next)
-│  │  └─ onboarding/             # (next) /signup → /onboarding/*
-│  └─ marketing/
-│     └─ landing/                # public landing page (guide p.21–22)
-│        ├─ index.ts             # public API of the sub-module
-│        ├─ content.ts           # all copy, prices, links
-│        ├─ landing-page.tsx
-│        └─ components/
-├─ shared/                       # used by 2+ modules
-│  ├─ components/ui/             # shadcn components (components.json points here)
-│  ├─ components/brand/logo.tsx  # tok-scan logo
-│  └─ lib/utils.ts               # cn()
+│  │  ├─ collections/            # users · organizations · outlets
+│  │  ├─ auth/                   # login/ (page·form·schema·actions) · google/ · server/
+│  │  ├─ onboarding/             # signup/ organization/ outlet/ tables/ go-live/
+│  │  ├─ shared/                 # auth shell + social sign-in (auth and onboarding)
+│  │  └─ plugin.ts               # multi-tenant plugin
+│  ├─ tables/                    # Module 10 — collections/tables · qr.ts · components/qr-code
+│  └─ marketing/landing/         # public landing page (guide p.21–22)
+├─ shared/                       # used by 2+ modules, NO business rules, never imports modules
+│  ├─ components/ui/             # shadcn
+│  ├─ components/form/           # Field, inputs, Toggle, Stepper, ChoiceChips, useActionForm
+│  ├─ components/{brand,i18n,motion,security}/
+│  ├─ lib/                       # utils (cn) · validation (Zod helpers) · payload (exists, relationId…)
+│  └─ i18n/ · config/ · security/
 └─ payload.config.ts
+tests/
+├─ int/                          # Vitest + real Payload/Postgres (access rules)
+├─ e2e/                          # Playwright (onboarding flow)
+└─ helpers/
 ```
 
-## Sub-module layout
+## Module layout
 
-Only create the files a feature needs:
+**Data and screens are separated, and every module has two entry points.**
 
 ```
-src/modules/<module>/<submodule>/
-├─ index.ts          # public API — other code imports only from here
-├─ collection.ts     # Payload CollectionConfig
-├─ access.ts         # access-control functions
-├─ hooks/            # Payload hooks (one file per hook)
-├─ fields/           # reusable field configs
-├─ actions.ts        # Next.js server actions
-├─ components/       # React UI for this feature
-├─ content.ts        # user-facing copy (keeps i18n easy)
-└─ *.test.ts         # tests next to the code
+src/modules/<module>/
+├─ README.md                   # what it does · routes · who can do what
+├─ payload.ts                  # BACKEND entry: collections, tenant-scoped slugs, plugins
+│                              #   → imported ONLY by src/modules/index.ts
+├─ index.ts                    # PUBLIC API: pages, components, helpers, constants
+│                              #   → what src/app and other modules import
+├─ collections/
+│  ├─ index.ts                 # <module>Collections + <module>TenantScoped
+│  └─ <name>/
+│     ├─ collection.ts         # Payload config only — access rules come from @/modules/core
+│     ├─ constants.ts          # options, defaults, limits — also used by forms
+│     └─ hooks/                # one hook per file, when needed
+├─ <feature>/                  # one screen or flow, e.g. onboarding/organization/
+│  ├─ page.tsx                 # server: guard + load data + render
+│  ├─ form.tsx                 # 'use client': UI state only (useActionForm)
+│  ├─ schema.ts                # Zod — the SAME check runs in the browser and the action
+│  ├─ actions.ts               # 'use server': user → validate → write → log → redirect
+│  └─ schema.test.ts           # unit tests next to the code
+├─ server/                     # server-only helpers — first line `import 'server-only'`
+├─ routes.ts · errors.ts       # URLs · error codes + validator
+└─ content/                    # en · km · zh
 ```
+
+### Access rules (`src/modules/core/access.ts`)
+
+Every collection uses these — never an inline `({ req }) => …`.
+
+| Collection | read | create | update / delete |
+|---|---|---|---|
+| organizations | members (`orgMembersRead`) | server only | owner/admin (`orgManagersUpdate`), never deleted |
+| outlets, tables, media | members (`tenantMembers`), media public | owner/admin + `requireTenantManager` hook | owner/admin (`tenantManagers`) |
+| users | yourself + colleagues (`usersRead`) | server only | yourself (`selfOrSuperAdmin`); roles only by super-admin |
+
+Roles live in `users.tenants[].orgRole`: `owner` · `admin` · `member`. tok-scan staff: `platformRole = super-admin`.
+Server actions write with `overrideAccess: true` **after** checking the user themselves (e.g. `getOnboardingContext`).
+
+### Forms
+
+- Validation is **Zod** (`src/shared/lib/validation.ts`). Schema messages are error **codes**
+  (`'required'`, `'slugTaken'`), translated in the feature's `content/` → `errors`.
+- Every form uses `useActionForm` from `@/shared/components/form`: `<form {...form.formProps}>`,
+  `<Field required>` shows the red `*`, `<SubmitButton disabled={!form.ready}>` stays disabled until
+  every required field has a value.
+- Defaults and limits come from the collection's `constants.ts` — never typed twice.
 
 ## Rules
 
-1. **Routes are thin.** A route file in `src/app/` only imports and renders something from a module, for example `app/(frontend)/page.tsx` → `@/modules/marketing/landing`.
-2. **Import through `index.ts`.** Code outside a module must not reach into another module's internals.
-3. **Register backend pieces in one place.** A module's `index.ts` exports `<module>Collections`, which is added in `src/modules/index.ts`. `payload.config.ts` never imports collections directly.
-4. **Shared means used twice.** Move code to `src/shared/` only when a second module needs it.
-5. **Tenant scoping.** Every business collection follows [Module 14 §5](./modules/14-organization-tenant.md).
-6. **Design tokens.** Use the Tailwind tokens defined in `src/app/(frontend)/styles.css`: `brand-*`, `saffron-*`, `ink`, `ink-2`, `ink-3`, `line`, `paper`, `success`, `warning`, `error`, `info`, `progress`, `khqr`. Don't hard-code hex values in components. Never put white text on saffron.
-7. **Formatting.** Prettier with **5-space indentation** (`tabWidth: 5`). Run `npx prettier --write <files>` on what you change.
-8. **Package manager.** Use Yarn only (`yarn add`). Never use npm in this repo.
+1. **Routes are thin.** A file in `src/app/` only imports from a module entry point, e.g. `@/modules/tenancy`.
+2. **Import modules through their entry point** (`@/modules/<module>`), relative paths inside a module. *Enforced by ESLint.*
+3. **`src/shared/` never imports `src/modules/`.** *Enforced by ESLint.*
+4. **Register backend pieces in one place:** each module's `payload.ts` → `src/modules/index.ts` → `payload.config.ts`.
+5. **Server code stays on the server:** files in `server/` start with `import 'server-only'` (the build fails if a client file imports them).
+6. **Access rules only from `core/access.ts`**, and every change to them gets a test in `tests/int/access.int.spec.ts`.
+7. **Every collection change ships with a migration:** `yarn payload migrate:create <name>`. *Checked in CI.*
+8. **Shared means used twice.** Move code to `src/shared/` only when a second module needs it.
+9. **Tenant scoping.** Every business collection follows [Module 14 §5](./modules/14-organization-tenant.md).
+10. **Design tokens.** Use the Tailwind tokens in `src/app/(frontend)/styles.css` (`brand-*`, `saffron-*`, `ink`, `line`, `paper`, `success`, `error` …). No hex values in components except brand data. Never white text on saffron.
+11. **Formatting.** Prettier, **5-space indentation**. Generated files are in `.prettierignore`.
+12. **Package manager.** Yarn only. Never npm or pnpm.
+
+## Quality checks
+
+| Command | What | When |
+|---|---|---|
+| `yarn typecheck` | TypeScript | CI + before commit |
+| `yarn lint` | ESLint incl. module boundaries | CI + before commit |
+| `yarn test:unit` | Vitest, `src/**/*.test.ts`, no database | CI + while coding |
+| `yarn test:int` | Vitest + Payload + Postgres (`tests/int`) | CI |
+| `yarn test:e2e` | Playwright (`tests/e2e`), starts `yarn dev` if needed | CI |
+
+CI (`.github/workflows/ci.yml`) runs all of these on every pull request with a fresh Postgres,
+applies every migration, and fails if a collection changed without a migration.
+
+### Adding a module (e.g. Menu)
+
+1. Copy the module layout above; write `README.md` (routes + who can do what).
+2. `collections/<name>/collection.ts` + `constants.ts`, access from `@/modules/core`; list it in `collections/index.ts`.
+3. `payload.ts` → add it to `src/modules/index.ts`.
+4. `content/` en·km·zh → register in `src/i18n/messages.ts`.
+5. Each screen: `schema.ts` (+ test) → `actions.ts` → `form.tsx` → `page.tsx` → thin route in `src/app/`.
+6. `yarn payload migrate:create <name>` · `yarn generate:types` · access test in `tests/int` · e2e for the main flow.
 
 ## Translations (i18n)
 

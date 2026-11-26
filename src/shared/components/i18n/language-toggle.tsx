@@ -8,6 +8,11 @@ import { useTranslations } from '@/i18n/client'
 import { LOCALE_COOKIE, locales, type Locale } from '@/shared/i18n/locales'
 import { cn } from '@/shared/lib/utils'
 
+/** Remember the reader's language for a year (read on the server by getLocale). */
+function saveLocale(locale: Locale) {
+     document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=31536000; samesite=lax`
+}
+
 /** EN / ខ្មែរ / 中文 switch — saves the choice in a cookie and re-renders the page on the server. */
 export function LanguageToggle({ className }: { className?: string }) {
      const { locale, t } = useTranslations('common')
@@ -16,7 +21,7 @@ export function LanguageToggle({ className }: { className?: string }) {
 
      const choose = (next: Locale) => {
           if (next === locale) return
-          document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`
+          saveLocale(next)
           startTransition(() => router.refresh())
      }
 

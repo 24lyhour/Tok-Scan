@@ -4,9 +4,8 @@ import config from '@payload-config'
 import { type NextRequest, NextResponse } from 'next/server'
 import { getPayload, type Payload } from 'payload'
 
-import { authRoutes } from '../paths'
+import { authRoutes, safeNextPath } from '../routes'
 import { authCookieName, authCookieOptions, issueSession } from '../server/session'
-import { safeNextPath } from '../validation'
 import {
      GOOGLE_CALLBACK_PATH,
      GOOGLE_FLOW_COOKIE,

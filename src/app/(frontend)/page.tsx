@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import { getTranslations } from '@/i18n/server'
-import { LandingPage } from '@/modules/marketing/landing'
+import { LandingPage } from '@/modules/marketing'
 
 export async function generateMetadata(): Promise<Metadata> {
      const { t } = await getTranslations('landing')

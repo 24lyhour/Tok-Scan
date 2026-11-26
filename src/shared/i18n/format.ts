@@ -56,3 +56,13 @@ export function formatMoney(amount: number, currency: Currency = 'USD'): string 
           .format(amount)
           .replace(/ /g, ' ')
 }
+
+/** Date in the reader's language, e.g. "10 Dec 2026" / "១០ ធ្នូ ២០២៦" / "2026年12月10日" */
+export function formatDate(value: string | Date, locale: Locale): string {
+     return localizeDigits(
+          new Intl.DateTimeFormat(getLocaleConfig(locale).intl, { dateStyle: 'medium' }).format(
+               new Date(value),
+          ),
+          locale,
+     )
+}

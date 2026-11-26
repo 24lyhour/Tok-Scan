@@ -2,12 +2,13 @@
  * Module 14 — Organization / Tenant
  * Spec: docs/modules/14-organization-tenant.md
  *
- * Sub-modules (planned): organizations, outlets, members, invitations, onboarding, switcher, branding
+ *   collections/  data: users · organizations · outlets     (backend entry: payload.ts)
+ *   auth/         login (email + Google)
+ *   onboarding/   sign-up steps 1–4 + go-live checklist
+ *   shared/       auth shell + social sign-in (auth and onboarding)
+ *   plugin.ts     multi-tenant plugin   ·   access rules: @/modules/core
+ *
+ * Public API — what routes in src/app import.
  */
-import type { CollectionConfig } from 'payload'
-
-import { Users } from './users/collection'
-
-export const tenancyCollections: CollectionConfig[] = [Users]
-
-export { Users }
+export * from './auth'
+export * from './onboarding'

@@ -1,0 +1,8 @@
+# Generated — rewritten by Payload / Next, never formatted by hand
+src/payload-types.ts
+src/migrations/
+src/app/(payload)/
+.next/
+node_modules/
+playwright-report/
+test-results/
