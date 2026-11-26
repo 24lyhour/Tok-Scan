@@ -7,8 +7,18 @@ describe('tablesSchema', () => {
      it('accepts 1–200 whole tables', () => {
           expect(validate(tablesSchema, { zone: 'Indoor', count: '16' })).toEqual({
                ok: true,
-               data: { zone: 'Indoor', count: 16 },
+               data: { zone: 'Indoor', count: 16, returnTo: 'dashboard' },
           })
+     })
+
+     it('returns to the app Tables page only when asked', () => {
+          const go = (returnTo?: string) => {
+               const r = validate(tablesSchema, { zone: 'Indoor', count: '4', returnTo })
+               return r.ok && r.data.returnTo
+          }
+          expect(go('tables')).toBe('tables')
+          expect(go(undefined)).toBe('dashboard')
+          expect(go('https://evil.example')).toBe('dashboard')
      })
 
      it('puts tables in "Indoor" when the zone is left empty', () => {

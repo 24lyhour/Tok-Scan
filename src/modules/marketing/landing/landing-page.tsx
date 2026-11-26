@@ -1,8 +1,9 @@
 import { TranslationsProvider } from '@/i18n/provider'
 import { getTranslations } from '@/i18n/server'
+import { AssistantWidget } from '@/modules/assistant'
 
-import { AssistantWidget } from '../assistant'
 import { CookieBanner, getConsent } from '../consent'
+import { links, startingPrice } from './content'
 
 import { Hero } from './components/hero'
 import { Pricing } from './components/pricing'
@@ -45,7 +46,11 @@ export async function LandingPage() {
                </main>
                <SiteFooter m={m.footer} />
                <CookieBanner initial={consent} />
-               <AssistantWidget consent={consent} />
+               <AssistantWidget
+                    audience="visitor"
+                    links={{ signup: links.signup, pricing: '#pricing', contact: links.telegram }}
+                    startingPrice={startingPrice}
+               />
           </TranslationsProvider>
      )
 }

@@ -19,6 +19,8 @@ import {
      type LucideIcon,
 } from 'lucide-react'
 
+import { APP_ROUTES } from '@/shared/config/app-routes'
+
 export const NAV_GROUPS = ['overview', 'catalogue', 'operations', 'people'] as const
 export type NavGroupId = (typeof NAV_GROUPS)[number]
 
@@ -51,7 +53,7 @@ export type NavItem = {
 export const NAV: { group: NavGroupId; items: NavItem[] }[] = [
      {
           group: 'overview',
-          items: [{ id: 'dashboard', icon: LayoutDashboard, href: '/dashboard' }],
+          items: [{ id: 'dashboard', icon: LayoutDashboard, href: APP_ROUTES.dashboard }],
      },
      {
           group: 'catalogue',
@@ -67,7 +69,7 @@ export const NAV: { group: NavGroupId; items: NavItem[] }[] = [
                { id: 'orders', icon: ClipboardList },
                { id: 'billing', icon: ReceiptText },
                { id: 'payments', icon: Wallet },
-               { id: 'tables', icon: UtensilsCrossed, href: '/onboarding/tables' },
+               { id: 'tables', icon: UtensilsCrossed, href: APP_ROUTES.tables },
                { id: 'qr', icon: QrCode, href: '/onboarding/tables/print', lockable: true },
           ],
      },
@@ -81,3 +83,14 @@ export const NAV: { group: NavGroupId; items: NavItem[] }[] = [
           ],
      },
 ]
+
+/** The menu item (and its group) for a URL — gives every app page its title. */
+export function navItemFor(pathname: string): { group: NavGroupId; item: NavItem } {
+     for (const { group, items } of NAV) {
+          const item = items.find(
+               (i) => i.href && (pathname === i.href || pathname.startsWith(`${i.href}/`)),
+          )
+          if (item) return { group, item }
+     }
+     return { group: 'overview', item: NAV[0]!.items[0]! }
+}

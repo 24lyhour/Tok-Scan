@@ -17,12 +17,15 @@ export function ChecklistCard({
      title,
      m,
      locale,
+     soonLabel,
      compact = false,
 }: {
      rows: GoLiveRow[]
      title: string
-     m: OnboardingContent['dashboard']
+     m: OnboardingContent['goLive']
      locale: Locale
+     /** `common` → states.soon */
+     soonLabel: string
      compact?: boolean
 }) {
      const done = rows.filter((r) => r.done).length
@@ -84,7 +87,7 @@ export function ChecklistCard({
                               )}
                               {!compact && !row.done && row.action && (
                                    <span
-                                        title={m.actions.soon}
+                                        title={soonLabel}
                                         className="rounded-lg border border-line px-2.5 py-1 text-xs font-medium text-ink-3"
                                    >
                                         {m.actions[row.action]}

@@ -26,6 +26,7 @@ type Slots = {
  */
 export function Sidebar(props: Slots) {
      const { m } = useTranslations('workspace')
+     const common = useTranslations('common').m
      const [open, setOpen] = useState(false)
 
      return (
@@ -44,10 +45,15 @@ export function Sidebar(props: Slots) {
                     </button>
                </div>
                {open && (
-                    <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label={m.nav.main}>
+                    <div
+                         className="fixed inset-0 z-50 lg:hidden"
+                         role="dialog"
+                         aria-modal="true"
+                         aria-label={m.nav.main}
+                    >
                          <button
                               type="button"
-                              aria-label={m.nav.close}
+                              aria-label={common.actions.close}
                               onClick={() => setOpen(false)}
                               className="absolute inset-0 bg-ink/50 motion-safe:animate-in motion-safe:fade-in"
                          />
@@ -56,7 +62,7 @@ export function Sidebar(props: Slots) {
                               <button
                                    type="button"
                                    onClick={() => setOpen(false)}
-                                   aria-label={m.nav.close}
+                                   aria-label={common.actions.close}
                                    className="absolute top-3 right-3 flex size-9 items-center justify-center rounded-lg text-white/80 hover:bg-white/10"
                               >
                                    <X aria-hidden className="size-5" />
@@ -73,8 +79,14 @@ export function Sidebar(props: Slots) {
      )
 }
 
-function SidebarBody({ switcher, footer, qrUnlocked, onNavigate }: Slots & { onNavigate?: () => void }) {
+function SidebarBody({
+     switcher,
+     footer,
+     qrUnlocked,
+     onNavigate,
+}: Slots & { onNavigate?: () => void }) {
      const { m } = useTranslations('workspace')
+     const common = useTranslations('common').m
      const pathname = usePathname()
 
      return (
@@ -96,9 +108,11 @@ function SidebarBody({ switcher, footer, qrUnlocked, onNavigate }: Slots & { onN
                                              <NavLink
                                                   item={item}
                                                   label={m.nav.items[item.id]}
-                                                  active={Boolean(item.href && pathname === item.href)}
+                                                  active={Boolean(
+                                                       item.href && pathname === item.href,
+                                                  )}
                                                   locked={Boolean(item.lockable && !qrUnlocked)}
-                                                  soonLabel={m.nav.soon}
+                                                  soonLabel={common.states.soon}
                                                   lockedLabel={m.nav.locked}
                                                   onNavigate={onNavigate}
                                              />
@@ -162,7 +176,9 @@ function NavLink({
                className={cn(
                     row,
                     'outline-none focus-visible:ring-3 focus-visible:ring-white/30',
-                    active ? 'bg-white/12 font-semibold text-white' : 'text-white/80 hover:bg-white/8 hover:text-white',
+                    active
+                         ? 'bg-white/12 font-semibold text-white'
+                         : 'text-white/80 hover:bg-white/8 hover:text-white',
                )}
           >
                <Icon aria-hidden className="size-[18px]" />

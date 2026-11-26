@@ -121,6 +121,8 @@ export const km: OnboardingContent = {
           printLater: 'អ្នកនឹងបោះពុម្ពកូដ QR ពីផ្ទាំងគ្រប់គ្រង នៅពេលម៉ឺនុយរបស់អ្នករួចរាល់។',
           checklistTitle: 'បញ្ជីត្រៀមចាប់ផ្តើម',
           finish: 'បញ្ចប់ និងបើកផ្ទាំងគ្រប់គ្រង',
+          /** Button on the app's Tables page */
+          save: 'រក្សាទុកតុ',
      },
      print: {
           metaTitle: 'បោះពុម្ពកូដ QR តុ',
@@ -130,11 +132,10 @@ export const km: OnboardingContent = {
           scanToOrder: 'ស្កេនដើម្បីកុម្ម៉ង់',
           tip: 'គន្លឹះ៖ ក្នុងផ្ទាំងបោះពុម្ព ជ្រើសក្រដាស A6 (ឬ "Save as PDF") និងគែម "None"។',
      },
-     dashboard: {
-          metaTitle: 'ផ្ទាំងគ្រប់គ្រង',
+     /** "Get <restaurant> live" checklist (onboarding step 4 + dashboard) */
+     goLive: {
           title: 'ដាក់ {name} ឲ្យដំណើរការ',
           progress: '{done} / {total}',
-          subtitle: 'បង្ហាញនៅលើផ្ទាំងគ្រប់គ្រងរហូតដល់បញ្ចប់',
           items: {
                organization: 'បង្កើតស្ថាប័ន',
                outlet: 'បន្ថែមសាខាដំបូង',
@@ -147,15 +148,10 @@ export const km: OnboardingContent = {
                importCsv: 'នាំចូល CSV',
                connect: 'ភ្ជាប់',
                invite: 'អញ្ជើញ',
-               soon: 'នឹងមានឆាប់ៗ',
           },
-          trial: 'សាកល្បងឥតគិតថ្លៃ · បញ្ចប់ {date}',
-          printQr: 'បោះពុម្ពកូដ QR តុ',
-          printAfterMenu: 'សូមបន្ថែមម៉ឺនុយជាមុនសិន — រួចបោះពុម្ពកូដ QR ដើម្បីកុំឱ្យភ្ញៀវស្កេនឃើញទំព័រទទេ។',
           editSetup: 'កែការរៀបចំ',
           approvalNote:
                'មុនពេលអនុម័ត អ្នកអាចរៀបចំអ្វីៗទាំងអស់ និងទទួលការកុម្ម៉ង់ជាសាច់ប្រាក់បាន។ ការទូទាត់អនឡាញនឹងបើក បន្ទាប់ពីក្រុមការងាររបស់យើងផ្ទៀងផ្ទាត់រួច។',
-          outletLine: '{outlet} · តុ {tables}',
      },
      errors: {
           required: 'សូមបំពេញព័ត៌មាននេះ។',

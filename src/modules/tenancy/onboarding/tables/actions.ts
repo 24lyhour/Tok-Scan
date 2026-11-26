@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 
 import { newQrKey, TABLE_DEFAULTS, tableLabel } from '@/modules/tables'
+import { APP_ROUTES } from '@/shared/config/app-routes'
 import { formValues } from '@/shared/lib/validation'
 
 import { type StepState, validate } from '../errors'
@@ -25,7 +26,7 @@ export async function saveTables(
 
      const result = validate(tablesSchema, formValues(formData))
      if (!result.ok) return { status: 'error', fieldErrors: result.fieldErrors }
-     const { zone, count } = result.data
+     const { zone, count, returnTo } = result.data
      // Plan limit (free trial = Growth: 60 tables) — checked here too, never trust the browser
      if (count > (await maxTablesFor(ctx))) {
           return { status: 'error', fieldErrors: { count: 'tableLimit' } }
@@ -80,5 +81,5 @@ export async function saveTables(
           return { status: 'error', formError: 'generic' }
      }
 
-     redirect(STEP_PATHS.done)
+     redirect(returnTo === 'tables' ? APP_ROUTES.tables : STEP_PATHS.done)
 }

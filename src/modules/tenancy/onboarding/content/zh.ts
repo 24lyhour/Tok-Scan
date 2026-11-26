@@ -121,6 +121,8 @@ export const zh: OnboardingContent = {
           printLater: '菜单准备好后，您可以在控制台打印二维码。',
           checklistTitle: '上线清单',
           finish: '完成并打开控制台',
+          /** Button on the app's Tables page */
+          save: '保存餐桌',
      },
      print: {
           metaTitle: '打印餐桌二维码',
@@ -130,11 +132,10 @@ export const zh: OnboardingContent = {
           scanToOrder: '扫码点餐',
           tip: '提示：在打印窗口中选择 A6 纸张（或"另存为 PDF"），边距选"无"。',
      },
-     dashboard: {
-          metaTitle: '控制台',
+     /** "Get <restaurant> live" checklist (onboarding step 4 + dashboard) */
+     goLive: {
           title: '让 {name} 上线',
           progress: '{done} / {total}',
-          subtitle: '完成前会一直显示在控制台上',
           items: {
                organization: '创建组织',
                outlet: '添加第一家门店',
@@ -147,15 +148,10 @@ export const zh: OnboardingContent = {
                importCsv: '导入 CSV',
                connect: '连接',
                invite: '邀请',
-               soon: '即将推出',
           },
-          trial: '免费试用 · {date} 结束',
-          printQr: '打印餐桌二维码',
-          printAfterMenu: '请先添加菜单，再打印二维码，这样客人扫码时不会看到空白页面。',
           editSetup: '修改设置',
           approvalNote:
                '审核通过前，您可以完成所有设置并接受现金订单。我们的团队快速审核后，即可开通在线支付。',
-          outletLine: '{outlet} · {tables} 张餐桌',
      },
      errors: {
           required: '此项为必填项。',

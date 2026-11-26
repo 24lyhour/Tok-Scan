@@ -5,8 +5,6 @@ export const km: WorkspaceContent = {
      nav: {
           main: 'ម៉ឺនុយមេ',
           open: 'បើកម៉ឺនុយ',
-          close: 'បិទម៉ឺនុយ',
-          soon: 'ឆាប់ៗ',
           locked: 'សូមបន្ថែមម៉ឺនុយជាមុនសិន',
           groups: {
                overview: 'ទិដ្ឋភាពទូទៅ',
@@ -34,7 +32,8 @@ export const km: WorkspaceContent = {
           label: 'ប្តូរស្ថាប័ន ឬសាខា',
           current: '{outlet} · {index} ក្នុងចំណោម {total} សាខា',
           organizations: 'ស្ថាប័ន',
-          membership: '{role} · {count} សាខា',
+          membership: '{role} · {outlets}',
+          outletCount: { other: '{count} សាខា' },
           outletsOf: 'សាខា · {org}',
           tables: 'តុ {count}',
           allOutlets: 'សាខាទាំងអស់',
@@ -50,18 +49,14 @@ export const km: WorkspaceContent = {
           choose: 'ជ្រើសរើសគម្រោង',
      },
      topbar: {
-          section: 'ទិដ្ឋភាពទូទៅ',
           today: 'ថ្ងៃនេះ {date}',
           search: 'ស្វែងរកការកុម្ម៉ង់ តុ វិក្កយបត្រ…',
           notifications: 'ការជូនដំណឹង',
      },
      user: {
           role: '{role} · {org}',
-          logout: 'ចាកចេញ',
      },
      dashboard: {
-          metaTitle: 'ផ្ទាំងគ្រប់គ្រង',
-          title: 'ផ្ទាំងគ្រប់គ្រង',
           kpi: {
                revenue: 'ចំណូលសរុប',
                orders: 'ការកុម្ម៉ង់សរុប',

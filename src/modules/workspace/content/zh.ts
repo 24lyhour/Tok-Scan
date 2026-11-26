@@ -4,8 +4,6 @@ export const zh: WorkspaceContent = {
      nav: {
           main: '主导航',
           open: '打开菜单',
-          close: '关闭菜单',
-          soon: '即将推出',
           locked: '请先添加菜单',
           groups: {
                overview: '概览',
@@ -33,7 +31,8 @@ export const zh: WorkspaceContent = {
           label: '切换机构或门店',
           current: '{outlet} · 第 {index} / {total} 家门店',
           organizations: '机构',
-          membership: '{role} · {count} 家门店',
+          membership: '{role} · {outlets}',
+          outletCount: { other: '{count} 家门店' },
           outletsOf: '门店 · {org}',
           tables: '{count} 张桌',
           allOutlets: '全部门店',
@@ -49,18 +48,14 @@ export const zh: WorkspaceContent = {
           choose: '选择套餐',
      },
      topbar: {
-          section: '概览',
           today: '今天，{date}',
           search: '搜索订单、餐桌、发票…',
           notifications: '通知',
      },
      user: {
           role: '{role} · {org}',
-          logout: '退出登录',
      },
      dashboard: {
-          metaTitle: '控制台',
-          title: '控制台',
           kpi: {
                revenue: '总收入',
                orders: '订单总数',

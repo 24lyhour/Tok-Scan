@@ -9,7 +9,7 @@ src/
 │  └─ (payload)/                 # Payload admin + REST/GraphQL (generated, don't edit by hand)
 ├─ modules/
 │  ├─ index.ts                   # registry: imports every module's payload.ts → payload.config.ts
-│  ├─ core/                      # platform-wide building blocks
+│  ├─ core/                      # platform-wide: access.ts (roles) · plans.ts (limits) · media
 │  │  ├─ access.ts               # WHO CAN DO WHAT — role rules used by every collection
 │  │  ├─ collections/media/      # Media (tenant-scoped) + Vercel Blob storage
 │  │  └─ i18n/
@@ -20,9 +20,11 @@ src/
 │  │  ├─ shared/                 # auth shell + social sign-in (auth and onboarding)
 │  │  └─ plugin.ts               # multi-tenant plugin
 │  ├─ tables/                    # Module 10 — collections/tables · qr.ts · components/qr-code
+│  ├─ workspace/                 # signed-in app: AppShell (sidebar, switcher, top bar) + dashboard
+│  ├─ assistant/                 # TOKSCAN chat — reusable (landing: visitor · app: owner)
 │  └─ marketing/landing/         # public landing page (guide p.21–22)
 ├─ shared/                       # used by 2+ modules, NO business rules, never imports modules
-│  ├─ components/ui/             # shadcn
+│  ├─ components/ui/             # shadcn + StatCard · Legend · Note (reusable building blocks)
 │  ├─ components/form/           # Field, inputs, Toggle, Stepper, ChoiceChips, useActionForm
 │  ├─ components/{brand,i18n,motion,security}/
 │  ├─ lib/                       # utils (cn) · validation (Zod helpers) · payload (exists, relationId…)
@@ -86,6 +88,7 @@ Server actions write with `overrideAccess: true` **after** checking the user the
 
 ## Rules
 
+0. **Entry points.** Other modules import `@/modules/<module>` (public: pages, components, helpers — safe in the browser) or `@/modules/<module>/payload` (backend: collections, access rules). *Enforced by ESLint.*
 1. **Routes are thin.** A file in `src/app/` only imports from a module entry point, e.g. `@/modules/tenancy`.
 2. **Import modules through their entry point** (`@/modules/<module>`), relative paths inside a module. *Enforced by ESLint.*
 3. **`src/shared/` never imports `src/modules/`.** *Enforced by ESLint.*
@@ -111,6 +114,17 @@ Server actions write with `overrideAccess: true` **after** checking the user the
 
 CI (`.github/workflows/ci.yml`) runs all of these on every pull request with a fresh Postgres,
 applies every migration, and fails if a collection changed without a migration.
+
+### App pages (signed-in)
+
+Every app page lives in the route group `src/app/(frontend)/(app)/`, whose `layout.tsx` is
+`AppShell` (`@/modules/workspace`): sidebar, organization/outlet switcher, top bar, TOKSCAN.
+A page renders only its content. To add one (e.g. Menu):
+
+1. Add the URL to `src/shared/config/app-routes.ts`.
+2. Give its menu item an `href` in `src/modules/workspace/shell/nav.ts` — the sidebar link and the
+   top-bar title ("Catalogue · Menu Management") come from there.
+3. Create `src/app/(frontend)/(app)/<page>/page.tsx` that renders the module's page.
 
 ### Adding a module (e.g. Menu)
 

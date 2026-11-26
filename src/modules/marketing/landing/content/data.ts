@@ -4,15 +4,16 @@
  */
 
 import { PLAN_NAMES } from '@/modules/core'
+import { SUPPORT } from '@/shared/config/contact'
 
 export const links = {
      /** Every primary CTA leads into onboarding step 1 (guide p.21 "One goal per page") */
      signup: '/signup',
      login: '/login',
      // Guide p.21–22: demos and sales go through Telegram
-     demo: 'https://t.me/LyhourKouch',
-     telegram: 'https://t.me/LyhourKouch',
-     telegramHandle: '@LyhourKouch',
+     demo: SUPPORT.telegram,
+     telegram: SUPPORT.telegram,
+     telegramHandle: SUPPORT.telegramHandle,
 } as const
 
 export const navItems = [
@@ -44,10 +45,27 @@ export const yearlyMonthsCharged = 10
 // Sample prices from the design guide (p.26) — confirm before launch.
 export const plans: Plan[] = [
      { id: 'starter', name: PLAN_NAMES.starter, monthly: 19, href: links.signup },
-     { id: 'growth', name: PLAN_NAMES.growth, monthly: 49, href: links.signup, highlight: 'primary' },
-     { id: 'premium', name: PLAN_NAMES.premium, monthly: 89, href: links.signup, highlight: 'premium' },
+     {
+          id: 'growth',
+          name: PLAN_NAMES.growth,
+          monthly: 49,
+          href: links.signup,
+          highlight: 'primary',
+     },
+     {
+          id: 'premium',
+          name: PLAN_NAMES.premium,
+          monthly: 89,
+          href: links.signup,
+          highlight: 'premium',
+     },
      { id: 'chain', name: PLAN_NAMES.chain, monthly: null, href: links.demo },
 ]
+
+/** Cheapest monthly plan ("Plans start at $19") */
+export const startingPrice = Math.min(
+     ...plans.flatMap((p) => (p.monthly === null ? [] : [p.monthly])),
+)
 
 // TODO(before launch): replace with real customers who agreed to be listed.
 export const customerNames = [

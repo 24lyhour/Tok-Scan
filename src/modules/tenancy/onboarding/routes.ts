@@ -1,3 +1,5 @@
+import { APP_ROUTES } from '@/shared/config/app-routes'
+
 import type { OnboardingStep } from '../collections/organizations/constants'
 
 /** Every onboarding URL — the only place they are written. */
@@ -9,7 +11,7 @@ export const onboardingRoutes = {
      outlet: '/onboarding/outlet',
      tables: '/onboarding/tables',
      printQr: '/onboarding/tables/print',
-     dashboard: '/dashboard',
+     dashboard: APP_ROUTES.dashboard,
 } as const
 
 /** Page for each onboarding step (guide p.23: account → organization → outlet → tables). */

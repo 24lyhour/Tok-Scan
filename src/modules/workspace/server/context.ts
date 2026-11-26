@@ -5,7 +5,13 @@ import { cache } from 'react'
 
 import { limitsFor, PLAN_NAMES, TRIAL_PLAN } from '@/modules/core'
 import { orgIdsWithRole, type OrgRole } from '@/modules/core/payload'
-import { canPrintQr, getOnboardingContext, goLiveRows, onboardingRoutes } from '@/modules/tenancy'
+import {
+     canPrintQr,
+     DEFAULT_BRAND_COLOR,
+     getOnboardingContext,
+     goLiveRows,
+     onboardingRoutes,
+} from '@/modules/tenancy'
 import { relationId } from '@/shared/lib/payload'
 
 /**
@@ -19,9 +25,11 @@ export const getWorkspaceContext = cache(async () => {
      if (ctx.step !== 'done' || !organization || !outlet) redirect(onboardingRoutes.resume)
 
      const roleIn = (orgId: number) =>
-          (user.tenants?.find((t) => relationId(t.tenant) === orgId)?.orgRole ?? 'member') as OrgRole
+          (user.tenants?.find((t) => relationId(t.tenant) === orgId)?.orgRole ??
+               'member') as OrgRole
      const count = async (collection: 'outlets' | 'tables', where: object) =>
-          (await payload.count({ collection, where: where as never, overrideAccess: true })).totalDocs
+          (await payload.count({ collection, where: where as never, overrideAccess: true }))
+               .totalDocs
 
      const orgDocs = await payload.find({
           collection: 'organizations',
@@ -35,7 +43,7 @@ export const getWorkspaceContext = cache(async () => {
           orgDocs.docs.map(async (org) => ({
                id: org.id,
                name: org.name,
-               color: org.brand?.primaryColor ?? null,
+               color: org.brand?.primaryColor ?? DEFAULT_BRAND_COLOR,
                role: roleIn(org.id),
                outlets: await count('outlets', { tenant: { equals: org.id } }),
                current: org.id === organization.id,
