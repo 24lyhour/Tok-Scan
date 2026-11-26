@@ -5,11 +5,12 @@
  * index.ts exporting `Translations<…>`), then add it to `catalog` below. Import the content folder
  * directly (not the module index) to avoid import cycles. Types update automatically.
  */
-import { assistantContent } from '@/modules/marketing/assistant/content'
+import { assistantContent } from '@/modules/assistant/content'
 import { consentContent } from '@/modules/marketing/consent/content'
 import { landingContent } from '@/modules/marketing/landing/content'
 import { authContent } from '@/modules/tenancy/auth/content'
 import { onboardingContent } from '@/modules/tenancy/onboarding/content'
+import { workspaceContent } from '@/modules/workspace/content'
 import type { Locale, Translations } from '@/shared/i18n/locales'
 
 import { commonMessages } from './common'
@@ -21,6 +22,7 @@ const catalog = {
      auth: authContent,
      assistant: assistantContent,
      consent: consentContent,
+     workspace: workspaceContent,
 } satisfies Record<string, Translations<object>>
 
 type Catalog = typeof catalog

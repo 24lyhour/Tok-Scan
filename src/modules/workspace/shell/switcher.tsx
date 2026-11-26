@@ -4,13 +4,13 @@ import { Check, ChevronsUpDown, LayoutGrid, MapPin, Plus } from 'lucide-react'
 import { Button, Dialog, DialogTrigger, Popover } from 'react-aria-components'
 
 import { useTranslations } from '@/i18n/client'
-import { interpolate, localizeDigits } from '@/shared/i18n/format'
+import { interpolate, localizeDigits, plural } from '@/shared/i18n/format'
 import { cn } from '@/shared/lib/utils'
 
 export type SwitcherOrg = {
      id: number
      name: string
-     color: string | null
+     color: string
      role: 'owner' | 'admin' | 'member'
      outlets: number
      current: boolean
@@ -47,7 +47,9 @@ export function Switcher({
                >
                     <OrgTile name={org.name} color={org.color} />
                     <span className="min-w-0 flex-1">
-                         <span className="block truncate text-sm font-semibold text-white">{org.name}</span>
+                         <span className="block truncate text-sm font-semibold text-white">
+                              {org.name}
+                         </span>
                          <span className="block truncate text-xs text-white/65">
                               {interpolate(copy.current, {
                                    outlet: outlet.name,
@@ -77,21 +79,31 @@ export function Switcher({
                                    >
                                         <OrgTile name={o.name} color={o.color} />
                                         <span className="min-w-0 flex-1">
-                                             <span className="block truncate text-sm font-semibold text-ink">{o.name}</span>
+                                             <span className="block truncate text-sm font-semibold text-ink">
+                                                  {o.name}
+                                             </span>
                                              <span className="block text-xs text-ink-3">
                                                   {interpolate(copy.membership, {
                                                        role: copy.roles[o.role],
-                                                       count: n(o.outlets),
+                                                       outlets: plural(
+                                                            locale,
+                                                            o.outlets,
+                                                            copy.outletCount,
+                                                       ),
                                                   })}
                                              </span>
                                         </span>
-                                        {o.current && <Check aria-hidden className="size-4 text-brand-700" />}
+                                        {o.current && (
+                                             <Check aria-hidden className="size-4 text-brand-700" />
+                                        )}
                                    </li>
                               ))}
                          </ul>
 
                          <div className="border-t border-line">
-                              <SectionTitle>{interpolate(copy.outletsOf, { org: org.name })}</SectionTitle>
+                              <SectionTitle>
+                                   {interpolate(copy.outletsOf, { org: org.name })}
+                              </SectionTitle>
                               <ul className="px-1.5 pb-1.5 text-sm">
                                    <li className="flex items-center gap-2.5 rounded-lg px-2 py-2 text-ink-3">
                                         <LayoutGrid aria-hidden className="size-4" />
@@ -112,7 +124,12 @@ export function Switcher({
                                              <span className="text-xs font-normal text-ink-3">
                                                   {interpolate(copy.tables, { count: n(o.tables) })}
                                              </span>
-                                             {o.current && <Check aria-hidden className="size-4 text-brand-700" />}
+                                             {o.current && (
+                                                  <Check
+                                                       aria-hidden
+                                                       className="size-4 text-brand-700"
+                                                  />
+                                             )}
                                         </li>
                                    ))}
                               </ul>
@@ -120,10 +137,15 @@ export function Switcher({
 
                          <div className="flex items-center gap-2 border-t border-line px-4 py-3 text-sm">
                               <Plus aria-hidden className="size-4 text-ink-3" />
-                              <span className="flex-1 font-semibold text-ink-3">{copy.createOutlet}</span>
+                              <span className="flex-1 font-semibold text-ink-3">
+                                   {copy.createOutlet}
+                              </span>
                               {maxOutlets !== null && (
                                    <span className="text-xs text-ink-3">
-                                        {interpolate(copy.used, { used: n(outlets.length), max: n(maxOutlets) })}
+                                        {interpolate(copy.used, {
+                                             used: n(outlets.length),
+                                             max: n(maxOutlets),
+                                        })}
                                    </span>
                               )}
                          </div>
@@ -142,12 +164,12 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 }
 
 /** Organization initial on its brand colour (logo upload shows later) */
-function OrgTile({ name, color }: { name: string; color: string | null }) {
+function OrgTile({ name, color }: { name: string; color: string }) {
      return (
           <span
                aria-hidden
                className="flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white"
-               style={{ backgroundColor: color ?? '#14513F' }}
+               style={{ backgroundColor: color }}
           >
                {(name.trim()[0] ?? 'T').toUpperCase()}
           </span>

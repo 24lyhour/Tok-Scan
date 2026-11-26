@@ -1,12 +1,12 @@
 /** English — the source of truth: every other language must have exactly the same keys. */
+import type { PluralForms } from '@/shared/i18n/format'
+
 import type { NavGroupId, NavItemId } from '../shell/nav'
 
 export const en = {
      nav: {
           main: 'Main navigation',
           open: 'Open menu',
-          close: 'Close menu',
-          soon: 'Soon',
           locked: 'Add your menu first',
           groups: {
                overview: 'Overview',
@@ -34,7 +34,8 @@ export const en = {
           label: 'Switch organization or outlet',
           current: '{outlet} · {index} of {total} outlets',
           organizations: 'Organizations',
-          membership: '{role} · {count} outlets',
+          membership: '{role} · {outlets}',
+          outletCount: { one: '{count} outlet', other: '{count} outlets' } as PluralForms,
           outletsOf: 'Outlets · {org}',
           tables: '{count} tables',
           allOutlets: 'All outlets',
@@ -50,18 +51,14 @@ export const en = {
           choose: 'Choose plan',
      },
      topbar: {
-          section: 'Overview',
           today: 'Today, {date}',
           search: 'Search orders, tables, invoices…',
           notifications: 'Notifications',
      },
      user: {
           role: '{role} · {org}',
-          logout: 'Log out',
      },
      dashboard: {
-          metaTitle: 'Dashboard',
-          title: 'Dashboard',
           kpi: {
                revenue: 'Total revenue',
                orders: 'Total orders',

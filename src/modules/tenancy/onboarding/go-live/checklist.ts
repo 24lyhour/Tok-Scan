@@ -21,7 +21,7 @@ export const GO_LIVE_LINKS: Partial<Record<GoLiveItem, string>> = {
 }
 
 /** Button shown for items whose module isn't built yet (Menu, Payments, Staff). */
-type ActionKey = keyof OnboardingContent['dashboard']['actions']
+type ActionKey = keyof OnboardingContent['goLive']['actions']
 
 export const GO_LIVE_ACTIONS: Partial<Record<GoLiveItem, ActionKey>> = {
      menu: 'importCsv',

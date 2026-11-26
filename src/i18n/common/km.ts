@@ -33,6 +33,7 @@ export const km: CommonMessages = {
           error: 'មានបញ្ហាអ្វីមួយ។ សូមព្យាយាមម្តងទៀត។',
           required: 'ត្រូវបំពេញ',
           optional: 'មិនបង្ខំ',
+          soon: 'ឆាប់ៗ',
           /** Under a disabled button — followed by a red * */
           fillRequired: 'សូមបំពេញព័ត៌មានទាំងអស់ដែលមានសញ្ញា',
      },

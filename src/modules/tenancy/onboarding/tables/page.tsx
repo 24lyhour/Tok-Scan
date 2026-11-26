@@ -14,6 +14,7 @@ const DEFAULT_TABLE_COUNT = 10
 export async function TablesStepPage() {
      const ctx = await requireStep('tables')
      const { m, locale } = await getTranslations('onboarding')
+     const common = (await getTranslations('common')).m
      const { organization, tables } = ctx
      const maxTables = await maxTablesFor(ctx)
 
@@ -35,7 +36,8 @@ export async function TablesStepPage() {
                               compact
                               rows={goLiveRows(ctx)}
                               title={m.tables.checklistTitle}
-                              m={m.dashboard}
+                              m={m.goLive}
+                              soonLabel={common.states.soon}
                               locale={locale}
                          />
                     }

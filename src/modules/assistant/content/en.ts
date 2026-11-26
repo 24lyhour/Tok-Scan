@@ -7,18 +7,20 @@ export const en = {
           close: 'Close chat',
      },
      greeting: {
-          hello: 'Hello valued customer',
-          question: 'How can tok-scan help you?',
+          visitor: { hello: 'Hello valued customer', question: 'How can tok-scan help you?' },
+          owner: { hello: 'Hi {name}', question: 'Need help getting set up?' },
           dismiss: 'Dismiss message',
      },
      panel: {
           title: 'TOKSCAN',
           subtitle: 'AI assistant · Preview',
           online: 'Online',
-          close: 'Close',
           expand: 'Full screen',
           collapse: 'Exit full screen',
-          welcome: 'Hi! I’m TOKSCAN, the tok-scan assistant. Ask me about QR ordering, KHQR payments, pricing or getting started.',
+          welcome: {
+               visitor: 'Hi! I’m TOKSCAN, the tok-scan assistant. Ask me about QR ordering, KHQR payments, pricing or getting started.',
+               owner: 'Hi! I’m TOKSCAN. I can help you finish setting up: your menu, payments, staff and table QR codes.',
+          },
           suggestionsLabel: 'Suggested questions',
           placeholder: 'Ask TOKSCAN…',
           send: 'Send',
@@ -32,6 +34,10 @@ export const en = {
           khqr: 'Can guests pay with KHQR?',
           pricing: 'How much does it cost?',
           trial: 'Start a free trial',
+          menu: 'How do I add my menu?',
+          payments: 'How do I connect KHQR?',
+          staff: 'How do I invite staff?',
+          qr: 'When can I print QR codes?',
      } satisfies Record<TopicId, string>,
      /** Ready-made answers — `{price}` is filled in from the plan data */
      answers: {
@@ -41,9 +47,14 @@ export const en = {
           trial: 'Great choice! Create your account, then add your restaurant, first outlet and tables. It only takes a few minutes.',
           fallback:
                'Thanks for your question! I’m still in preview, so I can only answer a few topics for now. Try a question below, or talk to our team on Telegram.',
+          menu: 'Menu Management is coming next: you’ll add dishes with photos and prices, or import them all at once from a CSV file.',
+          payments:
+               'KHQR / ABA PayWay setup is coming soon. Until then you can take cash orders — online payments switch on after a quick check by our team.',
+          staff: 'Inviting staff is coming soon: each person gets a role per outlet — manager, cashier, kitchen or waiter.',
+          qr: 'Once your menu is added, print the table QR codes from “QR Codes” in the menu — so guests never scan to an empty page.',
      } satisfies Record<TopicId | 'fallback', string>,
      actions: {
-          trial: 'Start free trial',
+          signup: 'Start free trial',
           pricing: 'See pricing',
           contact: 'Talk to our team',
      },

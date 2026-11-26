@@ -8,9 +8,14 @@ import { LogoMark } from '@/shared/components/brand/logo'
 import { formatMoney, interpolate } from '@/shared/i18n/format'
 import { cn } from '@/shared/lib/utils'
 
-import type { Consent } from '../../consent/consent'
-import { useConsent } from '../../consent/use-consent'
-import { matchTopic, REPLY_ACTIONS, STARTING_PRICE, TOPIC_IDS, type ReplyId } from '../topics'
+import {
+     matchTopic,
+     REPLY_ACTIONS,
+     TOPICS,
+     type AssistantLinks,
+     type Audience,
+     type ReplyId,
+} from '../topics'
 
 type Message = {
      id: number
@@ -19,37 +24,52 @@ type Message = {
      action?: { label: string; href: string }
 }
 
-/** The greeting shows once per browser session */
-const GREETED_KEY = 'tok-assistant-greeted'
+/** The greeting shows once per browser session (per audience) */
+const greetedKey = (audience: Audience) => `tok-assistant-greeted-${audience}`
 const GREETING_DELAY = 1000
 const TYPING_DELAY = 700
 
-function wasGreeted(): boolean {
+function wasGreeted(audience: Audience): boolean {
      try {
-          return sessionStorage.getItem(GREETED_KEY) === '1'
+          return sessionStorage.getItem(greetedKey(audience)) === '1'
      } catch {
           return false
      }
 }
-function markGreeted() {
+function markGreeted(audience: Audience) {
      try {
-          sessionStorage.setItem(GREETED_KEY, '1')
+          sessionStorage.setItem(greetedKey(audience), '1')
      } catch {
           // private mode / storage blocked — the greeting may show again, that's fine
      }
 }
 
 /**
- * TOKSCAN — tok-scan's assistant (UI preview, ready-made answers; real AI later).
+ * TOKSCAN — tok-scan's assistant (UI preview, ready-made answers; real AI later). Reusable:
+ *   landing page  <AssistantWidget audience="visitor" links={…} startingPrice={19} />
+ *   app shell     <AssistantWidget audience="owner" name="Sok" links={{ contact }} />
  * - Launcher bottom-right; on first open a greeting bubble waves hello after 1 s (once a session).
  *   On phones it sits above the cookie banner while that is open (`--consent-offset`).
  * - Panel: welcome, suggested questions, typed questions, typing indicator, an action per answer.
  * - Full screen: ⤢ in the header (text stays at a readable width, page behind stops scrolling).
  * - Keyboard: Esc leaves full screen first, then closes and returns focus to the launcher.
  */
-export function AssistantWidget({ consent: initialConsent }: { consent: Consent | null }) {
+export function AssistantWidget({
+     audience,
+     links,
+     startingPrice,
+     name,
+}: {
+     audience: Audience
+     /** Where answer buttons lead (sign-up, pricing, contact) — given by the page */
+     links: AssistantLinks
+     /** Fills {price} in the pricing answer */
+     startingPrice?: number
+     /** Owner's first name for the greeting */
+     name?: string
+}) {
      const { m } = useTranslations('assistant')
-     const consent = useConsent(initialConsent)
+     const common = useTranslations('common').m
      const panelId = useId()
      const titleId = useId()
 
@@ -70,10 +90,10 @@ export function AssistantWidget({ consent: initialConsent }: { consent: Consent 
      useEffect(() => {
           if (open) return
           const timer = setTimeout(() => {
-               if (!wasGreeted()) setGreeting(true)
+               if (!wasGreeted(audience)) setGreeting(true)
           }, GREETING_DELAY)
           return () => clearTimeout(timer)
-     }, [open])
+     }, [open, audience])
 
      useEffect(() => {
           if (open) inputRef.current?.focus()
@@ -101,7 +121,7 @@ export function AssistantWidget({ consent: initialConsent }: { consent: Consent 
      const openPanel = () => {
           setOpen(true)
           setGreeting(false)
-          markGreeted()
+          markGreeted(audience)
      }
      const closePanel = () => {
           setOpen(false)
@@ -115,14 +135,17 @@ export function AssistantWidget({ consent: initialConsent }: { consent: Consent 
      }
      const dismissGreeting = () => {
           setGreeting(false)
-          markGreeted()
+          markGreeted(audience)
      }
 
      const replyFor = (id: ReplyId): Omit<Message, 'id' | 'from'> => {
-          const { action, href } = REPLY_ACTIONS[id]
+          const link = REPLY_ACTIONS[id]
+          const href = link ? links[link] : undefined
           return {
-               text: interpolate(m.answers[id], { price: formatMoney(STARTING_PRICE) }),
-               action: { label: m.actions[action], href },
+               text: interpolate(m.answers[id], {
+                    price: startingPrice === undefined ? '' : formatMoney(startingPrice),
+               }),
+               action: link && href ? { label: m.actions[link], href } : undefined,
           }
      }
 
@@ -145,15 +168,16 @@ export function AssistantWidget({ consent: initialConsent }: { consent: Consent 
           const text = draft.trim()
           if (!text || typing) return
           setDraft('')
-          ask(text, matchTopic(text))
+          ask(text, matchTopic(text, audience))
      }
 
      return (
           <div
                className={cn(
                     'pointer-events-none fixed right-4 bottom-4 z-[45] flex flex-col items-end gap-3 transition-[bottom] duration-300 ease-out-soft sm:right-6 sm:bottom-6',
-                    // Phones: stay above the cookie banner while it's open (it sets --consent-offset)
-                    !consent && 'max-sm:bottom-[calc(var(--consent-offset,0px)+1rem)]',
+                    // Phones: stay above the cookie banner while it's open (it sets --consent-offset;
+                    // without a banner the variable is unset → 0)
+                    'max-sm:bottom-[calc(var(--consent-offset,0px)+1rem)]',
                )}
           >
                {open && (
@@ -201,7 +225,7 @@ export function AssistantWidget({ consent: initialConsent }: { consent: Consent 
                               <button
                                    type="button"
                                    onClick={closePanel}
-                                   aria-label={m.panel.close}
+                                   aria-label={common.actions.close}
                                    className="flex size-10 items-center justify-center rounded-full text-white/80 hover:bg-white/10 hover:text-white focus-visible:ring-3 focus-visible:ring-white/40 focus-visible:outline-none"
                               >
                                    <X aria-hidden className="size-5" />
@@ -219,13 +243,13 @@ export function AssistantWidget({ consent: initialConsent }: { consent: Consent 
                                         expanded && 'mx-auto w-full max-w-3xl py-4',
                                    )}
                               >
-                                   <BotBubble text={m.panel.welcome} />
+                                   <BotBubble text={m.panel.welcome[audience]} />
                                    <div
                                         role="group"
                                         aria-label={m.panel.suggestionsLabel}
                                         className="flex flex-wrap gap-2 pl-9"
                                    >
-                                        {TOPIC_IDS.map((id) => (
+                                        {TOPICS[audience].map((id) => (
                                              <button
                                                   key={id}
                                                   type="button"
@@ -314,7 +338,9 @@ export function AssistantWidget({ consent: initialConsent }: { consent: Consent 
                                    className="block rounded-2xl rounded-br-md bg-white px-4 py-3 text-left text-sm text-ink shadow-[0_12px_32px_-12px_rgb(22_24_29/0.4)] ring-1 ring-line hover:ring-brand-300"
                               >
                                    <span className="block font-semibold">
-                                        {m.greeting.hello}{' '}
+                                        {interpolate(m.greeting[audience].hello, {
+                                             name: name ?? '',
+                                        })}{' '}
                                         <span
                                              aria-hidden
                                              className="inline-block origin-[70%_70%] motion-safe:animate-wave"
@@ -322,7 +348,9 @@ export function AssistantWidget({ consent: initialConsent }: { consent: Consent 
                                              👋
                                         </span>
                                    </span>
-                                   <span className="block text-ink-2">{m.greeting.question}</span>
+                                   <span className="block text-ink-2">
+                                        {m.greeting[audience].question}
+                                   </span>
                               </button>
                               <button
                                    type="button"

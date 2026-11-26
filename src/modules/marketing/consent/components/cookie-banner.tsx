@@ -40,7 +40,7 @@ export function CookieBanner({ initial }: { initial: Consent | null }) {
                className="fixed inset-x-3 bottom-3 z-[45] rounded-2xl border border-line bg-white p-4 shadow-[0_16px_48px_-16px_rgb(22_24_29/0.35)] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 sm:right-auto sm:bottom-6 sm:left-6 sm:max-w-sm sm:p-5"
           >
                <div className="flex items-start gap-3">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-saffron-50 text-saffron-700">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-saffron-50 text-saffron-600">
                          <Cookie aria-hidden className="size-5" />
                     </span>
                     <div className="min-w-0">

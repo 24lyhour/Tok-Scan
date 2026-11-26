@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
-import { goLiveMetadata, GoLivePage } from '@/modules/tenancy'
+import { DashboardPage, dashboardMetadata } from '@/modules/workspace'
 
-export const generateMetadata = (): Promise<Metadata> => goLiveMetadata()
+export const generateMetadata = (): Promise<Metadata> => dashboardMetadata()
 
-export default GoLivePage
+export default DashboardPage

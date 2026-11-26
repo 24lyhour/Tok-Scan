@@ -134,11 +134,10 @@ export const en = {
           scanToOrder: 'Scan to order',
           tip: 'Tip: in the print window choose paper size A6 (or "Save as PDF"), margins "None".',
      },
-     dashboard: {
-          metaTitle: 'Dashboard',
+     /** "Get <restaurant> live" checklist (onboarding step 4 + dashboard) */
+     goLive: {
           title: 'Get {name} live',
           progress: '{done} / {total}',
-          subtitle: 'Shown on your dashboard until finished',
           items: {
                organization: 'Create organization',
                outlet: 'Add first outlet',
@@ -151,16 +150,10 @@ export const en = {
                importCsv: 'Import CSV',
                connect: 'Connect',
                invite: 'Invite',
-               soon: 'Coming soon',
           },
-          trial: 'Free trial · ends {date}',
-          printQr: 'Print table QR codes',
-          printAfterMenu:
-               'Add your menu first — then print the QR codes, so guests never scan to an empty page.',
           editSetup: 'Edit setup',
           approvalNote:
                'Before approval you can build everything and take cash orders. Online payments switch on after a quick verification by our team.',
-          outletLine: '{outlet} · {tables} tables',
      },
      errors: {
           required: 'This field is required.',

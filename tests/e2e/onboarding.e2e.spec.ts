@@ -67,8 +67,9 @@ test('a new owner sets up a restaurant', async ({ page, context }) => {
           await expect(page).toHaveURL(/\/onboarding\/tables$/)
      })
 
-     await test.step('step 4 · tables + print sheet', async () => {
+     await test.step('step 4 · tables (no printing before the menu exists)', async () => {
           await expect(page.locator('figure svg')).toHaveCount(6) // QR previews
+          await expect(page.getByRole('button', { name: /Download all QR/ })).toHaveCount(0)
           // Free trial = Growth: max 60 tables
           await expect(page.getByText('Free trial: up to 60 tables')).toBeVisible()
           const count = page.getByRole('spinbutton', { name: 'Tables' })
@@ -76,20 +77,33 @@ test('a new owner sets up a restaurant', async ({ page, context }) => {
           await expect(count).toHaveValue('60')
           await count.fill('10')
           await page.getByRole('button', { name: 'Fewer tables' }).click() // 10 → 9
-          await page.getByRole('button', { name: /Download all QR/ }).click()
-          await expect(page).toHaveURL(/\/onboarding\/tables\/print$/)
-          await expect(page.locator('article')).toHaveCount(9)
-     })
-
-     await test.step('finish → dashboard', async () => {
-          await page.goto('/onboarding/tables')
           await page.getByRole('textbox', { name: 'Zone' }).fill('') // optional → "Indoor"
           await page.getByRole('button', { name: 'Finish & open dashboard' }).click()
+     })
+
+     await test.step('dashboard (app shell, guide p.8 / p.24)', async () => {
           await expect(page).toHaveURL(/\/dashboard$/)
-          await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-               'Get E2E Mahob Kitchen live',
-          )
-          await expect(page.getByText('BKK1 · 9 tables')).toBeVisible()
+          await expect(page.getByRole('heading', { level: 1 })).toHaveText('Dashboard')
+          await expect(page.getByText('Get E2E Mahob Kitchen live')).toBeVisible()
+          await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible()
+          await expect(page.getByText('Live tables')).toBeVisible()
+          await expect(page.getByText('0 of 9 in use')).toBeVisible()
+          if (process.env.E2E_SCREENSHOTS) {
+               await page.screenshot({
+                    path: `${process.env.E2E_SCREENSHOTS}/dashboard.png`,
+                    fullPage: true,
+               })
+          }
+          // Same TOKSCAN assistant as the landing page, with owner questions
+          await page.getByText('Need help getting set up?').click()
+          await page.getByRole('button', { name: 'When can I print QR codes?' }).click()
+          await expect(page.getByText(/Once your menu is added/)).toBeVisible()
+          await page.keyboard.press('Escape')
+          // QR codes are locked until the menu exists — the print page sends you back
+          const nav = page.getByRole('navigation', { name: 'Main navigation' })
+          await expect(nav.locator('[aria-disabled="true"]', { hasText: 'QR Codes' })).toBeVisible()
+          await page.goto('/onboarding/tables/print')
+          await expect(page).toHaveURL(/\/dashboard$/)
      })
 
      await test.step('Khmer', async () => {
