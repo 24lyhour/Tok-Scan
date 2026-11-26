@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Kantumruy_Pro } from 'next/font/google'
 import React from 'react'
 
-import { I18nProvider } from '@/i18n/client'
-import { getMessages } from '@/i18n/messages'
-import { getSiteLocale } from '@/shared/i18n/get-site-locale'
+import { TranslationsProvider } from '@/i18n/provider'
+import { getTranslations } from '@/i18n/server'
+import { getLocaleConfig } from '@/shared/i18n/locales'
 
 import './styles.css'
 
@@ -22,13 +22,17 @@ const khmer = Kantumruy_Pro({
      display: 'swap',
 })
 
-export const metadata: Metadata = {
-     title: {
-          default: 'tok·scan — QR ordering & billing for Cambodian restaurants',
-          template: '%s · tok·scan',
-     },
-     description:
-          'Guests order from their phone, the kitchen sees it instantly, and bills are paid by KHQR. One restaurant or twenty outlets.',
+// Site-wide defaults in the visitor's language; pages override `title` / `description`.
+export async function generateMetadata(): Promise<Metadata> {
+     const { m } = await getTranslations('common')
+     return {
+          ...staticMetadata,
+          title: { default: m.meta.title, template: m.meta.titleTemplate },
+          description: m.meta.description,
+     }
+}
+
+const staticMetadata: Metadata = {
      applicationName: 'tok-scan',
      // tok-scan logo tile — files in /public (generated from public/favicon.svg)
      icons: {
@@ -46,9 +50,12 @@ export const viewport: Viewport = {
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-     const locale = await getSiteLocale()
+     const { locale } = await getTranslations('common')
      return (
-          <html lang={locale} className={`${inter.variable} ${khmer.variable}`}>
+          <html
+               lang={getLocaleConfig(locale).htmlLang}
+               className={`${inter.variable} ${khmer.variable}`}
+          >
                <head>
                     {/* Scroll-reveal content must stay visible when JavaScript is off */}
                     <noscript
@@ -59,9 +66,8 @@ export default async function FrontendLayout({ children }: { children: React.Rea
                </head>
                {/* Browser extensions (e.g. WOT) inject attributes on <body> before React hydrates */}
                <body suppressHydrationWarning>
-                    <I18nProvider locale={locale} messages={getMessages(locale)}>
-                         {children}
-                    </I18nProvider>
+                    {/* Only `common` here — each page adds its own namespaces */}
+                    <TranslationsProvider namespaces={['common']}>{children}</TranslationsProvider>
                </body>
           </html>
      )

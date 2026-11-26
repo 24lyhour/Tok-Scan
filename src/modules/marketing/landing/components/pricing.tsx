@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 import { useTranslations } from '@/i18n/client'
 import { Reveal } from '@/shared/components/motion/reveal'
-import { format } from '@/shared/i18n/site-locale'
+import { formatMoney, interpolate } from '@/shared/i18n/format'
 import { cn } from '@/shared/lib/utils'
 
 import {
@@ -17,7 +17,7 @@ import {
 } from '../content'
 import { Container, CtaLink, SectionHeading } from './primitives'
 
-type PricingText = LandingContent['pricing']
+type PricingCopy = LandingContent['pricing']
 
 function priceFor(plan: Plan, cycle: BillingCycle) {
      if (plan.monthly === null) return null
@@ -30,15 +30,15 @@ function PlanCard({
      plan,
      cycle,
      index,
-     t,
+     m,
 }: {
      plan: Plan
      cycle: BillingCycle
      index: number
-     t: PricingText
+     m: PricingCopy
 }) {
      const price = priceFor(plan, cycle)
-     const text = t.plans[plan.id]
+     const text = m.plans[plan.id]
      const isPrimary = plan.highlight === 'primary'
      const isPremium = plan.highlight === 'premium'
 
@@ -71,25 +71,25 @@ function PlanCard({
                     {price ? (
                          <>
                               <span className="tabular text-4xl font-bold tracking-tight text-ink">
-                                   ${price.perMonth}
+                                   {formatMoney(price.perMonth)}
                               </span>
-                              <span className="text-sm text-ink-3">{t.perMonth}</span>
+                              <span className="text-sm text-ink-3">{m.perMonth}</span>
                          </>
                     ) : (
                          <span className="text-4xl font-bold tracking-tight text-ink">
-                              {t.custom}
+                              {m.custom}
                          </span>
                     )}
                </p>
                <p className="mt-1 min-h-5 text-xs text-ink-3">
                     {price?.perYear ? (
                          <span className="tabular">
-                              {format(t.billedYearly, { amount: price.perYear })}
+                              {interpolate(m.billedYearly, { amount: formatMoney(price.perYear) })}
                          </span>
                     ) : price ? (
-                         t.billedMonthly
+                         m.billedMonthly
                     ) : (
-                         t.volume
+                         m.volume
                     )}
                </p>
 
@@ -123,12 +123,12 @@ function PlanCard({
 }
 
 export function Pricing() {
-     const t = useTranslations('landing').m.pricing
+     const m = useTranslations('landing').m.pricing
      const [cycle, setCycle] = useState<BillingCycle>('monthly')
 
      const cycles: { id: BillingCycle; label: string; note?: string }[] = [
-          { id: 'monthly', label: t.monthly },
-          { id: 'yearly', label: t.yearly, note: t.yearlyNote },
+          { id: 'monthly', label: m.monthly },
+          { id: 'yearly', label: m.yearly, note: m.yearlyNote },
      ]
 
      return (
@@ -136,15 +136,15 @@ export function Pricing() {
                <Container>
                     <SectionHeading
                          id="pricing-title"
-                         eyebrow={t.eyebrow}
-                         title={t.title}
-                         body={t.body}
+                         eyebrow={m.eyebrow}
+                         title={m.title}
+                         body={m.body}
                     />
 
                     <div className="mt-8 flex justify-center">
                          <div
                               role="radiogroup"
-                              aria-label={t.billingPeriod}
+                              aria-label={m.billingPeriod}
                               className="inline-flex rounded-xl bg-muted p-1"
                          >
                               {cycles.map((c) => {
@@ -182,13 +182,13 @@ export function Pricing() {
                                    plan={plan}
                                    cycle={cycle}
                                    index={index}
-                                   t={t}
+                                   m={m}
                               />
                          ))}
                     </ul>
 
                     <p className="mx-auto mt-8 max-w-2xl text-center text-xs text-ink-3">
-                         {t.note}
+                         {m.note}
                     </p>
                </Container>
           </section>

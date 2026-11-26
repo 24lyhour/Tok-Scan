@@ -9,21 +9,22 @@ import { LanguageToggle } from '@/shared/components/i18n/language-toggle'
 import { useTranslations } from '@/i18n/client'
 import { cn } from '@/shared/lib/utils'
 
-import { links, navTargets, plans } from '../content'
+import { formatMoney } from '@/shared/i18n/format'
+
+import { links, navItems, plans } from '../content'
 import { Container, CtaLink } from './primitives'
 
 const premium = plans.find((p) => p.id === 'premium')
 
 export function SiteHeader() {
-     const { m } = useTranslations('landing')
-     const t = m.header
-     const common = m.common
+     const m = useTranslations('landing').m.header
+     const common = useTranslations('common').m
      const [open, setOpen] = useState(false)
      const [scrolled, setScrolled] = useState(false)
      const closeRef = useRef<HTMLButtonElement>(null)
      const openRef = useRef<HTMLButtonElement>(null)
 
-     const nav = navTargets.map((href, i) => ({ href, label: t.nav[i] ?? href }))
+     const nav = navItems.map(({ id, href }) => ({ href, label: m.nav[id] }))
 
      // Already on the home page (maybe at #pricing): Next.js won't navigate to the same URL,
      // so scroll back to the top ourselves and drop the #hash.
@@ -78,7 +79,7 @@ export function SiteHeader() {
                          <Logo />
                     </Link>
 
-                    <nav aria-label={t.mainNav} className="hidden lg:block">
+                    <nav aria-label={m.mainNav} className="hidden lg:block">
                          <ul className="flex items-center gap-1">
                               {nav.map((item) => (
                                    <li key={item.href}>
@@ -99,16 +100,16 @@ export function SiteHeader() {
                               href={links.login}
                               className="px-2 text-sm font-semibold text-ink hover:text-brand-700"
                          >
-                              {t.login}
+                              {m.login}
                          </Link>
                          <CtaLink href={links.signup} variant="saffron">
-                              {t.startTrial}
+                              {m.startTrial}
                          </CtaLink>
                     </div>
 
                     <div className="flex items-center gap-2 lg:hidden">
                          <CtaLink href={links.signup} variant="saffron" size="sm">
-                              {t.freeTrial}
+                              {m.freeTrial}
                          </CtaLink>
                          <button
                               ref={openRef}
@@ -116,7 +117,7 @@ export function SiteHeader() {
                               onClick={() => setOpen(true)}
                               aria-expanded={open}
                               aria-controls="mobile-menu"
-                              aria-label={t.openMenu}
+                              aria-label={m.openMenu}
                               className="inline-flex size-11 items-center justify-center rounded-xl text-ink hover:bg-brand-50"
                          >
                               <Menu className="size-5" />
@@ -129,7 +130,7 @@ export function SiteHeader() {
                     id="mobile-menu"
                     role="dialog"
                     aria-modal="true"
-                    aria-label={t.menu}
+                    aria-label={m.menu}
                     hidden={!open}
                     className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden"
                >
@@ -139,14 +140,14 @@ export function SiteHeader() {
                               ref={closeRef}
                               type="button"
                               onClick={() => setOpen(false)}
-                              aria-label={t.closeMenu}
+                              aria-label={m.closeMenu}
                               className="inline-flex size-11 items-center justify-center rounded-xl text-ink hover:bg-brand-50"
                          >
                               <X className="size-5" />
                          </button>
                     </div>
 
-                    <nav aria-label={t.menu} className="flex-1 overflow-y-auto px-4">
+                    <nav aria-label={m.menu} className="flex-1 overflow-y-auto px-4">
                          <ul className="divide-y divide-line">
                               {nav.map((item) => (
                                    <li key={item.href}>
@@ -177,10 +178,11 @@ export function SiteHeader() {
                                    className="mt-6 block rounded-[14px] border border-brand-100 bg-brand-50 p-4"
                               >
                                    <span className="font-semibold text-ink">
-                                        ✦ {premium.name} · ${premium.monthly} {t.perMonth}
+                                        ✦ {premium.name} · {formatMoney(premium.monthly ?? 0)}{' '}
+                                        {m.perMonth}
                                    </span>
                                    <span className="mt-1 block text-sm text-ink-2">
-                                        {t.premiumTeaser}
+                                        {m.premiumTeaser}
                                    </span>
                               </a>
                          )}
@@ -193,13 +195,13 @@ export function SiteHeader() {
                               size="lg"
                               className="w-full"
                          >
-                              {t.startTrial}
+                              {m.startTrial}
                          </CtaLink>
                          <CtaLink href={links.login} variant="outline" size="lg" className="w-full">
-                              {t.login}
+                              {m.login}
                          </CtaLink>
                          <p className="text-center text-xs text-ink-3">
-                              {t.questions}{' '}
+                              {m.questions}{' '}
                               <a
                                    href={links.telegram}
                                    target="_blank"

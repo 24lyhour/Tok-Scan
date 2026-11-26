@@ -40,7 +40,7 @@ export function LoginForm({
      forgotHref: string
 }) {
      const { m, locale } = useTranslations('auth')
-     const t = m.login
+     const copy = m.login
      const uid = useId()
      const ids = { email: `${uid}-email`, password: `${uid}-password` } satisfies Record<
           LoginField,
@@ -99,12 +99,12 @@ export function LoginForm({
           startTransition(() => dispatch(data))
      }
 
-     const msg = (field: LoginField) => (errors[field] ? t.errors[errors[field]!] : undefined)
+     const msg = (field: LoginField) => (errors[field] ? copy.errors[errors[field]!] : undefined)
      const hasFieldErrors = Object.values(errors).some(Boolean)
      const alert = captchaMissing
-          ? t.errors.captcha
+          ? copy.errors.captcha
           : !hasFieldErrors && state.formError
-            ? t.errors[state.formError]
+            ? copy.errors[state.formError]
             : undefined
 
      return (
@@ -113,16 +113,16 @@ export function LoginForm({
 
                <SocialSignIn
                     id={`${uid}-social`}
-                    appleLabel={t.apple}
-                    googleLabel={t.google}
-                    soonLabel={t.socialSoon}
-                    orLabel={t.or}
+                    appleLabel={copy.apple}
+                    googleLabel={copy.google}
+                    soonLabel={copy.socialSoon}
+                    orLabel={copy.or}
                />
 
                <FormAlert message={alert} />
 
                <div className="space-y-4">
-                    <Field id={ids.email} label={t.email} error={msg('email')}>
+                    <Field id={ids.email} label={copy.email} error={msg('email')}>
                          <input
                               id={ids.email}
                               name="email"
@@ -133,7 +133,7 @@ export function LoginForm({
                               spellCheck={false}
                               autoFocus={!defaultEmail}
                               required
-                              placeholder={t.emailPlaceholder}
+                              placeholder={copy.emailPlaceholder}
                               value={values.email}
                               onChange={(e) => update('email', e.target.value)}
                               aria-invalid={!!errors.email || undefined}
@@ -144,14 +144,14 @@ export function LoginForm({
 
                     <Field
                          id={ids.password}
-                         label={t.password}
+                         label={copy.password}
                          error={msg('password')}
                          labelAction={
                               <Link
                                    href={forgotHref}
                                    className="text-xs font-semibold text-brand-700 hover:underline"
                               >
-                                   {t.forgot}
+                                   {copy.forgot}
                               </Link>
                          }
                     >
@@ -172,8 +172,8 @@ export function LoginForm({
                               aria-describedby={
                                    errors.password ? `${ids.password}-error` : undefined
                               }
-                              showLabel={t.showPassword}
-                              hideLabel={t.hidePassword}
+                              showLabel={copy.showPassword}
+                              hideLabel={copy.hidePassword}
                          />
                     </Field>
                </div>
@@ -186,14 +186,18 @@ export function LoginForm({
                          onToken={onCaptchaToken}
                          className="mb-4"
                     />
-                    <SubmitButton pending={pending} label={t.submit} pendingLabel={t.submitting} />
+                    <SubmitButton
+                         pending={pending}
+                         label={copy.submit}
+                         pendingLabel={copy.submitting}
+                    />
                     <p className="mt-4 text-center text-sm text-ink-2">
-                         {t.noAccount}{' '}
+                         {copy.noAccount}{' '}
                          <Link
                               href={signupHref}
                               className="font-semibold text-brand-700 hover:underline"
                          >
-                              {t.startTrial}
+                              {copy.startTrial}
                          </Link>
                     </p>
                </div>

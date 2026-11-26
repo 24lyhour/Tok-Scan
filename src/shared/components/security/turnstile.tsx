@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 
-import type { SiteLocale } from '@/shared/i18n/site-locale'
+import { getLocaleConfig, type Locale } from '@/shared/i18n/locales'
 import { type TurnstileAction, turnstileSiteKey } from '@/shared/security/turnstile-config'
 import { cn } from '@/shared/lib/utils'
 
@@ -41,9 +41,6 @@ function loadTurnstile(): Promise<TurnstileApi> {
      })
 }
 
-// Turnstile has no Khmer UI yet — let it follow the browser language there.
-const widgetLanguage: Record<SiteLocale, string> = { en: 'en', km: 'auto', zh: 'zh-cn' }
-
 /**
  * Cloudflare Turnstile widget. Put it INSIDE the <form>: it adds a hidden
  * `cf-turnstile-response` input that the server action verifies.
@@ -57,7 +54,7 @@ export function Turnstile({
      className,
 }: {
      action: TurnstileAction
-     locale: SiteLocale
+     locale: Locale
      resetKey: number
      onToken: (token: string | null) => void
      className?: string
@@ -79,7 +76,7 @@ export function Turnstile({
                          theme: 'light',
                          // 'flexible' needs ≥300px; small phones get the compact widget instead
                          size: containerRef.current.offsetWidth >= 300 ? 'flexible' : 'compact',
-                         language: widgetLanguage[locale],
+                         language: getLocaleConfig(locale).turnstile,
                          callback: (token: string) => onTokenRef.current(token),
                          'expired-callback': () => onTokenRef.current(null),
                          'error-callback': () => onTokenRef.current(null),

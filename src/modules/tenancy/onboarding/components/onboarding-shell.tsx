@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
-import { format, localizeDigits, type SiteLocale } from '@/shared/i18n/site-locale'
+import { interpolate, localizeDigits } from '@/shared/i18n/format'
+import type { Locale } from '@/shared/i18n/locales'
 import { cn } from '@/shared/lib/utils'
 
 import { AuthShell } from '../../shared/auth-shell'
@@ -15,27 +16,27 @@ export const ONBOARDING_STEPS = 4
 export function OnboardingShell({
      step,
      locale,
-     t,
+     m,
      children,
 }: {
      step: number
-     locale: SiteLocale
-     t: OnboardingContent['shell']
+     locale: Locale
+     m: OnboardingContent['shell']
      children: ReactNode
 }) {
-     const stepLabel = format(t.step, {
+     const stepLabel = interpolate(m.step, {
           n: localizeDigits(step, locale),
           total: localizeDigits(ONBOARDING_STEPS, locale),
      })
 
      return (
           <AuthShell
-               homeLabel={t.home}
+               homeLabel={m.home}
                meta={<span className="text-xs font-medium text-ink-3 sm:text-sm">{stepLabel}</span>}
                progress={
                     <div
                          role="progressbar"
-                         aria-label={t.progress}
+                         aria-label={m.progress}
                          aria-valuemin={1}
                          aria-valuemax={ONBOARDING_STEPS}
                          aria-valuenow={step}
