@@ -125,6 +125,8 @@ export const en = {
           printLater: 'You’ll print the QR codes from your dashboard once your menu is ready.',
           checklistTitle: 'Go-live checklist',
           finish: 'Finish & open dashboard',
+          /** Button on the app's Tables page */
+          save: 'Save tables',
      },
      print: {
           metaTitle: 'Print table QR codes',

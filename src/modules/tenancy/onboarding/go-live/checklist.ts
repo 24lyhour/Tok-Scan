@@ -1,4 +1,6 @@
 import type { OnboardingContent } from '../content'
+import { APP_ROUTES } from '@/shared/config/app-routes'
+
 import { onboardingRoutes } from '../routes'
 import type { OnboardingContext } from '../server/context'
 
@@ -17,7 +19,7 @@ export type GoLiveItem = (typeof GO_LIVE_ITEMS)[number]
 export const GO_LIVE_LINKS: Partial<Record<GoLiveItem, string>> = {
      organization: onboardingRoutes.organization,
      outlet: onboardingRoutes.outlet,
-     tables: onboardingRoutes.tables,
+     tables: APP_ROUTES.tables,
 }
 
 /** Button shown for items whose module isn't built yet (Menu, Payments, Staff). */

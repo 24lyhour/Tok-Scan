@@ -106,6 +106,20 @@ test('a new owner sets up a restaurant', async ({ page, context }) => {
           await expect(page).toHaveURL(/\/dashboard$/)
      })
 
+     await test.step('Tables inside the app layout (sidebar → Tables)', async () => {
+          await page
+               .getByRole('navigation', { name: 'Main navigation' })
+               .getByRole('link', { name: 'Tables' })
+               .click()
+          await expect(page).toHaveURL(/\/tables$/)
+          await expect(page.getByRole('heading', { level: 1 })).toHaveText('Tables') // from the menu
+          await expect(page.getByText(/^Operations ·/)).toBeVisible()
+          await page.getByRole('button', { name: 'More tables' }).click() // 9 → 10
+          await page.getByRole('button', { name: 'Save tables' }).click()
+          await expect(page).toHaveURL(/\/tables$/)
+          await expect(page.getByRole('spinbutton', { name: 'Tables' })).toHaveValue('10')
+     })
+
      await test.step('Khmer', async () => {
           await context.addCookies([{ name: 'tok-locale', value: 'km', url: page.url() }])
           await page.reload()

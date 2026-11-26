@@ -30,14 +30,20 @@ export function TablesForm({
      initial,
      qr,
      checklist,
+     submitLabel,
+     returnTo = 'dashboard',
 }: {
      /** Plan limit for this outlet (free trial = Growth) */
      maxTables: number
      initial: { zone: string; count: number }
      /** For previews: public origin, organization slug, and saved QR keys by table number */
      qr: { origin: string; orgSlug: string; keys: Record<number, string> }
-     /** Go-live checklist (rendered on the server) */
-     checklist: ReactNode
+     /** Go-live checklist (onboarding only) */
+     checklist?: ReactNode
+     /** Button text (default: "Finish & open dashboard") */
+     submitLabel?: string
+     /** Where saving goes: onboarding → dashboard, app → back to Tables */
+     returnTo?: 'dashboard' | 'tables'
 }) {
      const { m, locale } = useTranslations('onboarding')
      const common = useTranslations('common').m
@@ -56,6 +62,7 @@ export function TablesForm({
 
      return (
           <form {...form.formProps} className="flex flex-1 flex-col">
+               <input type="hidden" name="returnTo" value={returnTo} />
                <FormAlert message={state.formError ? m.errors[state.formError] : undefined} />
 
                <div className="grid grid-cols-[1fr_auto] items-start gap-3">
@@ -129,13 +136,13 @@ export function TablesForm({
                </p>
                <p className="mt-1 text-xs text-ink-3">{copy.printLater}</p>
 
-               <div className="mt-5">{checklist}</div>
+               {checklist && <div className="mt-5">{checklist}</div>}
 
                <div className="mt-auto pt-8">
                     <SubmitButton
                          pending={form.pending}
                          disabled={!form.ready}
-                         label={copy.finish}
+                         label={submitLabel ?? copy.finish}
                          pendingLabel={common.states.saving}
                     />
                </div>

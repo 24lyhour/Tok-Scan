@@ -11,6 +11,8 @@ export const tablesSchema = z.object({
           Number.isInteger,
           'tableCount',
      ),
+     /** After saving: the dashboard (onboarding step 4) or back to the app's Tables page */
+     returnTo: z.enum(['dashboard', 'tables']).catch('dashboard'),
 })
 
 export type TablesField = SchemaField<typeof tablesSchema>

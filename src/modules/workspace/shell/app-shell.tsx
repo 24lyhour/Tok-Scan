@@ -1,4 +1,4 @@
-import { Bell, Search, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { TranslationsProvider } from '@/i18n/provider'
@@ -11,13 +11,15 @@ import { formatDate, interpolate, localizeDigits } from '@/shared/i18n/format'
 import { getWorkspaceContext } from '../server/context'
 import { Sidebar } from './sidebar'
 import { Switcher } from './switcher'
+import { Topbar } from './topbar'
 
 /**
  * The signed-in app frame (guide p.8 / p.24): dark sidebar with the switcher, menu, plan and
  * user; a top bar with section · date, page title, search, plan badge and notifications.
- * Every app page renders inside it: <AppShell title="Dashboard">…</AppShell>
+ * It is the layout of every app page (src/app/(frontend)/(app)/layout.tsx): pages only render
+ * their content; the title comes from the menu (nav.ts).
  */
-export async function AppShell({ title, children }: { title: string; children: ReactNode }) {
+export async function AppShell({ children }: { children: ReactNode }) {
      const ctx = await getWorkspaceContext()
      const { m, locale } = await getTranslations('workspace')
      const common = (await getTranslations('common', locale)).m
@@ -102,46 +104,12 @@ export async function AppShell({ title, children }: { title: string; children: R
                     />
 
                     <div className="flex min-w-0 flex-col">
-                         <header className="flex flex-wrap items-center gap-3 border-b border-line bg-white px-4 py-3 sm:px-6">
-                              <div className="min-w-0 flex-1">
-                                   <p className="text-xs text-ink-3">
-                                        {m.nav.groups.overview} ·{' '}
-                                        {interpolate(m.topbar.today, {
-                                             date: formatDate(new Date(), locale),
-                                        })}
-                                   </p>
-                                   <h1 className="truncate text-lg font-bold tracking-tight text-ink">
-                                        {title}
-                                   </h1>
-                              </div>
-                              <label className="relative hidden w-72 md:block">
-                                   <span className="sr-only">{m.topbar.search}</span>
-                                   <Search
-                                        aria-hidden
-                                        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-3"
-                                   />
-                                   <input
-                                        type="search"
-                                        disabled
-                                        title={common.states.soon}
-                                        placeholder={m.topbar.search}
-                                        className="h-10 w-full cursor-not-allowed rounded-xl border border-line bg-paper pr-3 pl-9 text-sm placeholder:text-ink-3"
-                                   />
-                              </label>
-                              <span className="hidden items-center gap-1 rounded-full bg-saffron-50 px-3 py-1.5 text-xs font-semibold text-ink sm:inline-flex">
-                                   <Sparkles aria-hidden className="size-3.5 text-saffron-600" />
-                                   {interpolate(m.plan.trial, { plan: plan.name })}
-                              </span>
-                              <button
-                                   type="button"
-                                   disabled
-                                   aria-label={m.topbar.notifications}
-                                   title={common.states.soon}
-                                   className="flex size-10 items-center justify-center rounded-xl border border-line bg-white text-ink-2 disabled:cursor-not-allowed"
-                              >
-                                   <Bell aria-hidden className="size-[18px]" />
-                              </button>
-                         </header>
+                         <Topbar
+                              today={interpolate(m.topbar.today, {
+                                   date: formatDate(new Date(), locale),
+                              })}
+                              planBadge={interpolate(m.plan.trial, { plan: plan.name })}
+                         />
 
                          <main id="main" className="flex-1 p-4 sm:p-6">
                               {children}

@@ -121,6 +121,8 @@ export const km: OnboardingContent = {
           printLater: 'អ្នកនឹងបោះពុម្ពកូដ QR ពីផ្ទាំងគ្រប់គ្រង នៅពេលម៉ឺនុយរបស់អ្នករួចរាល់។',
           checklistTitle: 'បញ្ជីត្រៀមចាប់ផ្តើម',
           finish: 'បញ្ចប់ និងបើកផ្ទាំងគ្រប់គ្រង',
+          /** Button on the app's Tables page */
+          save: 'រក្សាទុកតុ',
      },
      print: {
           metaTitle: 'បោះពុម្ពកូដ QR តុ',

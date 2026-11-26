@@ -115,6 +115,17 @@ Server actions write with `overrideAccess: true` **after** checking the user the
 CI (`.github/workflows/ci.yml`) runs all of these on every pull request with a fresh Postgres,
 applies every migration, and fails if a collection changed without a migration.
 
+### App pages (signed-in)
+
+Every app page lives in the route group `src/app/(frontend)/(app)/`, whose `layout.tsx` is
+`AppShell` (`@/modules/workspace`): sidebar, organization/outlet switcher, top bar, TOKSCAN.
+A page renders only its content. To add one (e.g. Menu):
+
+1. Add the URL to `src/shared/config/app-routes.ts`.
+2. Give its menu item an `href` in `src/modules/workspace/shell/nav.ts` — the sidebar link and the
+   top-bar title ("Catalogue · Menu Management") come from there.
+3. Create `src/app/(frontend)/(app)/<page>/page.tsx` that renders the module's page.
+
 ### Adding a module (e.g. Menu)
 
 1. Copy the module layout above; write `README.md` (routes + who can do what).

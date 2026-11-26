@@ -121,6 +121,8 @@ export const zh: OnboardingContent = {
           printLater: '菜单准备好后，您可以在控制台打印二维码。',
           checklistTitle: '上线清单',
           finish: '完成并打开控制台',
+          /** Button on the app's Tables page */
+          save: '保存餐桌',
      },
      print: {
           metaTitle: '打印餐桌二维码',
