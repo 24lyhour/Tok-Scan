@@ -8,7 +8,6 @@ import sharp from 'sharp'
 import { migrations } from './migrations'
 import { adminI18n, collections, localization, plugins, Users } from './modules'
 import { getServerURL } from './shared/config/server-url'
-import { adminI18n, collections, localization, Users } from './modules'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
