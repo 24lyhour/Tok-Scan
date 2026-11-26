@@ -6,26 +6,48 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
-const nextConfig: NextConfig = {
-  images: {
-    localPatterns: [
-      {
-        pathname: '/api/media/file/**',
-      },
-    ],
-  },
-  webpack: (webpackConfig) => {
-    webpackConfig.resolve.extensionAlias = {
-      '.cjs': ['.cts', '.cjs'],
-      '.js': ['.ts', '.tsx', '.js', '.jsx'],
-      '.mjs': ['.mts', '.mjs'],
-    }
+/**
+ * The one public address of the site, e.g. "tok-scan.store" (no https://, no www).
+ * Set it on Vercel ONLY after the domain's DNS points to Vercel — otherwise these redirects would
+ * send visitors from the working vercel.app address to a domain that doesn't serve the site yet.
+ * Changing it needs a redeploy (redirects are built in at build time).
+ */
+const canonicalHost = process.env.CANONICAL_HOST?.trim().toLowerCase()
 
-    return webpackConfig
-  },
-  turbopack: {
-    root: path.resolve(dirname),
-  },
+/** Other addresses that should permanently forward to the canonical one. */
+const aliasHosts = canonicalHost ? ['tok-scans.vercel.app', `www.${canonicalHost}`] : []
+
+const nextConfig: NextConfig = {
+     // tok-scans.vercel.app/... and www.tok-scan.store/... → https://tok-scan.store/... (308, keeps the path)
+     // Preview deployments have their own *.vercel.app addresses and are not affected.
+     async redirects() {
+          if (!canonicalHost) return []
+          return aliasHosts.map((host) => ({
+               source: '/:path*',
+               has: [{ type: 'host' as const, value: host }],
+               destination: `https://${canonicalHost}/:path*`,
+               permanent: true,
+          }))
+     },
+     images: {
+          localPatterns: [
+               {
+                    pathname: '/api/media/file/**',
+               },
+          ],
+     },
+     webpack: (webpackConfig) => {
+          webpackConfig.resolve.extensionAlias = {
+               '.cjs': ['.cts', '.cjs'],
+               '.js': ['.ts', '.tsx', '.js', '.jsx'],
+               '.mjs': ['.mts', '.mjs'],
+          }
+
+          return webpackConfig
+     },
+     turbopack: {
+          root: path.resolve(dirname),
+     },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
