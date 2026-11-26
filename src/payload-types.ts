@@ -183,7 +183,8 @@ export interface Organization {
   brand?: {
     primaryColor?: string | null;
   };
-  businessType?: ('restaurant' | 'cafe' | 'bar' | 'food_court') | null;
+  businessType?: ('restaurant' | 'cafe' | 'bar' | 'food_court' | 'other') | null;
+  businessTypeOther?: string | null;
   status?: ('trial' | 'pending_approval' | 'active' | 'suspended' | 'closed') | null;
   trialEndsAt?: string | null;
   onboarding?: {
@@ -415,6 +416,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
         primaryColor?: T;
       };
   businessType?: T;
+  businessTypeOther?: T;
   status?: T;
   trialEndsAt?: T;
   onboarding?:

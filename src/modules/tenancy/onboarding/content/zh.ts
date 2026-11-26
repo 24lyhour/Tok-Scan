@@ -63,7 +63,10 @@ export const zh: OnboardingContent = {
                cafe: '咖啡馆',
                bar: '酒吧',
                food_court: '美食广场',
+               other: '其他',
           },
+          otherType: '您的商家类型',
+          otherTypePlaceholder: '例如：面包店、KTV、酒店餐厅',
      },
      outlet: {
           metaTitle: '您的第一家门店',

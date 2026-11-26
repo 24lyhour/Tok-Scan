@@ -38,7 +38,10 @@ test('a new owner sets up a restaurant', async ({ page, context }) => {
           await expect(address).toHaveValue('e2e-mahob-kitchen')
           await expect(page.getByText('Available')).toBeVisible()
           await page.getByRole('radio', { name: 'Maroon' }).click()
-          await page.getByRole('radio', { name: 'Café' }).click()
+          // Business type "Other" → the owner types their own
+          await page.getByRole('radio', { name: 'Other' }).click()
+          await expect(submit).toBeDisabled()
+          await page.getByRole('textbox', { name: 'Your business type' }).fill('Bakery')
           await expect(submit).toBeEnabled()
           await submit.click()
           await expect(page).toHaveURL(/\/onboarding\/outlet$/)

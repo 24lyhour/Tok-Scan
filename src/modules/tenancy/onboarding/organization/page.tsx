@@ -20,6 +20,7 @@ export async function OrganizationStepPage() {
                               (organization?.brand?.primaryColor as BrandColor) ??
                               DEFAULT_BRAND_COLOR,
                          businessType: organization?.businessType ?? 'restaurant',
+                         businessTypeOther: organization?.businessTypeOther ?? '',
                          logoUrl: typeof logo === 'object' && logo?.url ? logo.url : null,
                     }}
                />

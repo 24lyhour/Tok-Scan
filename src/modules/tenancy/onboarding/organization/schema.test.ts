@@ -46,4 +46,22 @@ describe('organizationSchema', () => {
                fieldErrors: { logo: 'logoSize' },
           })
      })
+
+     it('needs the owner\'s own words when the type is "Other"', () => {
+          expect(validate(organizationSchema, { ...base, businessType: 'other' })).toEqual({
+               ok: false,
+               fieldErrors: { businessTypeOther: 'required' },
+          })
+          const ok = validate(organizationSchema, {
+               ...base,
+               businessType: 'other',
+               businessTypeOther: '  Bakery ',
+          })
+          expect(ok.ok && ok.data.businessTypeOther).toBe('Bakery')
+     })
+
+     it('drops the free text for the fixed types', () => {
+          const result = validate(organizationSchema, { ...base, businessTypeOther: 'Bakery' })
+          expect(result.ok && result.data.businessTypeOther).toBe('')
+     })
 })

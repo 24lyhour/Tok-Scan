@@ -68,6 +68,13 @@ export const Organizations: CollectionConfig = {
                options: [...BUSINESS_TYPES],
           },
           {
+               // The owner's own words when businessType = 'other', e.g. "Bakery", "Karaoke"
+               name: 'businessTypeOther',
+               type: 'text',
+               maxLength: ORGANIZATION_LIMITS.businessTypeOther,
+               admin: { condition: (data) => data?.businessType === 'other' },
+          },
+          {
                name: 'status',
                type: 'select',
                defaultValue: 'trial',

@@ -432,6 +432,12 @@
           "notNull": false,
           "default": "'restaurant'"
         },
+        "business_type_other": {
+          "name": "business_type_other",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "status": {
           "name": "status",
           "type": "enum_organizations_status",
@@ -1978,7 +1984,8 @@
         "restaurant",
         "cafe",
         "bar",
-        "food_court"
+        "food_court",
+        "other"
       ]
     },
     "public.enum_organizations_status": {
@@ -2051,6 +2058,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "a8367dfa-b63b-4b01-b761-3fad530ab321",
+  "id": "4d369f0e-3717-4549-8f8d-4fe3b43050ed",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

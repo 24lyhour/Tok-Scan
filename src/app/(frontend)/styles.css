@@ -45,6 +45,29 @@
      /* Motion (p.28) */
      --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
      --default-transition-duration: 200ms;
+     /* 👋 in the TOKSCAN greeting: waves twice, then rests */
+     --animate-wave: wave 1.6s ease-in-out 0.4s 2;
+
+     @keyframes wave {
+          0%,
+          60%,
+          100% {
+               transform: rotate(0deg);
+          }
+          10%,
+          30% {
+               transform: rotate(14deg);
+          }
+          20% {
+               transform: rotate(-8deg);
+          }
+          40% {
+               transform: rotate(-4deg);
+          }
+          50% {
+               transform: rotate(10deg);
+          }
+     }
 }
 
 /* shadcn semantic tokens mapped onto the tok-scan palette */

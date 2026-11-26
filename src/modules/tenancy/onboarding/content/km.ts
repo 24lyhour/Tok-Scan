@@ -63,7 +63,10 @@ export const km: OnboardingContent = {
                cafe: 'ហាងកាហ្វេ',
                bar: 'បារ',
                food_court: 'តំបន់អាហារ',
+               other: 'ផ្សេងទៀត',
           },
+          otherType: 'ប្រភេទអាជីវកម្មរបស់អ្នក',
+          otherTypePlaceholder: 'ឧ. ហាងនំ ខារ៉ាអូខេ ភោជនីយដ្ឋានសណ្ឋាគារ',
      },
      outlet: {
           metaTitle: 'សាខាដំបូងរបស់អ្នក',

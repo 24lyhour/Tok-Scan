@@ -70,7 +70,8 @@ export async function saveOrganization(
 
      const result = validate(organizationSchema, formValues(formData))
      if (!result.ok) return { status: 'error', fieldErrors: result.fieldErrors }
-     const { name, slug, brandColor, businessType, logo, removeLogo } = result.data
+     const { name, slug, brandColor, businessType, businessTypeOther, logo, removeLogo } =
+          result.data
 
      if ((await checkSlugAvailability(slug)).problem === 'taken') {
           return { status: 'error', fieldErrors: { slug: 'slugTaken' } }
@@ -81,6 +82,7 @@ export async function saveOrganization(
                name,
                slug,
                businessType,
+               businessTypeOther,
                brand: { primaryColor: brandColor },
                ...(removeLogo ? { logo: null } : {}),
           }

@@ -4,7 +4,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
    CREATE TYPE "public"."enum_users_tenants_org_role" AS ENUM('owner', 'admin', 'member');
   CREATE TYPE "public"."enum_users_platform_role" AS ENUM('none', 'super-admin');
-  CREATE TYPE "public"."enum_organizations_business_type" AS ENUM('restaurant', 'cafe', 'bar', 'food_court');
+  CREATE TYPE "public"."enum_organizations_business_type" AS ENUM('restaurant', 'cafe', 'bar', 'food_court', 'other');
   CREATE TYPE "public"."enum_organizations_status" AS ENUM('trial', 'pending_approval', 'active', 'suspended', 'closed');
   CREATE TYPE "public"."enum_organizations_onboarding_step" AS ENUM('organization', 'outlet', 'tables', 'done');
   CREATE TYPE "public"."enum_outlets_opening_hours_days" AS ENUM('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
@@ -27,6 +27,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"logo_id" integer,
   	"brand_primary_color" varchar DEFAULT '#14513F',
   	"business_type" "enum_organizations_business_type" DEFAULT 'restaurant',
+  	"business_type_other" varchar,
   	"status" "enum_organizations_status" DEFAULT 'trial',
   	"trial_ends_at" timestamp(3) with time zone,
   	"onboarding_step" "enum_organizations_onboarding_step" DEFAULT 'outlet',

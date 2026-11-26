@@ -1,7 +1,7 @@
 /** Step 2 · Organization — Zod schema shared by the form and the server action (guide p.23). */
 import { z } from 'zod'
 
-import { requiredText, switchField, type SchemaField } from '@/shared/lib/validation'
+import { optionalText, requiredText, switchField, type SchemaField } from '@/shared/lib/validation'
 
 import {
      BRAND_COLOR_VALUES,
@@ -38,13 +38,26 @@ const logoField = z.preprocess(
           .optional(),
 )
 
-export const organizationSchema = z.object({
-     name: requiredText(ORGANIZATION_LIMITS.name),
-     slug: slugField,
-     logo: logoField,
-     removeLogo: switchField(),
-     brandColor: z.enum(BRAND_COLOR_VALUES).catch(DEFAULT_BRAND_COLOR),
-     businessType: z.enum(BUSINESS_TYPES, 'required'),
-})
+export const organizationSchema = z
+     .object({
+          name: requiredText(ORGANIZATION_LIMITS.name),
+          slug: slugField,
+          logo: logoField,
+          removeLogo: switchField(),
+          brandColor: z.enum(BRAND_COLOR_VALUES).catch(DEFAULT_BRAND_COLOR),
+          businessType: z.enum(BUSINESS_TYPES, 'required'),
+          /** The owner's own business type — only when businessType is 'other' */
+          businessTypeOther: optionalText(ORGANIZATION_LIMITS.businessTypeOther),
+     })
+     .superRefine((org, ctx) => {
+          if (org.businessType === 'other' && !org.businessTypeOther) {
+               ctx.addIssue({ code: 'custom', message: 'required', path: ['businessTypeOther'] })
+          }
+     })
+     // Keep the free text only for 'other', so a stale value is never saved
+     .transform((org) => ({
+          ...org,
+          businessTypeOther: org.businessType === 'other' ? org.businessTypeOther : '',
+     }))
 
 export type OrganizationField = SchemaField<typeof organizationSchema>

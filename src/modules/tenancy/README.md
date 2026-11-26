@@ -7,25 +7,25 @@ People belong to organizations through `users.tenants[]` with a role: `owner` ·
 
 ## Routes
 
-| URL | Page | Folder |
-|---|---|---|
-| `/login` | Log in (email + Google) | `auth/login/` |
-| `/auth/google`, `/auth/google/callback` | Google sign-in | `auth/google/` |
-| `/signup` | Step 1 · account | `onboarding/signup/` |
-| `/onboarding` | Resume at the current step | `onboarding/resume.ts` |
-| `/onboarding/organization` | Step 2 · business, web address, logo, colour | `onboarding/organization/` |
-| `/onboarding/outlet` | Step 3 · first outlet, taxes, hours | `onboarding/outlet/` |
-| `/onboarding/tables` (+ `/print`) | Step 4 · tables + QR codes | `onboarding/tables/` |
-| `/dashboard` | "Get <restaurant> live" checklist | `onboarding/go-live/` |
+| URL                                     | Page                                         | Folder                     |
+| --------------------------------------- | -------------------------------------------- | -------------------------- |
+| `/login`                                | Log in (email + Google)                      | `auth/login/`              |
+| `/auth/google`, `/auth/google/callback` | Google sign-in                               | `auth/google/`             |
+| `/signup`                               | Step 1 · account                             | `onboarding/signup/`       |
+| `/onboarding`                           | Resume at the current step                   | `onboarding/resume.ts`     |
+| `/onboarding/organization`              | Step 2 · business, web address, logo, colour | `onboarding/organization/` |
+| `/onboarding/outlet`                    | Step 3 · first outlet, taxes, hours          | `onboarding/outlet/`       |
+| `/onboarding/tables` (+ `/print`)       | Step 4 · tables + QR codes                   | `onboarding/tables/`       |
+| `/dashboard`                            | "Get <restaurant> live" checklist            | `onboarding/go-live/`      |
 
 ## Who can do what
 
-| | owner / admin | member (staff) | other restaurant |
-|---|---|---|---|
-| Read organization, outlets | ✅ | ✅ | ❌ |
-| Change organization, outlets | ✅ | ❌ | ❌ |
-| Edit own profile | ✅ | ✅ | — |
-| Change someone else's account or any role | ❌ (super-admin only) | ❌ | ❌ |
+|                                           | owner / admin         | member (staff) | other restaurant |
+| ----------------------------------------- | --------------------- | -------------- | ---------------- |
+| Read organization, outlets                | ✅                    | ✅             | ❌               |
+| Change organization, outlets              | ✅                    | ❌             | ❌               |
+| Edit own profile                          | ✅                    | ✅             | —                |
+| Change someone else's account or any role | ❌ (super-admin only) | ❌             | ❌               |
 
 Rules: `@/modules/core` → `access.ts`. Onboarding actions write with `overrideAccess` after
 `getOnboardingContext()` has checked the signed-in owner.

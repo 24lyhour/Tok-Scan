@@ -67,7 +67,10 @@ export const en = {
                cafe: 'Café',
                bar: 'Bar',
                food_court: 'Food court',
+               other: 'Other',
           },
+          otherType: 'Your business type',
+          otherTypePlaceholder: 'e.g. Bakery, Karaoke, Hotel restaurant',
      },
      outlet: {
           metaTitle: 'Your first outlet',

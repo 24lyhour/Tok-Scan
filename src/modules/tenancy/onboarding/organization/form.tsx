@@ -29,13 +29,22 @@ import { type OnboardingErrorCode, slugProblemToError, validate } from '../error
 import { checkSlugAvailability, saveOrganization } from './actions'
 import { LOGO_TYPES, type OrganizationField, organizationSchema } from './schema'
 
-const FIELDS: OrganizationField[] = ['name', 'slug', 'logo', 'brandColor', 'businessType']
+const FIELDS: OrganizationField[] = [
+     'name',
+     'slug',
+     'logo',
+     'brandColor',
+     'businessType',
+     'businessTypeOther',
+]
 
 export type OrganizationFormValues = {
      name: string
      slug: string
      brandColor: BrandColor
      businessType: BusinessType
+     /** Owner's own type when businessType is 'other' */
+     businessTypeOther: string
      logoUrl: string | null
 }
 
@@ -67,7 +76,10 @@ export function OrganizationForm({
      const [slugTouched, setSlugTouched] = useState(Boolean(initial.slug))
      const [brandColor, setBrandColor] = useState<BrandColor>(initial.brandColor)
      const [businessType, setBusinessType] = useState<BusinessType>(initial.businessType)
-     const { status: slugStatus, suggestions } = useSlugCheck(slug, initial.slug, businessType)
+     const [businessTypeOther, setBusinessTypeOther] = useState(initial.businessTypeOther)
+     // Address suggestions use the type: "mahob-cafe", or the owner's own words ("mahob-bakery")
+     const typeHint = businessType === 'other' ? businessTypeOther : businessType
+     const { status: slugStatus, suggestions } = useSlugCheck(slug, initial.slug, typeHint)
      const chooseSlug = (next: string) => {
           setSlug(next)
           // Cleared → follow the business name again
@@ -264,6 +276,29 @@ export function OrganizationForm({
                               invalid={Boolean(errors.businessType)}
                          />
                     </Field>
+
+                    {businessType === 'other' && (
+                         <Field
+                              id={form.id('businessTypeOther')}
+                              label={copy.otherType}
+                              error={msg('businessTypeOther')}
+                              required
+                         >
+                              <input
+                                   {...form.fieldProps('businessTypeOther')}
+                                   required
+                                   autoFocus
+                                   maxLength={ORGANIZATION_LIMITS.businessTypeOther}
+                                   placeholder={copy.otherTypePlaceholder}
+                                   value={businessTypeOther}
+                                   onChange={(e) => {
+                                        setBusinessTypeOther(e.target.value)
+                                        form.clearError('businessTypeOther')
+                                   }}
+                                   className={inputClass}
+                              />
+                         </Field>
+                    )}
                </div>
 
                <div className="mt-auto pt-8">
@@ -283,7 +318,8 @@ export function OrganizationForm({
  * Debounced live check of the web address on the server: format, "is it taken?", and free
  * alternatives to suggest when it can't be used.
  */
-function useSlugCheck(slug: string, savedSlug: string, businessType: BusinessType) {
+/** `typeHint` (business type or the owner's own words) shapes the suggestions */
+function useSlugCheck(slug: string, savedSlug: string, typeHint: string) {
      const value = slugify(slug)
      // Last server answer, tagged with the address + type it was for
      const [answer, setAnswer] = useState<{
@@ -291,7 +327,7 @@ function useSlugCheck(slug: string, savedSlug: string, businessType: BusinessTyp
           status: SlugStatus
           suggestions: string[]
      } | null>(null)
-     const key = `${value}|${businessType}`
+     const key = `${value}|${typeHint}`
      const needsCheck = Boolean(value) && value !== savedSlug
 
      useEffect(() => {
@@ -299,7 +335,7 @@ function useSlugCheck(slug: string, savedSlug: string, businessType: BusinessTyp
           let alive = true
           const timer = setTimeout(async () => {
                try {
-                    const result = await checkSlugAvailability(value, businessType)
+                    const result = await checkSlugAvailability(value, typeHint)
                     if (!alive) return
                     setAnswer({
                          key,
@@ -314,7 +350,7 @@ function useSlugCheck(slug: string, savedSlug: string, businessType: BusinessTyp
                alive = false
                clearTimeout(timer)
           }
-     }, [needsCheck, value, businessType, key])
+     }, [needsCheck, value, typeHint, key])
 
      // Everything else is derived from the input — no state to keep in sync
      if (!value) return { status: 'idle' as SlugStatus, suggestions: [] }

@@ -101,20 +101,29 @@ export function useActionForm<F extends string, C extends string>({
      const subscribe = useCallback(
           (notify: () => void) => {
                if (!formEl) return () => {}
+               // Re-check AFTER React has handled the event. Re-checking synchronously inside the
+               // input event would re-render before React stores the typed value and wipe it
+               // (seen on the keystroke that fills the last required field).
+               let timer: ReturnType<typeof setTimeout> | undefined
+               const later = () => {
+                    clearTimeout(timer)
+                    timer = setTimeout(notify, 0)
+               }
                // Typing fires input/change; chips and toggles change hidden inputs / data-filled
-               const observer = new MutationObserver(notify)
+               const observer = new MutationObserver(later)
                observer.observe(formEl, {
                     subtree: true,
                     childList: true,
                     attributes: true,
                     attributeFilter: ['value', 'data-filled', 'checked'],
                })
-               formEl.addEventListener('input', notify)
-               formEl.addEventListener('change', notify)
+               formEl.addEventListener('input', later)
+               formEl.addEventListener('change', later)
                return () => {
+                    clearTimeout(timer)
                     observer.disconnect()
-                    formEl.removeEventListener('input', notify)
-                    formEl.removeEventListener('change', notify)
+                    formEl.removeEventListener('input', later)
+                    formEl.removeEventListener('change', later)
                }
           },
           [formEl],
