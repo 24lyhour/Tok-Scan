@@ -8,5 +8,6 @@
  */
 export { finishGoogleSignIn, startGoogleSignIn } from './google/routes'
 export { LoginPage, loginMetadata } from './login/page'
+export { LogoutButton } from './logout-button'
 export { authRoutes } from './routes'
 export type { AuthContent } from './content'

@@ -6,6 +6,14 @@
 export const PLAN_IDS = ['starter', 'growth', 'premium', 'chain'] as const
 export type PlanId = (typeof PLAN_IDS)[number]
 
+/** Product names — the same in every language */
+export const PLAN_NAMES: Record<PlanId, string> = {
+     starter: 'Starter',
+     growth: 'Growth',
+     premium: 'Premium',
+     chain: 'Chain',
+}
+
 export type PlanLimits = { outlets: number; tables: number; staff: number }
 
 export const PLAN_LIMITS: Record<PlanId, PlanLimits | null> = {

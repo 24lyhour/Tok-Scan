@@ -3,6 +3,8 @@
  * Source: Tok_UIUX_Design_Guide.pdf p.21–22, p.26.
  */
 
+import { PLAN_NAMES } from '@/modules/core'
+
 export const links = {
      /** Every primary CTA leads into onboarding step 1 (guide p.21 "One goal per page") */
      signup: '/signup',
@@ -41,10 +43,10 @@ export const yearlyMonthsCharged = 10
 
 // Sample prices from the design guide (p.26) — confirm before launch.
 export const plans: Plan[] = [
-     { id: 'starter', name: 'Starter', monthly: 19, href: links.signup },
-     { id: 'growth', name: 'Growth', monthly: 49, href: links.signup, highlight: 'primary' },
-     { id: 'premium', name: 'Premium', monthly: 89, href: links.signup, highlight: 'premium' },
-     { id: 'chain', name: 'Chain', monthly: null, href: links.demo },
+     { id: 'starter', name: PLAN_NAMES.starter, monthly: 19, href: links.signup },
+     { id: 'growth', name: PLAN_NAMES.growth, monthly: 49, href: links.signup, highlight: 'primary' },
+     { id: 'premium', name: PLAN_NAMES.premium, monthly: 89, href: links.signup, highlight: 'premium' },
+     { id: 'chain', name: PLAN_NAMES.chain, monthly: null, href: links.demo },
 ]
 
 // TODO(before launch): replace with real customers who agreed to be listed.
