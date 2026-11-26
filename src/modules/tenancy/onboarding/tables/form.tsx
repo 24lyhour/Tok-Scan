@@ -26,10 +26,13 @@ const PREVIEW_MAX = 6
 
 /** Step 4 · Tables & QR codes (guide p.23, fourth screen). */
 export function TablesForm({
+     maxTables,
      initial,
      qr,
      checklist,
 }: {
+     /** Plan limit for this outlet (free trial = Growth) */
+     maxTables: number
      initial: { zone: string; count: number }
      /** For previews: public origin, organization slug, and saved QR keys by table number */
      qr: { origin: string; orgSlug: string; keys: Record<number, string> }
@@ -47,7 +50,6 @@ export function TablesForm({
      })
      const { errors, state } = form
      const [count, setCount] = useState(initial.count)
-     const [intent, setIntent] = useState<'print' | 'finish'>('finish')
 
      const shown = Math.min(count, PREVIEW_MAX)
      const msg = (field: TablesField) => (errors[field] ? m.errors[errors[field]] : undefined)
@@ -57,10 +59,9 @@ export function TablesForm({
                <FormAlert message={state.formError ? m.errors[state.formError] : undefined} />
 
                <div className="grid grid-cols-[1fr_auto] items-start gap-3">
-                    <Field id={form.id('zone')} label={copy.zone} error={msg('zone')} required>
+                    <Field id={form.id('zone')} label={copy.zone} error={msg('zone')}>
                          <input
                               {...form.fieldProps('zone')}
-                              required
                               maxLength={TABLE_LIMITS.zone}
                               placeholder={copy.zonePlaceholder}
                               defaultValue={initial.zone}
@@ -68,13 +69,21 @@ export function TablesForm({
                               className={inputClass}
                          />
                     </Field>
-                    <Field id={form.id('count')} label={copy.count} error={msg('count')} required>
+                    <Field
+                         id={form.id('count')}
+                         label={copy.count}
+                         error={msg('count')}
+                         hint={interpolate(copy.limitNote, {
+                              max: localizeDigits(maxTables, locale),
+                         })}
+                         required
+                    >
                          <Stepper
                               id={form.id('count')}
                               name="count"
                               value={count}
                               min={1}
-                              max={TABLE_LIMITS.perOutlet}
+                              max={maxTables}
                               onChange={(n) => {
                                    setCount(n)
                                    form.clearError('count')
@@ -118,26 +127,14 @@ export function TablesForm({
                               total: localizeDigits(count, locale),
                          })}
                </p>
+               <p className="mt-1 text-xs text-ink-3">{copy.printLater}</p>
 
                <div className="mt-5">{checklist}</div>
 
-               <div className="mt-auto space-y-2.5 pt-8">
+               <div className="mt-auto pt-8">
                     <SubmitButton
-                         variant="secondary"
-                         name="intent"
-                         value="print"
-                         onClick={() => setIntent('print')}
-                         pending={form.pending && intent === 'print'}
-                         disabled={form.pending || !form.ready}
-                         label={copy.download}
-                         pendingLabel={common.states.saving}
-                    />
-                    <SubmitButton
-                         name="intent"
-                         value="finish"
-                         onClick={() => setIntent('finish')}
-                         pending={form.pending && intent === 'finish'}
-                         disabled={form.pending || !form.ready}
+                         pending={form.pending}
+                         disabled={!form.ready}
                          label={copy.finish}
                          pendingLabel={common.states.saving}
                     />

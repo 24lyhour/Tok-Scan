@@ -46,8 +46,8 @@ export function ChoiceChips<V extends string>(
                aria-label={label}
                aria-invalid={invalid || undefined}
                aria-required={required || undefined}
-               data-required={required}
-               data-filled={selected.length > 0}
+               data-form-required={required}
+               data-form-filled={selected.length > 0}
                className={cn('flex flex-wrap gap-2 rounded-xl outline-none', className)}
           >
                {selected.map((v) => (

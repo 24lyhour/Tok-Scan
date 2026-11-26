@@ -144,13 +144,13 @@ export const km: LandingContent = {
           note: 'តម្លៃគិតជាដុល្លារអាមេរិក។ ការទូទាត់របស់ភ្ញៀវ (KHQR, ABA, កាត, សាច់ប្រាក់) ចូលទៅគណនីអាជីវកររបស់អ្នកផ្ទាល់ — tok·scan គិតថ្លៃតែការជាវប៉ុណ្ណោះ។',
           plans: {
                starter: {
-                    limits: 'សាខា ១ · តុ ១៥ · បុគ្គលិក ៥',
+                    limits: 'សាខា {outlets} · តុ {tables} · បុគ្គលិក {staff}',
                     features: ['ម៉ឺនុយ QR និងការកុម្ម៉ង់', 'ផ្ទះបាយ និងបេឡា', 'KHQR និងសាច់ប្រាក់'],
                     cta: 'សាកល្បងឥតគិតថ្លៃ',
                     badge: '',
                },
                growth: {
-                    limits: 'សាខា ៣ · តុ ៦០ · បុគ្គលិក ២៥',
+                    limits: 'សាខា {outlets} · តុ {tables} · បុគ្គលិក {staff}',
                     features: [
                          'អ្វីៗទាំងអស់ក្នុង Starter',
                          'បំបែកវិក្កយបត្រ និងបង់ជាផ្នែក',
@@ -160,7 +160,7 @@ export const km: LandingContent = {
                     badge: 'ពេញនិយមបំផុត',
                },
                premium: {
-                    limits: 'សាខា ៥ · តុ ១៥០ · បុគ្គលិក ៥០',
+                    limits: 'សាខា {outlets} · តុ {tables} · បុគ្គលិក {staff}',
                     features: [
                          'អ្វីៗទាំងអស់ក្នុង Growth',
                          'ដែនផ្ទាល់ខ្លួន · គ្មានបដា tok·scan',

@@ -5,7 +5,7 @@ import {
      tenantManagers,
      tenantManagersCreate,
      tenantMembers,
-} from '@/modules/core'
+} from '@/modules/core/payload'
 
 import { OUTLET_DEFAULTS, OUTLET_LIMITS, WEEKDAYS } from './constants'
 

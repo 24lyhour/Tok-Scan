@@ -92,6 +92,8 @@ export const km: OnboardingContent = {
           hours: 'ម៉ោងបើក',
           opens: 'បើក',
           closes: 'បិទ',
+          /** Under "Closes" when closing is after midnight */
+          nextDay: 'បិទក្រោយពាក់កណ្តាលអធ្រាត្រ (ថ្ងៃបន្ទាប់)',
           days: {
                mon: 'ច',
                tue: 'អ',
@@ -112,9 +114,11 @@ export const km: OnboardingContent = {
           count: 'ចំនួនតុ',
           decrease: 'បន្ថយតុ',
           increase: 'បន្ថែមតុ',
+          /** Under the stepper — the plan's table limit */
+          limitNote: 'សាកល្បងឥតគិតថ្លៃ៖ រហូតដល់ {max} តុ',
           previewNote: 'គំរូមើលជាមុន។ តុនីមួយៗនឹងទទួលបានតំណសុវត្ថិភាពផ្ទាល់ខ្លួន ពេលអ្នករក្សាទុក។',
           showing: 'បង្ហាញ {shown} ក្នុងចំណោម {total}',
-          download: 'ទាញយក QR ទាំងអស់ (ស្លាកតុ A6, PDF)',
+          printLater: 'អ្នកនឹងបោះពុម្ពកូដ QR ពីផ្ទាំងគ្រប់គ្រង នៅពេលម៉ឺនុយរបស់អ្នករួចរាល់។',
           checklistTitle: 'បញ្ជីត្រៀមចាប់ផ្តើម',
           finish: 'បញ្ចប់ និងបើកផ្ទាំងគ្រប់គ្រង',
      },
@@ -147,6 +151,7 @@ export const km: OnboardingContent = {
           },
           trial: 'សាកល្បងឥតគិតថ្លៃ · បញ្ចប់ {date}',
           printQr: 'បោះពុម្ពកូដ QR តុ',
+          printAfterMenu: 'សូមបន្ថែមម៉ឺនុយជាមុនសិន — រួចបោះពុម្ពកូដ QR ដើម្បីកុំឱ្យភ្ញៀវស្កេនឃើញទំព័រទទេ។',
           editSetup: 'កែការរៀបចំ',
           approvalNote:
                'មុនពេលអនុម័ត អ្នកអាចរៀបចំអ្វីៗទាំងអស់ និងទទួលការកុម្ម៉ង់ជាសាច់ប្រាក់បាន។ ការទូទាត់អនឡាញនឹងបើក បន្ទាប់ពីក្រុមការងាររបស់យើងផ្ទៀងផ្ទាត់រួច។',
@@ -173,6 +178,7 @@ export const km: OnboardingContent = {
           time: 'សូមប្រើទម្រង់ HH:MM ឧទាហរណ៍ 10:00។',
           days: 'សូមជ្រើសរើសយ៉ាងហោចណាស់មួយថ្ងៃ។',
           tableCount: 'សូមជ្រើសរើសពី 1 ដល់ 200 តុ។',
+          tableLimit: 'ចំនួនតុលើសពីគម្រោងរបស់អ្នក។',
           generic: 'មានបញ្ហាអ្វីមួយ។ សូមព្យាយាមម្តងទៀត។',
      },
 }

@@ -96,6 +96,8 @@ export const en = {
           hours: 'Opening hours',
           opens: 'Opens',
           closes: 'Closes',
+          /** Under "Closes" when closing is after midnight */
+          nextDay: 'Closes after midnight (next day)',
           days: {
                mon: 'Mon',
                tue: 'Tue',
@@ -116,9 +118,11 @@ export const en = {
           count: 'Tables',
           decrease: 'Fewer tables',
           increase: 'More tables',
+          /** Under the stepper — the plan's table limit */
+          limitNote: 'Free trial: up to {max} tables',
           previewNote: 'Preview. Every table gets its own secure link when you save.',
           showing: 'Showing {shown} of {total}',
-          download: 'Download all QR (A6 table stands, PDF)',
+          printLater: 'You’ll print the QR codes from your dashboard once your menu is ready.',
           checklistTitle: 'Go-live checklist',
           finish: 'Finish & open dashboard',
      },
@@ -151,6 +155,8 @@ export const en = {
           },
           trial: 'Free trial · ends {date}',
           printQr: 'Print table QR codes',
+          printAfterMenu:
+               'Add your menu first — then print the QR codes, so guests never scan to an empty page.',
           editSetup: 'Edit setup',
           approvalNote:
                'Before approval you can build everything and take cash orders. Online payments switch on after a quick verification by our team.',
@@ -177,6 +183,7 @@ export const en = {
           time: 'Use the format HH:MM, e.g. 10:00.',
           days: 'Choose at least one day.',
           tableCount: 'Choose between 1 and 200 tables.',
+          tableLimit: 'That’s more tables than your plan includes.',
           generic: 'Something went wrong. Please try again.',
      } satisfies Record<OnboardingErrorCode, string>,
 }

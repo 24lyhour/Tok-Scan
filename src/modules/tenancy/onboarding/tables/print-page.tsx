@@ -10,6 +10,7 @@ import { interpolate, localizeDigits } from '@/shared/i18n/format'
 import { DEFAULT_BRAND_COLOR } from '../../collections/organizations/constants'
 import { stepMetadata } from '../components/step-page'
 import { onboardingRoutes, STEP_PATHS } from '../routes'
+import { canPrintQr, goLiveRows } from '../go-live/checklist'
 import { getPublicOrigin, requireStep } from '../server/context'
 import { PrintButton } from './print-button'
 
@@ -18,8 +19,11 @@ import { PrintButton } from './print-button'
  * QR codes are made on the server as SVG, so the sheet prints sharp at any size.
  */
 export async function PrintQrPage() {
-     const { organization, tables } = await requireStep('tables')
+     const ctx = await requireStep('tables')
+     const { organization, tables } = ctx
      if (!organization || tables.length === 0) redirect(STEP_PATHS.tables)
+     // Printed codes must open a real menu — until it exists, go back to the dashboard
+     if (!canPrintQr(goLiveRows(ctx))) redirect(STEP_PATHS.done)
 
      const { m, locale } = await getTranslations('onboarding')
      const common = (await getTranslations('common')).m

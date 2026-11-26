@@ -33,5 +33,7 @@ export const zh: CommonMessages = {
           error: '出现问题，请重试。',
           required: '必填',
           optional: '选填',
+          /** Under a disabled button — followed by a red * */
+          fillRequired: '请填写所有标有星号的字段',
      },
 }

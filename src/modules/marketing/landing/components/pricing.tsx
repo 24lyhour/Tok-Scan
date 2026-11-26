@@ -3,9 +3,10 @@
 import { Check } from 'lucide-react'
 import { useState } from 'react'
 
-import { useTranslations } from '@/i18n/client'
+import { useLocale, useTranslations } from '@/i18n/client'
+import { PLAN_LIMITS } from '@/modules/core'
 import { Reveal } from '@/shared/components/motion/reveal'
-import { formatMoney, interpolate } from '@/shared/i18n/format'
+import { formatMoney, interpolate, localizeDigits } from '@/shared/i18n/format'
 import { cn } from '@/shared/lib/utils'
 
 import {
@@ -37,8 +38,18 @@ function PlanCard({
      index: number
      m: PricingCopy
 }) {
+     const locale = useLocale()
      const price = priceFor(plan, cycle)
      const text = m.plans[plan.id]
+     // Numbers come from core/plans.ts — the same limits the app enforces
+     const limits = PLAN_LIMITS[plan.id]
+     const limitsText = limits
+          ? interpolate(text.limits, {
+                 outlets: localizeDigits(limits.outlets, locale),
+                 tables: localizeDigits(limits.tables, locale),
+                 staff: localizeDigits(limits.staff, locale),
+            })
+          : text.limits
      const isPrimary = plan.highlight === 'primary'
      const isPremium = plan.highlight === 'premium'
 
@@ -65,7 +76,7 @@ function PlanCard({
                )}
 
                <h3 className="text-lg font-semibold text-ink">{plan.name}</h3>
-               <p className="mt-1 text-sm text-ink-3">{text.limits}</p>
+               <p className="mt-1 text-sm text-ink-3">{limitsText}</p>
 
                <p className="mt-5 flex items-baseline gap-1">
                     {price ? (

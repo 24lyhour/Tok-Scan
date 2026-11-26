@@ -50,3 +50,12 @@ export function goLiveRows(
           action: GO_LIVE_ACTIONS[id],
      }))
 }
+
+/**
+ * Table QR codes are printed only once the menu exists — otherwise a guest who scans one lands on
+ * an empty page. (The menu module isn't built yet, so for now this stays false.)
+ */
+export function canPrintQr(rows: GoLiveRow[]): boolean {
+     const done = (id: GoLiveItem) => rows.some((r) => r.id === id && r.done)
+     return done('tables') && done('menu')
+}

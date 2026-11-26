@@ -92,6 +92,8 @@ export const zh: OnboardingContent = {
           hours: '营业时间',
           opens: '开门',
           closes: '关门',
+          /** Under "Closes" when closing is after midnight */
+          nextDay: '午夜后打烊（次日）',
           days: {
                mon: '周一',
                tue: '周二',
@@ -112,9 +114,11 @@ export const zh: OnboardingContent = {
           count: '餐桌数',
           decrease: '减少餐桌',
           increase: '增加餐桌',
+          /** Under the stepper — the plan's table limit */
+          limitNote: '免费试用：最多 {max} 张桌',
           previewNote: '预览。保存后，每张餐桌都会获得专属的安全链接。',
           showing: '显示 {shown} / {total}',
-          download: '下载全部二维码（A6 桌牌，PDF）',
+          printLater: '菜单准备好后，您可以在控制台打印二维码。',
           checklistTitle: '上线清单',
           finish: '完成并打开控制台',
      },
@@ -147,6 +151,7 @@ export const zh: OnboardingContent = {
           },
           trial: '免费试用 · {date} 结束',
           printQr: '打印餐桌二维码',
+          printAfterMenu: '请先添加菜单，再打印二维码，这样客人扫码时不会看到空白页面。',
           editSetup: '修改设置',
           approvalNote:
                '审核通过前，您可以完成所有设置并接受现金订单。我们的团队快速审核后，即可开通在线支付。',
@@ -173,6 +178,7 @@ export const zh: OnboardingContent = {
           time: '请使用 HH:MM 格式，例如 10:00。',
           days: '请至少选择一天。',
           tableCount: '请选择 1 到 200 张餐桌。',
+          tableLimit: '餐桌数量超出了您的套餐。',
           generic: '出现问题，请重试。',
      },
 }

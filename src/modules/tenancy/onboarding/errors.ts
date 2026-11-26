@@ -31,6 +31,7 @@ export type OnboardingErrorCode =
      | 'days'
      // step 4 · tables
      | 'tableCount'
+     | 'tableLimit'
      | 'generic'
 
 /** Validate any onboarding schema → `{ ok, data }` or `{ ok: false, fieldErrors }`. */

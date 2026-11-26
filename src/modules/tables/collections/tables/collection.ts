@@ -5,7 +5,7 @@ import {
      tenantManagers,
      tenantManagersCreate,
      tenantMembers,
-} from '@/modules/core'
+} from '@/modules/core/payload'
 import { relationId } from '@/shared/lib/payload'
 
 import { TABLE_DEFAULTS, TABLE_LIMITS } from './constants'

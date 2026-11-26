@@ -144,19 +144,19 @@ export const zh: LandingContent = {
           note: '价格以美元计。顾客付款（KHQR、ABA、银行卡、现金）直接进入您自己的商户账户——tok·scan 只收取订阅费。',
           plans: {
                starter: {
-                    limits: '1 家门店 · 15 张桌 · 5 名员工',
+                    limits: '{outlets} 家门店 · {tables} 张桌 · {staff} 名员工',
                     features: ['扫码菜单与点餐', '厨房与收银', 'KHQR 与现金'],
                     cta: '免费试用',
                     badge: '',
                },
                growth: {
-                    limits: '3 家门店 · 60 张桌 · 25 名员工',
+                    limits: '{outlets} 家门店 · {tables} 张桌 · {staff} 名员工',
                     features: ['包含 Starter 全部功能', '分单与部分付款', '报表与导出'],
                     cta: '免费试用',
                     badge: '最受欢迎',
                },
                premium: {
-                    limits: '5 家门店 · 150 张桌 · 50 名员工',
+                    limits: '{outlets} 家门店 · {tables} 张桌 · {staff} 名员工',
                     features: [
                          '包含 Growth 全部功能',
                          '自定义域名 · 无 tok·scan 页脚',

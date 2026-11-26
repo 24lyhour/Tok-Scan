@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { selfOrSuperAdmin, superAdminOnly, usersRead } from '@/modules/core'
+import { selfOrSuperAdmin, superAdminOnly, usersRead } from '@/modules/core/payload'
 
 /**
  * Users — one login per person; a person can belong to many organizations (Module 14 §3.3).

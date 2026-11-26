@@ -4,6 +4,8 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
+import { limitsFor } from '@/modules/core'
+import { TABLE_LIMITS } from '@/modules/tables'
 import type { Organization, Outlet, Table } from '@/payload-types'
 import { getServerURL } from '@/shared/config/server-url'
 
@@ -92,4 +94,26 @@ export async function getPublicOrigin(): Promise<string> {
      const host = h.get('x-forwarded-host') ?? h.get('host') ?? 'localhost:3000'
      const proto = h.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
      return `${proto}://${host}`
+}
+
+/**
+ * How many tables this outlet may have: the plan's table limit (free trial = Growth) minus the
+ * tables in the organization's other outlets, never more than the 200-per-outlet maximum.
+ */
+export async function maxTablesFor(ctx: OnboardingContext): Promise<number> {
+     const limits = limitsFor(ctx.organization ?? undefined)
+     if (!limits || !ctx.organization) return TABLE_LIMITS.perOutlet
+     const { totalDocs: elsewhere } = ctx.outlet
+          ? await ctx.payload.count({
+                 collection: 'tables',
+                 where: {
+                      and: [
+                           { tenant: { equals: ctx.organization.id } },
+                           { outlet: { not_equals: ctx.outlet.id } },
+                      ],
+                 },
+                 overrideAccess: true,
+            })
+          : { totalDocs: 0 }
+     return Math.max(1, Math.min(TABLE_LIMITS.perOutlet, limits.tables - elsewhere))
 }

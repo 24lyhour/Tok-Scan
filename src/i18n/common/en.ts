@@ -35,6 +35,8 @@ export const en = {
           error: 'Something went wrong. Please try again.',
           required: 'Required',
           optional: 'Optional',
+          /** Under a disabled button — followed by a red * */
+          fillRequired: 'Fill in all fields marked',
      },
 }
 

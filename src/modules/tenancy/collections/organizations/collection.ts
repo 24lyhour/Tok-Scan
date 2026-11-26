@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { nobody, orgManagersUpdate, orgMembersRead, superAdminOnly } from '@/modules/core'
+import { nobody, orgManagersUpdate, orgMembersRead, superAdminOnly } from '@/modules/core/payload'
 import {
      BUSINESS_TYPES,
      DEFAULT_BRAND_COLOR,

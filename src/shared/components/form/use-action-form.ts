@@ -27,7 +27,8 @@ type Options<F extends string, C extends string> = {
 
 /**
  * Are all required fields filled in? Checks inputs with `required` (checkbox → ticked) and
- * custom groups marked `data-required="true"` + `data-filled` (e.g. day chips).
+ * custom groups marked `data-form-required="true"` + `data-form-filled` (own names: libraries such as
+ * react-aria already use `data-required`) (e.g. day chips).
  * Browser-autofilled fields count as filled (Chrome hides their value until the first click).
  */
 function isAutofilled(el: Element): boolean {
@@ -52,8 +53,8 @@ function requiredFilled(form: HTMLFormElement): boolean {
                return false
           }
      }
-     for (const group of form.querySelectorAll('[data-required="true"]')) {
-          if (group.getAttribute('data-filled') !== 'true') return false
+     for (const group of form.querySelectorAll('[data-form-required="true"]')) {
+          if (group.getAttribute('data-form-filled') !== 'true') return false
      }
      return true
 }
@@ -109,13 +110,13 @@ export function useActionForm<F extends string, C extends string>({
                     clearTimeout(timer)
                     timer = setTimeout(notify, 0)
                }
-               // Typing fires input/change; chips and toggles change hidden inputs / data-filled
+               // Typing fires input/change; chips and toggles change hidden inputs / data-form-filled
                const observer = new MutationObserver(later)
                observer.observe(formEl, {
                     subtree: true,
                     childList: true,
                     attributes: true,
-                    attributeFilter: ['value', 'data-filled', 'checked'],
+                    attributeFilter: ['value', 'data-form-filled', 'checked'],
                })
                formEl.addEventListener('input', later)
                formEl.addEventListener('change', later)

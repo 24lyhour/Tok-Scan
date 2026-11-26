@@ -1,4 +1,4 @@
-import { Printer } from 'lucide-react'
+import { Lock, Printer } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
@@ -9,7 +9,7 @@ import { AuthShell } from '../../shared/auth-shell'
 import { stepMetadata } from '../components/step-page'
 import { onboardingRoutes, STEP_PATHS } from '../routes'
 import { getOnboardingContext } from '../server/context'
-import { goLiveRows } from './checklist'
+import { canPrintQr, goLiveRows } from './checklist'
 import { ChecklistCard } from './checklist-card'
 
 /**
@@ -24,6 +24,7 @@ export async function GoLivePage() {
      const { m, locale } = await getTranslations('onboarding')
      const common = (await getTranslations('common')).m
      const copy = m.dashboard
+     const rows = goLiveRows(ctx)
 
      return (
           <AuthShell homeLabel={common.home}>
@@ -41,7 +42,7 @@ export async function GoLivePage() {
 
                <div className="mt-6">
                     <ChecklistCard
-                         rows={goLiveRows(ctx)}
+                         rows={rows}
                          title={m.tables.checklistTitle}
                          m={copy}
                          locale={locale}
@@ -62,13 +63,31 @@ export async function GoLivePage() {
                </p>
 
                <div className="mt-auto pt-8">
-                    <Link
-                         href={onboardingRoutes.printQr}
-                         className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-line bg-white text-[0.9375rem] font-semibold text-ink hover:bg-paper"
-                    >
-                         <Printer aria-hidden className="size-4" />
-                         {copy.printQr}
-                    </Link>
+                    {canPrintQr(rows) ? (
+                         <Link
+                              href={onboardingRoutes.printQr}
+                              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-line bg-white text-[0.9375rem] font-semibold text-ink hover:bg-paper"
+                         >
+                              <Printer aria-hidden className="size-4" />
+                              {copy.printQr}
+                         </Link>
+                    ) : (
+                         // Locked until the menu exists: a scanned code must open a real menu
+                         <>
+                              <span
+                                   role="link"
+                                   aria-disabled="true"
+                                   aria-describedby="print-locked"
+                                   className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-line bg-paper text-[0.9375rem] font-semibold text-ink-3"
+                              >
+                                   <Lock aria-hidden className="size-4" />
+                                   {copy.printQr}
+                              </span>
+                              <p id="print-locked" className="mt-2 text-center text-xs text-ink-3">
+                                   {copy.printAfterMenu}
+                              </p>
+                         </>
+                    )}
                </div>
           </AuthShell>
      )

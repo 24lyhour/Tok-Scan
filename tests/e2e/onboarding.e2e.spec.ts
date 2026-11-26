@@ -25,6 +25,7 @@ test('a new owner sets up a restaurant', async ({ page, context }) => {
      await test.step('step 2 · organization', async () => {
           const submit = page.getByRole('button', { name: 'Continue' })
           await expect(submit).toBeDisabled() // required fields empty
+          await expect(page.getByText('Fill in all fields marked')).toBeVisible() // says why
           await expect(page.locator('label', { hasText: 'Business name' })).toContainText('*')
 
           // Reserved address → free alternatives
@@ -52,26 +53,43 @@ test('a new owner sets up a restaurant', async ({ page, context }) => {
           await page.getByRole('textbox', { name: 'Outlet name' }).fill('BKK1')
           await page.getByRole('textbox', { name: 'Address' }).fill('#24, Street 240, Phnom Penh')
           await page.getByRole('button', { name: 'Sun' }).click() // closed on Sundays
+          // Time dropdown: a late bar closes after midnight → "+1 day"
+          await page.getByRole('button', { name: /Closes/ }).click()
+          await page.getByRole('option', { name: '2:00 AM', exact: true }).click()
+          await expect(page.getByText('Closes after midnight (next day)')).toBeVisible()
+          if (process.env.E2E_SCREENSHOTS) {
+               await page.getByRole('button', { name: /Opens/ }).click()
+               await page.waitForTimeout(400) // let the list finish fading in
+               await page.screenshot({ path: `${process.env.E2E_SCREENSHOTS}/time-select.png` })
+               await page.keyboard.press('Escape')
+          }
           await page.getByRole('button', { name: 'Save outlet' }).click()
           await expect(page).toHaveURL(/\/onboarding\/tables$/)
      })
 
      await test.step('step 4 · tables + print sheet', async () => {
           await expect(page.locator('figure svg')).toHaveCount(6) // QR previews
-          await page.getByRole('button', { name: 'Fewer tables' }).click() // 16 → 15
+          // Free trial = Growth: max 60 tables
+          await expect(page.getByText('Free trial: up to 60 tables')).toBeVisible()
+          const count = page.getByRole('spinbutton', { name: 'Tables' })
+          await count.fill('99')
+          await expect(count).toHaveValue('60')
+          await count.fill('10')
+          await page.getByRole('button', { name: 'Fewer tables' }).click() // 10 → 9
           await page.getByRole('button', { name: /Download all QR/ }).click()
           await expect(page).toHaveURL(/\/onboarding\/tables\/print$/)
-          await expect(page.locator('article')).toHaveCount(15)
+          await expect(page.locator('article')).toHaveCount(9)
      })
 
      await test.step('finish → dashboard', async () => {
           await page.goto('/onboarding/tables')
+          await page.getByRole('textbox', { name: 'Zone' }).fill('') // optional → "Indoor"
           await page.getByRole('button', { name: 'Finish & open dashboard' }).click()
           await expect(page).toHaveURL(/\/dashboard$/)
           await expect(page.getByRole('heading', { level: 1 })).toHaveText(
                'Get E2E Mahob Kitchen live',
           )
-          await expect(page.getByText('BKK1 · 15 tables')).toBeVisible()
+          await expect(page.getByText('BKK1 · 9 tables')).toBeVisible()
      })
 
      await test.step('Khmer', async () => {

@@ -9,6 +9,7 @@ import {
      FormAlert,
      inputClass,
      SubmitButton,
+     TimeSelect,
      Toggle,
      useActionForm,
 } from '@/shared/components/form'
@@ -56,7 +57,7 @@ const TAXES = [
 
 /** Step 3 · Your first outlet (guide p.23, third screen). */
 export function OutletForm({ initial }: { initial: OutletFormValues }) {
-     const { m } = useTranslations('onboarding')
+     const { m, locale } = useTranslations('onboarding')
      const common = useTranslations('common').m
      const copy = m.outlet
 
@@ -73,6 +74,9 @@ export function OutletForm({ initial }: { initial: OutletFormValues }) {
           lightingTaxEnabled: initial.lightingTaxEnabled,
      })
      const [days, setDays] = useState<Weekday[]>(initial.days)
+     const [hours, setHours] = useState({ opens: initial.opens, closes: initial.closes })
+     // Closing at or before opening time = after midnight (e.g. a bar open 18:00 → 02:00)
+     const overnight = hours.closes <= hours.opens
 
      const msg = (field: OutletField) => (errors[field] ? m.errors[errors[field]] : undefined)
      /** Plain text/number input with the hook's id/name/aria props */
@@ -214,7 +218,19 @@ export function OutletForm({ initial }: { initial: OutletFormValues }) {
                               error={msg('opens')}
                               required
                          >
-                              {input('opens', { type: 'time', className: 'tabular' })}
+                              <TimeSelect
+                                   id={form.id('opens')}
+                                   name="opens"
+                                   label={copy.opens}
+                                   value={hours.opens}
+                                   onChange={(opens) => {
+                                        setHours((h) => ({ ...h, opens }))
+                                        form.clearError('opens')
+                                   }}
+                                   locale={locale}
+                                   invalid={Boolean(errors.opens)}
+                                   required
+                              />
                          </Field>
                          <Field
                               id={form.id('closes')}
@@ -222,7 +238,20 @@ export function OutletForm({ initial }: { initial: OutletFormValues }) {
                               error={msg('closes')}
                               required
                          >
-                              {input('closes', { type: 'time', className: 'tabular' })}
+                              <TimeSelect
+                                   id={form.id('closes')}
+                                   name="closes"
+                                   label={copy.closes}
+                                   value={hours.closes}
+                                   onChange={(closes) => {
+                                        setHours((h) => ({ ...h, closes }))
+                                        form.clearError('closes')
+                                   }}
+                                   locale={locale}
+                                   note={overnight ? copy.nextDay : undefined}
+                                   invalid={Boolean(errors.closes)}
+                                   required
+                              />
                          </Field>
                     </div>
                </div>

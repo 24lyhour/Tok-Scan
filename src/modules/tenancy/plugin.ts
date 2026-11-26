@@ -2,7 +2,7 @@ import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import type { MultiTenantPluginConfig } from '@payloadcms/plugin-multi-tenant/types'
 import type { Plugin } from 'payload'
 
-import { isSuperAdmin, ORG_ROLES } from '@/modules/core'
+import { isSuperAdmin, ORG_ROLES } from '@/modules/core/payload'
 
 /** Tenant-scoped collections: slug → plugin options ({} = defaults) */
 export type TenantScoped = NonNullable<MultiTenantPluginConfig['collections']>

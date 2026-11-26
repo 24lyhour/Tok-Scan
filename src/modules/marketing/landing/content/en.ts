@@ -145,13 +145,13 @@ export const en: LandingContent = {
           note: 'Prices in USD. Guest payments (KHQR, ABA, card, cash) go straight to your own merchant account — tok·scan only bills the subscription.',
           plans: {
                starter: {
-                    limits: '1 outlet · 15 tables · 5 staff',
+                    limits: '{outlets} outlet · {tables} tables · {staff} staff',
                     features: ['QR menu & ordering', 'Kitchen & cashier', 'KHQR & cash'],
                     cta: 'Start free trial',
                     badge: '',
                },
                growth: {
-                    limits: '3 outlets · 60 tables · 25 staff',
+                    limits: '{outlets} outlets · {tables} tables · {staff} staff',
                     features: [
                          'Everything in Starter',
                          'Split & partial bills',
@@ -161,7 +161,7 @@ export const en: LandingContent = {
                     badge: 'Most popular',
                },
                premium: {
-                    limits: '5 outlets · 150 tables · 50 staff',
+                    limits: '{outlets} outlets · {tables} tables · {staff} staff',
                     features: [
                          'Everything in Growth',
                          'Custom domain · no tok·scan footer',
