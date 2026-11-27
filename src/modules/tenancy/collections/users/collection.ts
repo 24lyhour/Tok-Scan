@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { ADMIN_GROUPS, selfOrSuperAdmin, superAdminOnly, usersRead } from '@/modules/core/payload'
 
+import { brandedForgotPassword } from '../../auth/password-reset/email'
 import { requireCaptchaOnApiLogin } from './hooks/require-captcha'
 
 /**
@@ -15,7 +16,8 @@ export const Users: CollectionConfig = {
           useAsTitle: 'email',
           defaultColumns: ['name', 'email', 'phone', 'createdAt'],
      },
-     auth: true,
+     // Branded reset email (tok-scan logo, button → /reset-password), in the reader's language
+     auth: { forgotPassword: brandedForgotPassword },
      access: {
           /** The Payload admin (/admin) is tok-scan's console: super-admins only. Owners use /dashboard. */
           admin: superAdminOnly,

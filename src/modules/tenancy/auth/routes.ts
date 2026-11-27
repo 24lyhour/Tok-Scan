@@ -4,8 +4,10 @@ import { onboardingRoutes } from '../onboarding/routes'
 export const authRoutes = {
      login: '/login',
      signup: onboardingRoutes.signup,
-     // TODO: replace with a branded reset-password flow (Payload's admin one works meanwhile)
-     forgotPassword: '/admin/forgot',
+     /** "Forgot password?" → email a reset link */
+     forgotPassword: '/forgot-password',
+     /** The reset link in that email opens this page (?token=…) */
+     resetPassword: '/reset-password',
      /** Resumes onboarding, or opens the dashboard once it's finished */
      afterLogin: onboardingRoutes.resume,
 } as const

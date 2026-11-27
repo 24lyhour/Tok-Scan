@@ -8,6 +8,12 @@
  */
 export { finishGoogleSignIn, startGoogleSignIn } from './google/routes'
 export { LoginPage, loginMetadata } from './login/page'
+export {
+     ForgotPasswordPage,
+     forgotPasswordMetadata,
+     ResetPasswordPage,
+     resetPasswordMetadata,
+} from './password-reset/page'
 export { LogoutButton } from './logout-button'
 export { authRoutes } from './routes'
 export { getCurrentUser } from './server/current-user'

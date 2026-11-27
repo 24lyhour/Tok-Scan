@@ -3,8 +3,6 @@
 import { redirect } from 'next/navigation'
 import { AuthenticationError, LockedAuth } from 'payload'
 
-import { isSuperAdmin } from '@/modules/core/payload'
-import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
 import { formValues } from '@/shared/lib/validation'
 import { verifyTurnstile } from '@/shared/security/verify-turnstile'
 import { TURNSTILE_FIELD } from '@/shared/security/turnstile-config'
@@ -12,6 +10,7 @@ import { TURNSTILE_FIELD } from '@/shared/security/turnstile-config'
 import { type AuthState, validate } from '../errors'
 import { authRoutes, safeNextPath } from '../routes'
 import { getCurrentUser } from '../server/current-user'
+import { homeAfterSignIn } from '../server/home'
 import { setAuthCookie } from '../server/session'
 import { type LoginField, loginSchema } from './schema'
 
@@ -37,8 +36,7 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
           if (!token) return { status: 'error', formError: 'generic' }
 
           await setAuthCookie(payload, token, exp)
-          // tok-scan staff land in the super-admin console, restaurant owners in their app
-          if (isSuperAdmin(user)) home = CONSOLE_ROUTES.home
+          home = homeAfterSignIn(user)
      } catch (error) {
           // Same message for "no such user" and "wrong password" — don't reveal which emails exist.
           if (error instanceof LockedAuth) return { status: 'error', formError: 'locked' }
