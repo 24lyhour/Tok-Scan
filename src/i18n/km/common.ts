@@ -25,6 +25,11 @@ export const common: CommonMessages = {
           logIn: 'ចូលគណនី',
           logOut: 'ចាកចេញ',
      },
+     security: {
+          checking: 'កំពុងពិនិត្យការតភ្ជាប់របស់អ្នក…',
+          verified: 'បានផ្ទៀងផ្ទាត់ · ការពារដោយ Cloudflare',
+          failed: 'ការពិនិត្យសុវត្ថិភាពមិនអាចផ្ទុកបានទេ។ សូមផ្ទុកទំព័រឡើងវិញ ហើយព្យាយាមម្ដងទៀត។',
+     },
      states: {
           loading: 'កំពុងផ្ទុក…',
           saving: 'កំពុងរក្សាទុក…',

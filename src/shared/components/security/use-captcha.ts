@@ -2,6 +2,8 @@
 
 import { useCallback, useState } from 'react'
 
+import { useTranslations } from '@/i18n/client'
+
 import { turnstileSiteKey } from '@/shared/security/turnstile-config'
 
 /**
@@ -9,6 +11,7 @@ import { turnstileSiteKey } from '@/shared/security/turnstile-config'
  * and `reset()` after every server response (tokens are single-use).
  */
 export function useCaptcha() {
+     const status = useTranslations('common').m.security
      const [token, setToken] = useState<string | null>(null)
      const [resetKey, setResetKey] = useState(0)
      const [missing, setMissing] = useState(false)
@@ -27,5 +30,5 @@ export function useCaptcha() {
 
      const reset = useCallback(() => setResetKey((k) => k + 1), [])
 
-     return { missing, ensure, reset, widget: { resetKey, onToken } }
+     return { missing, ensure, reset, widget: { resetKey, onToken, status } }
 }

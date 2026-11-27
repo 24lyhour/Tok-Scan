@@ -161,7 +161,7 @@ export const onboarding: OnboardingContent = {
           passwordShort: '请至少使用 10 个字符。',
           termsRequired: '请同意服务条款以继续。',
           emailTaken: '该邮箱已注册账户，请直接登录。',
-          captcha: '请先完成按钮上方的安全验证，然后重试。',
+          captcha: '安全检查尚未完成。请稍候，然后重试。',
           slugTooShort: '至少使用 3 个字符。',
           slugTooLong: '最多使用 40 个字符。',
           slugInvalid: '只能使用小写字母、数字和单个连字符。',

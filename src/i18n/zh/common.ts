@@ -25,6 +25,11 @@ export const common: CommonMessages = {
           logIn: '登录',
           logOut: '退出登录',
      },
+     security: {
+          checking: '正在检查您的连接…',
+          verified: '已验证 · 由 Cloudflare 保护',
+          failed: '安全检查无法加载。请刷新页面后重试。',
+     },
      states: {
           loading: '加载中…',
           saving: '保存中…',
