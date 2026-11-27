@@ -5,7 +5,16 @@
 import { createValidator, type FormState } from '@/shared/lib/validation'
 
 export type LoginErrorCode =
-     'required' | 'emailInvalid' | 'invalidCredentials' | 'locked' | 'captcha' | 'generic'
+     | 'required'
+     | 'emailInvalid'
+     | 'invalidCredentials'
+     | 'locked'
+     | 'captcha'
+     | 'generic'
+     // password reset
+     | 'passwordShort'
+     | 'passwordMismatch'
+     | 'tokenInvalid'
 
 /** Validate any auth schema → `{ ok, data }` or `{ ok: false, fieldErrors }`. */
 export const validate = createValidator<LoginErrorCode>()
