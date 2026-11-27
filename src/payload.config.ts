@@ -6,7 +6,15 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { migrations } from './migrations'
-import { adminComponents, adminI18n, collections, localization, plugins, Users } from './modules'
+import {
+     adminComponents,
+     adminI18n,
+     collections,
+     emailAdapter,
+     localization,
+     plugins,
+     Users,
+} from './modules'
 import { getServerURL } from './shared/config/server-url'
 
 const filename = fileURLToPath(import.meta.url)
@@ -54,4 +62,6 @@ export default buildConfig({
      }),
      sharp,
      plugins,
+     // Resend in production (RESEND_API_KEY); without a key, emails are printed to the terminal
+     email: emailAdapter,
 })

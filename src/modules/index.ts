@@ -40,5 +40,5 @@ export const adminI18n: I18nOptions = {
 /** tok-scan logo + console home in the Payload admin */
 export const adminComponents = superAdminComponents
 
-export { localization, Media } from './core/payload'
+export { emailAdapter, localization, Media } from './core/payload'
 export { Users } from './tenancy/payload'
