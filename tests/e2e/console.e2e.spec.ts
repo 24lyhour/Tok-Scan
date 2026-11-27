@@ -45,20 +45,39 @@ test('the login API refuses requests without the bot check', async ({ page }) =>
      expect(res.status()).toBe(400)
 })
 
-test('a super-admin logs in on the branded /admin/login', async ({ page }) => {
+test('staff log in at their own address, /admin/login, and land in the console', async ({
+     page,
+}) => {
      await page.goto('/admin/login')
-     await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible()
+     // tok-scan's login in staff mode — the address stays /admin/login
+     await expect(page).toHaveURL(/\/admin\/login$/)
      await expect(page.getByText('Platform console · staff only')).toBeVisible()
-     // Invisible Turnstile hands its token over in a cookie before the form is sent
-     await expect
-          .poll(async () => (await page.context().cookies()).some((c) => c.name === 'tok-captcha'))
-          .toBe(true)
-     await page.getByLabel('Email').fill(testSuperAdmin.email)
-     await page.getByLabel('Password').fill(testSuperAdmin.password)
-     await page.getByRole('button', { name: 'Login' }).click()
+     await page.getByLabel(/^Email/).fill(testSuperAdmin.email)
+     await page.getByLabel(/^Password/).fill(testSuperAdmin.password)
+     await expect(page.locator('input[name="cf-turnstile-response"]')).not.toHaveValue('', {
+          timeout: 15000,
+     })
+     await page.getByRole('button', { name: 'Log in' }).click()
      // Lands in the one console
      await expect(page).toHaveURL(/\/console\/organizations$/)
      await expect(page.getByRole('heading', { name: 'Organizations' })).toBeVisible()
+})
+
+test('a super-admin without a restaurant skips onboarding after the normal /login', async ({
+     page,
+}) => {
+     await page.goto('/login')
+     await page.getByLabel(/^Email/).fill(testSuperAdmin.email)
+     await page.getByLabel(/^Password/).fill(testSuperAdmin.password)
+     await expect(page.locator('input[name="cf-turnstile-response"]')).not.toHaveValue('', {
+          timeout: 15000,
+     })
+     await page.getByRole('button', { name: 'Log in' }).click()
+     await expect(page).toHaveURL(/\/console\/organizations$/)
+
+     // The owner app sends staff back to the console too (no "create your organization")
+     await page.goto('/dashboard')
+     await expect(page).toHaveURL(/\/console\/organizations$/)
 })
 
 test('console: a super-admin approves, then suspends, a restaurant (guide p.27)', async ({
@@ -96,11 +115,32 @@ test('console: restaurant owners are kept out', async ({ page }) => {
 
 test('console login is staff-only: no Google, no sign-up link', async ({ page }) => {
      await page.goto('/console')
-     await expect(page).toHaveURL(/\/login\?next=%2Fconsole/)
-     await expect(page.getByRole('heading', { name: 'Platform console' })).toBeVisible()
+     await expect(page).toHaveURL(/\/admin\/login$/)
+     await expect(page.getByText('Platform console · staff only')).toBeVisible()
      await expect(page.getByText('Continue with Google')).toHaveCount(0)
      await expect(page.getByText('Start a free trial')).toHaveCount(0)
      // The owners' login keeps Google
      await page.goto('/login')
      await expect(page.getByText('Continue with Google')).toBeVisible()
+})
+
+test('log out asks first, then really signs out (back to /admin/login)', async ({ page }) => {
+     await apiLogin(page, testSuperAdmin)
+     await page.goto('/console/organizations')
+
+     // Cancel keeps you signed in
+     await page.getByRole('button', { name: 'Log out' }).click()
+     const dialog = page.getByRole('alertdialog', { name: 'Log out?' })
+     await expect(dialog).toBeVisible()
+     await dialog.getByRole('button', { name: 'Cancel' }).click()
+     await expect(dialog).toBeHidden()
+     await expect(page).toHaveURL(/\/console\/organizations$/)
+
+     // Confirm → cookie gone → staff login; the console is locked again
+     await page.getByRole('button', { name: 'Log out' }).click()
+     await page.getByRole('alertdialog').getByRole('button', { name: 'Log out' }).click()
+     await expect(page).toHaveURL(/\/admin\/login$/)
+     expect((await page.context().cookies()).some((c) => c.name === 'payload-token')).toBe(false)
+     await page.goto('/console/organizations')
+     await expect(page).toHaveURL(/\/admin\/login$/)
 })

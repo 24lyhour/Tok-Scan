@@ -27,6 +27,13 @@ export const common = {
           logIn: 'Log in',
           logOut: 'Log out',
      },
+     /** "Log out?" confirmation (sidebar log-out button) */
+     logout: {
+          title: 'Log out?',
+          body: 'You’ll need to log in again to get back to tok-scan.',
+          confirm: 'Log out',
+          pending: 'Logging out…',
+     },
      /** Bot check status under the form (Cloudflare Turnstile) */
      security: {
           checking: 'Checking your connection…',

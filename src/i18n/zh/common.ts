@@ -25,6 +25,12 @@ export const common: CommonMessages = {
           logIn: '登录',
           logOut: '退出登录',
      },
+     logout: {
+          title: '退出登录？',
+          body: '退出后需要重新登录才能回到 tok-scan。',
+          confirm: '退出登录',
+          pending: '正在退出…',
+     },
      security: {
           checking: '正在检查您的连接…',
           verified: '已验证 · 由 Cloudflare 保护',

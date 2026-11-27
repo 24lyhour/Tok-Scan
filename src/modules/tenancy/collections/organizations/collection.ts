@@ -111,7 +111,13 @@ export const Organizations: CollectionConfig = {
                access: { update: superAdminOnly },
                admin: { position: 'sidebar', readOnly: true },
           },
-          { name: 'trialEndsAt', type: 'date', admin: { position: 'sidebar' } },
+          {
+               name: 'trialEndsAt',
+               type: 'date',
+               // Set by onboarding; only tok-scan staff may change it (owners can't extend their trial)
+               access: { update: superAdminOnly },
+               admin: { position: 'sidebar' },
+          },
           {
                name: 'onboarding',
                type: 'group',

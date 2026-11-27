@@ -25,6 +25,12 @@ export const common: CommonMessages = {
           logIn: 'ចូលគណនី',
           logOut: 'ចាកចេញ',
      },
+     logout: {
+          title: 'ចាកចេញ?',
+          body: 'អ្នកនឹងត្រូវចូលម្ដងទៀត ដើម្បីត្រឡប់មក tok-scan វិញ។',
+          confirm: 'ចាកចេញ',
+          pending: 'កំពុងចាកចេញ…',
+     },
      security: {
           checking: 'កំពុងពិនិត្យការតភ្ជាប់របស់អ្នក…',
           verified: 'បានផ្ទៀងផ្ទាត់ · ការពារដោយ Cloudflare',

@@ -111,6 +111,21 @@ export const console = {
           cancel: 'Cancel',
           close: 'Close details',
      },
+     /** Edit organization (support): /console/organizations/<id>/edit */
+     edit: {
+          open: 'Edit',
+          title: 'Edit organization',
+          back: 'Back to organizations',
+          organization: 'Organization',
+          slugHint: 'Changing it breaks the QR codes already printed for this restaurant.',
+          trialEnds: 'Trial ends',
+          trialHint: 'Extend it to give the restaurant more time. Leave empty for no end date.',
+          owner: 'Owner',
+          ownerName: 'Full name',
+          ownerEmail: 'Login email',
+          ownerEmailHint: 'The owner logs in with this email from now on.',
+          emailTaken: 'Another account already uses this email.',
+     },
      errors: {
           generic: 'Something went wrong. Please try again.',
           forbidden: 'Only tok-scan staff can do this.',

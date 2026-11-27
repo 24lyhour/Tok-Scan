@@ -6,6 +6,7 @@ import { optionalText, requiredText, switchField, type SchemaField } from '@/sha
 import {
      BRAND_COLOR_VALUES,
      BUSINESS_TYPES,
+     type BusinessType,
      DEFAULT_BRAND_COLOR,
      ORGANIZATION_LIMITS,
 } from '../../collections/organizations/constants'
@@ -38,26 +39,40 @@ const logoField = z.preprocess(
           .optional(),
 )
 
+/**
+ * Name, web address and business type — the same rules here and in the super-admin console's
+ * "Edit organization". Use with `requireOtherType` + `dropStaleOtherType`.
+ */
+export const organizationCoreFields = {
+     name: requiredText(ORGANIZATION_LIMITS.name),
+     slug: slugField,
+     businessType: z.enum(BUSINESS_TYPES, 'required'),
+     /** The owner's own business type — only when businessType is 'other' */
+     businessTypeOther: optionalText(ORGANIZATION_LIMITS.businessTypeOther),
+}
+
+type WithBusinessType = { businessType: BusinessType; businessTypeOther: string }
+
+/** 'Other' needs the owner's own words. */
+export function requireOtherType(org: WithBusinessType, ctx: z.RefinementCtx) {
+     if (org.businessType === 'other' && !org.businessTypeOther) {
+          ctx.addIssue({ code: 'custom', message: 'required', path: ['businessTypeOther'] })
+     }
+}
+
+/** Keep the free text only for 'other', so a stale value is never saved. */
+export function dropStaleOtherType<T extends WithBusinessType>(org: T): T {
+     return { ...org, businessTypeOther: org.businessType === 'other' ? org.businessTypeOther : '' }
+}
+
 export const organizationSchema = z
      .object({
-          name: requiredText(ORGANIZATION_LIMITS.name),
-          slug: slugField,
+          ...organizationCoreFields,
           logo: logoField,
           removeLogo: switchField(),
           brandColor: z.enum(BRAND_COLOR_VALUES).catch(DEFAULT_BRAND_COLOR),
-          businessType: z.enum(BUSINESS_TYPES, 'required'),
-          /** The owner's own business type — only when businessType is 'other' */
-          businessTypeOther: optionalText(ORGANIZATION_LIMITS.businessTypeOther),
      })
-     .superRefine((org, ctx) => {
-          if (org.businessType === 'other' && !org.businessTypeOther) {
-               ctx.addIssue({ code: 'custom', message: 'required', path: ['businessTypeOther'] })
-          }
-     })
-     // Keep the free text only for 'other', so a stale value is never saved
-     .transform((org) => ({
-          ...org,
-          businessTypeOther: org.businessType === 'other' ? org.businessTypeOther : '',
-     }))
+     .superRefine(requireOtherType)
+     .transform(dropStaleOtherType)
 
 export type OrganizationField = SchemaField<typeof organizationSchema>

@@ -82,6 +82,7 @@ export async function AppShell({ children }: { children: ReactNode }) {
                     </span>
                     <LogoutButton
                          label={common.actions.logOut}
+                         texts={{ ...common.logout, cancel: common.actions.cancel }}
                          loginHref={authRoutes.login}
                          className="text-white/70 hover:bg-white/10 hover:text-white"
                     />

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 import { TranslationsProvider } from '@/i18n/provider'
 import { getTranslations } from '@/i18n/server'
-import { authRoutes, LogoutButton } from '@/modules/tenancy'
+import { LogoutButton } from '@/modules/tenancy'
 import { initials, ShellLayout } from '@/shared/components/shell'
 import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
 
@@ -59,7 +59,11 @@ export async function ConsoleShell({ children }: { children: ReactNode }) {
                                              </span>
                                              <LogoutButton
                                                   label={common.actions.logOut}
-                                                  loginHref={authRoutes.login}
+                                                  texts={{
+                                                       ...common.logout,
+                                                       cancel: common.actions.cancel,
+                                                  }}
+                                                  loginHref={CONSOLE_ROUTES.login}
                                                   className="text-white/70 hover:bg-white/10 hover:text-white"
                                              />
                                         </div>

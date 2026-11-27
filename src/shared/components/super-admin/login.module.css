@@ -27,6 +27,10 @@
      font-size: 0.875rem;
      color: var(--theme-elevation-500);
 }
+.captcha {
+     /* Space between Payload's Login button and the Cloudflare box */
+     margin-top: 1rem;
+}
 .ownerLink {
      margin: 1.25rem 0 0;
      text-align: center;

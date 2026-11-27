@@ -1,23 +1,15 @@
 /*
- * /admin login brand panel. Colours: --color-* variables (Tailwind's names; in the admin
- * they come from theme.tsx). Shown only on large screens; custom.scss moves the login card to the right.
+ * Staff login brand panel (charcoal, guide p.27). Colours: --color-* variables. Fills the box it is
+ * placed in — the login page's side panel, shown on large screens only.
  */
 .panel {
-     display: none;
-}
-
-@media (min-width: 1024px) {
-     .panel {
-          position: fixed;
-          inset: 0 auto 0 0;
-          z-index: 0;
-          display: flex;
-          width: 46vw;
-          overflow: hidden;
-          background: var(--color-ink);
-          color: #fff;
-          text-align: left;
-     }
+     position: absolute;
+     inset: 0;
+     display: flex;
+     overflow: hidden;
+     background: var(--color-ink);
+     color: #fff;
+     text-align: left;
 }
 
 /* 32px grid, fading out towards the bottom-right */

@@ -1,5 +1,8 @@
+import { ShieldCheck } from 'lucide-react'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
+import { LoginPanel } from '@/shared/components/super-admin/login-panel'
 import { TranslationsProvider } from '@/i18n/provider'
 import { getTranslations } from '@/i18n/server'
 import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
@@ -33,7 +36,29 @@ export async function LoginPage({ searchParams }: { searchParams: SearchParams }
 
      return (
           <TranslationsProvider namespaces={['auth']}>
-               <AuthShell homeLabel={common.home} aside={<LoginAside m={m.aside} />}>
+               <AuthShell
+                    homeLabel={common.home}
+                    variant={staff ? 'staff' : 'owner'}
+                    aside={
+                         staff ? (
+                              <LoginPanel
+                                   title={m.login.staffAside.title}
+                                   points={m.login.staffAside.points}
+                                   pendingLabel={m.login.staffAside.pending}
+                                   approveLabel={m.login.staffAside.approve}
+                                   statusLabels={m.login.staffAside.status}
+                              />
+                         ) : (
+                              <LoginAside m={m.aside} />
+                         )
+                    }
+               >
+                    {staff && (
+                         <span className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-saffron-500/45 bg-saffron-500/15 px-2.5 py-1 text-xs font-semibold text-ink">
+                              <ShieldCheck aria-hidden className="size-3.5" />
+                              {m.login.staffBadge}
+                         </span>
+                    )}
                     <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-[1.75rem]">
                          {staff ? m.login.staffTitle : m.login.title}
                     </h1>
@@ -49,6 +74,17 @@ export async function LoginPage({ searchParams }: { searchParams: SearchParams }
                          oauthError={oauthError}
                          staff={staff}
                     />
+                    {staff && (
+                         <p className="mt-4 text-center text-sm text-ink-2">
+                              {m.login.ownerQuestion}{' '}
+                              <Link
+                                   href={authRoutes.login}
+                                   className="font-semibold text-brand-700 hover:underline"
+                              >
+                                   {m.login.ownerLink}
+                              </Link>
+                         </p>
+                    )}
                </AuthShell>
           </TranslationsProvider>
      )

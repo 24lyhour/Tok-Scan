@@ -5,8 +5,10 @@ import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
 import { limitsFor } from '@/modules/core'
+import { isSuperAdmin } from '@/modules/core/payload'
 import { TABLE_LIMITS } from '@/modules/tables'
 import type { Organization, Outlet, Table } from '@/payload-types'
+import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
 import { getServerURL } from '@/shared/config/server-url'
 
 import { getCurrentUser } from '../../auth/server/current-user'
@@ -18,8 +20,8 @@ const stepIndex = (step: OnboardingStep) => ONBOARDING_STEPS.indexOf(step)
 
 /**
  * Everything an onboarding page or action needs: the signed-in owner, their organization,
- * first outlet and its tables, and how far they got. Redirects to sign-up when signed out.
- * Cached per request.
+ * first outlet and its tables, and how far they got. Redirects to sign-up when signed out, and
+ * tok-scan staff without a restaurant to the console (they never onboard). Cached per request.
  */
 export const getOnboardingContext = cache(async () => {
      const { payload, user } = await getCurrentUser()
@@ -27,6 +29,7 @@ export const getOnboardingContext = cache(async () => {
 
      // The owner's organization = their first membership with orgRole "owner"
      const orgId = relationId(user.tenants?.find((t) => t.orgRole === 'owner')?.tenant)
+     if (!orgId && isSuperAdmin(user)) redirect(CONSOLE_ROUTES.home)
      const organization: Organization | null = orgId
           ? await payload
                  .findByID({

@@ -1,7 +1,8 @@
-import { Clock, Eye, X } from 'lucide-react'
+import { Clock, Eye, Pencil, X } from 'lucide-react'
 import Link from 'next/link'
 
 import { OrgAvatar } from '@/shared/components/ui/org-avatar'
+import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
 import { formatDate, formatTime, interpolate, localizeDigits } from '@/shared/i18n/format'
 import type { Locale } from '@/shared/i18n/locales'
 
@@ -65,6 +66,14 @@ export function OrgDetail({
                          </p>
                     </div>
                     <OrgStatusPill status={org.status} label={m.status[org.status]} />
+                    <Link
+                         href={CONSOLE_ROUTES.editOrganization(org.id)}
+                         aria-label={`${m.edit.open} · ${org.name}`}
+                         title={m.edit.open}
+                         className="-mt-1 flex size-8 items-center justify-center rounded-lg text-ink-3 hover:bg-paper hover:text-ink"
+                    >
+                         <Pencil aria-hidden className="size-4" />
+                    </Link>
                     <Link
                          href={closeHref}
                          scroll={false}
