@@ -37,9 +37,14 @@ type SessionEntry = { id: string; createdAt: Date | string; expiresAt: Date | st
  * End one Payload session (the `sid` inside the token) so the token stops working even if a copy
  * of it survives. Mirrors payload/dist/auth/operations/logout.js (3.94.2).
  */
-export async function endSession(payload: Payload, userId: number | string, sid: string) {
+export async function endSession(
+     payload: Payload,
+     collection: 'users' | 'admins',
+     userId: number | string,
+     sid: string,
+) {
      const user = (await payload.db.findOne({
-          collection: 'users',
+          collection,
           where: { id: { equals: userId } },
      })) as (Record<string, unknown> & { sessions?: SessionEntry[] }) | null
      if (!user?.sessions?.length) return
@@ -48,7 +53,7 @@ export async function endSession(payload: Payload, userId: number | string, sid:
      user.updatedAt = null
      await payload.db.updateOne({
           id: userId,
-          collection: 'users',
+          collection,
           data: user,
           returning: false,
      })

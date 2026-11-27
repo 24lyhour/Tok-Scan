@@ -12,8 +12,8 @@ import {
      collections,
      emailAdapter,
      localization,
+     Admins,
      plugins,
-     Users,
 } from './modules'
 import { getServerURL } from './shared/config/server-url'
 
@@ -22,7 +22,8 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
      admin: {
-          user: Users.slug,
+          // Payload's admin (/admin/collections/…) = tok-scan staff only; owners use their own app
+          user: Admins.slug,
           // tok-scan super-admin console: logo + platform overview (src/modules/super-admin)
           components: adminComponents,
           importMap: {

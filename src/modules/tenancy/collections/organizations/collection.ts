@@ -5,6 +5,7 @@ import {
      nobody,
      orgManagersUpdate,
      orgMembersRead,
+     ADMINS_SLUG,
      superAdminOnly,
 } from '@/modules/core/payload'
 import {
@@ -106,7 +107,8 @@ export const Organizations: CollectionConfig = {
           {
                name: 'statusChangedBy',
                type: 'relationship',
-               relationTo: 'users',
+               // tok-scan staff (only they approve / suspend)
+               relationTo: ADMINS_SLUG,
                // Written by trackStatusChange when a super-admin changes the status
                access: { update: superAdminOnly },
                admin: { position: 'sidebar', readOnly: true },

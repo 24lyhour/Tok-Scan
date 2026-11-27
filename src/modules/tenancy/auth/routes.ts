@@ -1,3 +1,5 @@
+import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
+
 import { onboardingRoutes } from '../onboarding/routes'
 
 /** Every sign-in URL — the only place they are written. */
@@ -21,4 +23,15 @@ export function safeNextPath(raw: unknown, fallback: string): string {
      if (!raw.startsWith('/') || raw.startsWith('//') || raw.startsWith('/\\')) return fallback
      if (raw.startsWith(authRoutes.login) || raw.startsWith(authRoutes.signup)) return fallback
      return raw
+}
+
+/**
+ * A login heading for the super-admin console (?next=/console…) is a STAFF login: it checks the
+ * `admins` table only. Every other login checks `users` (owners) only — the two never mix.
+ */
+export function isStaffLogin(next: unknown): boolean {
+     return (
+          typeof next === 'string' &&
+          (next === CONSOLE_ROUTES.home || next.startsWith(`${CONSOLE_ROUTES.home}/`))
+     )
 }

@@ -78,7 +78,7 @@ Every collection uses these — never an inline `({ req }) => …`.
 | outlets, tables, media | members (`tenantMembers`), media public | owner/admin + `requireTenantManager` hook | owner/admin (`tenantManagers`) |
 | users | yourself + colleagues (`usersRead`) | server only | yourself (`selfOrSuperAdmin`); roles only by super-admin |
 
-Roles live in `users.tenants[].orgRole`: `owner` · `admin` · `member`. tok-scan staff: `platformRole = super-admin`.
+Roles live in `users.tenants[].orgRole`: `owner` · `admin` · `member`. tok-scan staff are a separate table, `admins` (super-admin module): `isSuperAdmin(user)` = signed in from `admins`.
 Server actions write with `overrideAccess: true` **after** checking the user themselves (e.g. `getOnboardingContext`).
 
 ### Forms

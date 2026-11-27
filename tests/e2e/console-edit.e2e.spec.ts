@@ -20,11 +20,29 @@ import {
 test.describe.configure({ mode: 'serial' })
 
 let orgId = 0
+/** Another restaurant owner, so the "email already used" check has an owner email to hit */
+const otherOwner = { email: 'e2e-other-owner@test.tok-scan.local', password: 'e2e-password-123' }
+
+async function removeOtherOwner() {
+     const payload = await getPayload({ config: await config })
+     await payload.delete({
+          collection: 'users',
+          where: { email: { equals: otherOwner.email } },
+          overrideAccess: true,
+     })
+     return payload
+}
 
 test.beforeAll(async () => {
      await ensureTestSuperAdmin()
      await resetTestOwner()
      await createTestPendingOrg()
+     const payload = await removeOtherOwner()
+     await payload.create({ collection: 'users', data: otherOwner, overrideAccess: true })
+})
+
+test.afterAll(async () => {
+     await removeOtherOwner()
 })
 
 test('a super-admin edits a restaurant and its owner from the console', async ({ page }) => {
@@ -35,9 +53,9 @@ test('a super-admin edits a restaurant and its owner from the console', async ({
      await expect(page.getByRole('heading', { name: 'Edit organization' })).toBeVisible()
      orgId = Number(page.url().match(/organizations\/(\d+)\/edit/)?.[1])
 
-     // An email another account uses is refused, in staff wording
+     // An email another owner uses is refused, in staff wording
      const email = page.getByLabel(/^Login email/)
-     await email.fill(testSuperAdmin.email)
+     await email.fill(otherOwner.email)
      await page.getByRole('button', { name: 'Save changes' }).click()
      await expect(page.getByText('Another account already uses this email.')).toBeVisible()
 

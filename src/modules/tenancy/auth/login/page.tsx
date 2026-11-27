@@ -9,7 +9,7 @@ import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
 
 import { AuthShell } from '../../shared/auth-shell'
 import { googleStartHref, isGoogleEnabled, isGoogleErrorCode } from '../google/config'
-import { authRoutes, safeNextPath } from '../routes'
+import { authRoutes, isStaffLogin, safeNextPath } from '../routes'
 import { getCurrentUser } from '../server/current-user'
 import { LoginAside } from './aside'
 import { LoginForm } from './form'
@@ -22,17 +22,17 @@ export async function LoginPage({ searchParams }: { searchParams: SearchParams }
      const nextParam = typeof params.next === 'string' ? params.next : undefined
      const next = nextParam ? safeNextPath(nextParam, authRoutes.afterLogin) : undefined
 
-     const { user } = await getCurrentUser()
-     if (user) redirect(next ?? authRoutes.afterLogin)
+     // Staff login (console) and owner login are separate: only the matching account skips it
+     const staff = isStaffLogin(next)
+     const current = await getCurrentUser()
+     if (staff && current.staff) redirect(next ?? CONSOLE_ROUTES.home)
+     if (!staff && current.user) redirect(next ?? authRoutes.afterLogin)
 
      const { m } = await getTranslations('auth')
      const common = (await getTranslations('common')).m
      const email = typeof params.email === 'string' ? params.email.slice(0, 254) : ''
      const oauthError = isGoogleErrorCode(params.error) ? params.error : undefined
      const googleHref = isGoogleEnabled() ? googleStartHref(authRoutes.login, next) : null
-     // Going to the super-admin console → staff login: email + password only (no Google)
-     const staff =
-          next === CONSOLE_ROUTES.home || Boolean(next?.startsWith(`${CONSOLE_ROUTES.home}/`))
 
      return (
           <TranslationsProvider namespaces={['auth']}>
@@ -69,7 +69,11 @@ export async function LoginPage({ searchParams }: { searchParams: SearchParams }
                          next={next}
                          defaultEmail={email}
                          signupHref={authRoutes.signup}
-                         forgotHref={authRoutes.forgotPassword}
+                         forgotHref={
+                              staff
+                                   ? `${authRoutes.forgotPassword}?staff=1`
+                                   : authRoutes.forgotPassword
+                         }
                          googleHref={googleHref}
                          oauthError={oauthError}
                          staff={staff}

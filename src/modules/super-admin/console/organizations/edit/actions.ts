@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { isSuperAdmin } from '@/modules/core/payload'
 import { getCurrentUser } from '@/modules/tenancy'
 import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
 import { exists, isUniqueError, relationId } from '@/shared/lib/payload'
@@ -20,8 +19,8 @@ export async function updateOrganization(
      _prev: OrgEditState,
      formData: FormData,
 ): Promise<OrgEditState> {
-     const { payload, user } = await getCurrentUser()
-     if (!user || !isSuperAdmin(user)) return { status: 'error', formError: 'generic' }
+     const { payload, staff } = await getCurrentUser()
+     if (!staff) return { status: 'error', formError: 'generic' }
 
      const id = Number(formData.get('id'))
      const result = validateOrgEdit(orgEditSchema, formValues(formData))
@@ -70,7 +69,7 @@ export async function updateOrganization(
                     businessTypeOther: data.businessTypeOther,
                     trialEndsAt: trialEndsAtToISO(data.trialEndsAt),
                },
-               user,
+               user: staff,
                overrideAccess: false,
           })
           if (ownerId) {
@@ -78,7 +77,7 @@ export async function updateOrganization(
                     collection: 'users',
                     id: ownerId,
                     data: { name: data.ownerName, email: data.ownerEmail },
-                    user,
+                    user: staff,
                     overrideAccess: false,
                })
           }

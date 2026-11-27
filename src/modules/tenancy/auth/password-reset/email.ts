@@ -22,9 +22,10 @@ const escape = (text: string) =>
           (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
      )
 
-/** The reset page URL with its single-use token. */
-export function resetUrl(origin: string, token: string): string {
-     return `${origin.replace(/\/$/, '')}${authRoutes.resetPassword}?token=${encodeURIComponent(token)}`
+/** The reset page URL with its single-use token (`staff`: a tok-scan staff account, `admins`). */
+export function resetUrl(origin: string, token: string, staff = false): string {
+     const url = `${origin.replace(/\/$/, '')}${authRoutes.resetPassword}?token=${encodeURIComponent(token)}`
+     return staff ? `${url}&staff=1` : url
 }
 
 /** Subject + HTML for one reset email. */
@@ -33,14 +34,16 @@ export function resetPasswordEmail({
      token,
      name,
      locale,
+     staff = false,
 }: {
      origin: string
      token: string
      name?: string | null
      locale: Locale
+     staff?: boolean
 }): { subject: string; html: string } {
      const m = getNamespace(locale, 'auth').resetEmail
-     const url = resetUrl(origin, token)
+     const url = resetUrl(origin, token, staff)
      const greeting = interpolate(m.greeting, { name: escape(name?.trim() || m.friend) })
      const logo = `${origin.replace(/\/$/, '')}/icon-192.png`
 
@@ -99,21 +102,25 @@ function emailSettings(req: PayloadRequest): { origin: string; locale: Locale } 
 }
 
 /**
- * Users collection `auth.forgotPassword`: Payload's reset email, branded, linking to tok-scan's
+ * `auth.forgotPassword` for an auth table: Payload's reset email, branded, linking to tok-scan's
  * /reset-password page (also when the reset is started from Payload's admin).
+ *   users:  brandedForgotPassword()          admins: brandedForgotPassword({ staff: true })
  */
-export const brandedForgotPassword: NonNullable<
+export function brandedForgotPassword({ staff = false }: { staff?: boolean } = {}): NonNullable<
      Exclude<CollectionConfig['auth'], boolean | undefined>['forgotPassword']
-> = {
-     generateEmailSubject: (args) => {
-          const locale = args?.req ? emailSettings(args.req).locale : 'en'
-          return getNamespace(locale, 'auth').resetEmail.subject
-     },
-     generateEmailHTML: (args) => {
-          const settings = args?.req
-               ? emailSettings(args.req)
-               : { origin: getServerURL() || 'http://localhost:3000', locale: 'en' as const }
-          const name = (args?.user as { name?: string | null } | undefined)?.name
-          return resetPasswordEmail({ ...settings, token: args?.token ?? '', name }).html
-     },
+> {
+     return {
+          generateEmailSubject: (args) => {
+               const locale = args?.req ? emailSettings(args.req).locale : 'en'
+               return getNamespace(locale, 'auth').resetEmail.subject
+          },
+          generateEmailHTML: (args) => {
+               const settings = args?.req
+                    ? emailSettings(args.req)
+                    : { origin: getServerURL() || 'http://localhost:3000', locale: 'en' as const }
+               const name = (args?.user as { name?: string | null } | undefined)?.name
+               return resetPasswordEmail({ ...settings, token: args?.token ?? '', name, staff })
+                    .html
+          },
+     }
 }

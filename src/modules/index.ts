@@ -15,11 +15,16 @@ import {
      coreTenantScoped,
      mediaStorage,
 } from './core/payload'
-import { superAdminComponents, superAdminTranslations } from './super-admin/payload'
+import {
+     superAdminCollections,
+     superAdminComponents,
+     superAdminTranslations,
+} from './super-admin/payload'
 import { tablesCollections, tablesTenantScoped } from './tables/payload'
 import { tenancyCollections, tenancyPlugin, tenancyTenantScoped } from './tenancy/payload'
 
 export const collections: CollectionConfig[] = [
+     ...superAdminCollections,
      ...tenancyCollections,
      ...tablesCollections,
      ...coreCollections,
@@ -41,4 +46,5 @@ export const adminI18n: I18nOptions = {
 export const adminComponents = superAdminComponents
 
 export { emailAdapter, localization, Media } from './core/payload'
-export { Users } from './tenancy/payload'
+/** Payload's admin login table = tok-scan staff (owners are `users`, with their own login) */
+export { Admins } from './super-admin/payload'

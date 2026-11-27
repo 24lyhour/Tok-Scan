@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
-import { isSuperAdmin } from '@/modules/core/payload'
 import { getCurrentUser, type OrgStatus } from '@/modules/tenancy'
 import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
 
@@ -30,8 +29,8 @@ export async function changeOrgStatus(raw: {
      if (!parsed.success) return { ok: false, error: 'generic' }
      const { id, action } = parsed.data
 
-     const { payload, user } = await getCurrentUser()
-     if (!user || !isSuperAdmin(user)) return { ok: false, error: 'forbidden' }
+     const { payload, staff } = await getCurrentUser()
+     if (!staff) return { ok: false, error: 'forbidden' }
 
      const org = await payload
           .findByID({ collection: 'organizations', id, depth: 0, overrideAccess: true })
@@ -46,7 +45,7 @@ export async function changeOrgStatus(raw: {
                collection: 'organizations',
                id,
                data: { status: ACTION_TARGET[action] },
-               user,
+               user: staff,
                overrideAccess: false,
           })
      } catch (error) {
