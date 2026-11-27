@@ -32,6 +32,7 @@ export function LoginForm({
      forgotHref,
      googleHref,
      oauthError,
+     staff = false,
 }: {
      /** Where to go after logging in (validated again on the server) */
      next?: string
@@ -42,6 +43,8 @@ export function LoginForm({
      googleHref?: string | null
      /** `?error=` sent back by the Google callback */
      oauthError?: GoogleErrorCode
+     /** tok-scan staff (console) login: email + password only, no sign-up link */
+     staff?: boolean
 }) {
      const { m, locale } = useTranslations('auth')
      const copy = m.login
@@ -78,11 +81,13 @@ export function LoginForm({
           <form {...form.formProps} className="flex flex-1 flex-col">
                {next && <input type="hidden" name="next" value={next} />}
 
-               <SocialSignIn
-                    id={form.id('email') + '-social'}
-                    copy={m.social}
-                    googleHref={googleHref}
-               />
+               {!staff && (
+                    <SocialSignIn
+                         id={form.id('email') + '-social'}
+                         copy={m.social}
+                         googleHref={googleHref}
+                    />
+               )}
 
                <FormAlert message={alert} />
 
@@ -153,15 +158,17 @@ export function LoginForm({
                          label={copy.submit}
                          pendingLabel={copy.submitting}
                     />
-                    <p className="mt-4 text-center text-sm text-ink-2">
-                         {copy.noAccount}{' '}
-                         <Link
-                              href={signupHref}
-                              className="font-semibold text-brand-700 hover:underline"
-                         >
-                              {copy.startTrial}
-                         </Link>
-                    </p>
+                    {!staff && (
+                         <p className="mt-4 text-center text-sm text-ink-2">
+                              {copy.noAccount}{' '}
+                              <Link
+                                   href={signupHref}
+                                   className="font-semibold text-brand-700 hover:underline"
+                              >
+                                   {copy.startTrial}
+                              </Link>
+                         </p>
+                    )}
                </div>
           </form>
      )

@@ -93,3 +93,14 @@ test('console: restaurant owners are kept out', async ({ page }) => {
      await page.goto('/console/organizations')
      await expect(page).not.toHaveURL(/\/console/)
 })
+
+test('console login is staff-only: no Google, no sign-up link', async ({ page }) => {
+     await page.goto('/console')
+     await expect(page).toHaveURL(/\/login\?next=%2Fconsole/)
+     await expect(page.getByRole('heading', { name: 'Platform console' })).toBeVisible()
+     await expect(page.getByText('Continue with Google')).toHaveCount(0)
+     await expect(page.getByText('Start a free trial')).toHaveCount(0)
+     // The owners' login keeps Google
+     await page.goto('/login')
+     await expect(page.getByText('Continue with Google')).toBeVisible()
+})
