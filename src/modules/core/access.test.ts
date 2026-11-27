@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import {
      isSuperAdmin,
@@ -36,6 +36,25 @@ describe('roles', () => {
      it('knows tok-scan staff', () => {
           expect(isSuperAdmin(superAdmin)).toBe(true)
           expect(isSuperAdmin(owner)).toBe(false)
+     })
+
+     describe('SUPER_ADMIN_EMAILS', () => {
+          afterEach(() => vi.unstubAllEnvs())
+
+          it('makes listed emails staff (any case, spaces ignored)', () => {
+               vi.stubEnv('SUPER_ADMIN_EMAILS', ' Boss@Tok-Scan.store , ops@tok-scan.store')
+               expect(isSuperAdmin({ ...owner, email: 'boss@tok-scan.store' })).toBe(true)
+               expect(isSuperAdmin({ ...owner, email: 'OPS@tok-scan.store' })).toBe(true)
+               expect(isSuperAdmin({ ...owner, email: 'someone@tok-scan.store' })).toBe(false)
+          })
+
+          it('gives nothing when empty or the user has no email', () => {
+               vi.stubEnv('SUPER_ADMIN_EMAILS', '')
+               expect(isSuperAdmin({ ...owner, email: '' })).toBe(false)
+               vi.stubEnv('SUPER_ADMIN_EMAILS', ' , ')
+               expect(isSuperAdmin({ ...owner, email: '' })).toBe(false)
+               expect(isSuperAdmin(null)).toBe(false)
+          })
      })
 })
 

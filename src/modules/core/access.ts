@@ -25,15 +25,30 @@ type Membership = { tenant?: unknown; orgRole?: string | null }
 type AccessUser =
      | {
             id?: number | string
+            email?: string | null
             platformRole?: string | null
             tenants?: Membership[] | null
        }
      | null
      | undefined
 
-/** tok-scan platform staff — full access to every organization. */
+/** Emails in SUPER_ADMIN_EMAILS (comma-separated) — staff set on the server, no database edit needed. */
+function superAdminEmails(): string[] {
+     return (process.env.SUPER_ADMIN_EMAILS ?? '')
+          .split(',')
+          .map((email) => email.trim().toLowerCase())
+          .filter(Boolean)
+}
+
+/**
+ * tok-scan platform staff — full access to every organization: `platformRole = 'super-admin'`,
+ * or an email listed in SUPER_ADMIN_EMAILS.
+ */
 export function isSuperAdmin(user: AccessUser): boolean {
-     return user?.platformRole === 'super-admin'
+     if (!user) return false
+     if (user.platformRole === 'super-admin') return true
+     const email = user.email?.trim().toLowerCase()
+     return Boolean(email) && superAdminEmails().includes(email!)
 }
 
 /** Ids of the organizations where the user has one of `roles`. */
