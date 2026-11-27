@@ -18,9 +18,12 @@ const FIELDS: ForgotField[] = ['email']
 export function ForgotForm({
      loginHref,
      defaultEmail = '',
+     staff = false,
 }: {
      loginHref: string
      defaultEmail?: string
+     /** A tok-scan staff account (`admins`), not a restaurant owner */
+     staff?: boolean
 }) {
      const { m, locale } = useTranslations('auth')
      const copy = m.forgot
@@ -42,6 +45,7 @@ export function ForgotForm({
 
      return (
           <form {...form.formProps} className="flex flex-1 flex-col">
+               {staff && <input type="hidden" name="staff" value="1" />}
                <FormAlert message={alert} />
                <Field
                     id={form.id('email')}

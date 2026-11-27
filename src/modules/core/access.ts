@@ -6,7 +6,7 @@
  *   owner   — created the organization; everything
  *   admin   — manages setup (outlets, tables, menu, staff)
  *   member  — staff: reads setup, works orders (later modules)
- * tok-scan staff have `users.platformRole = 'super-admin'` and can do everything.
+ * tok-scan staff are a separate table, `admins` (super-admin module), and can do everything.
  *
  * The multi-tenant plugin ALSO limits every query to the user's own organizations; these rules
  * add the role checks inside an organization.
@@ -21,34 +21,23 @@ export type OrgRole = (typeof ORG_ROLES)[number]
 /** Roles allowed to change an organization's setup */
 export const MANAGER_ROLES: readonly OrgRole[] = ['owner', 'admin']
 
+/** tok-scan staff log in from their own table (not `users`): see the super-admin module. */
+export const ADMINS_SLUG = 'admins'
+
 type Membership = { tenant?: unknown; orgRole?: string | null }
 type AccessUser =
      | {
             id?: number | string
-            email?: string | null
-            platformRole?: string | null
+            /** Which auth table the signed-in account comes from: 'users' (owners) or 'admins' */
+            collection?: string | null
             tenants?: Membership[] | null
        }
      | null
      | undefined
 
-/** Emails in SUPER_ADMIN_EMAILS (comma-separated) — staff set on the server, no database edit needed. */
-function superAdminEmails(): string[] {
-     return (process.env.SUPER_ADMIN_EMAILS ?? '')
-          .split(',')
-          .map((email) => email.trim().toLowerCase())
-          .filter(Boolean)
-}
-
-/**
- * tok-scan platform staff — full access to every organization: `platformRole = 'super-admin'`,
- * or an email listed in SUPER_ADMIN_EMAILS.
- */
+/** tok-scan platform staff (signed in from the `admins` table) — full access to everything. */
 export function isSuperAdmin(user: AccessUser): boolean {
-     if (!user) return false
-     if (user.platformRole === 'super-admin') return true
-     const email = user.email?.trim().toLowerCase()
-     return Boolean(email) && superAdminEmails().includes(email!)
+     return user?.collection === ADMINS_SLUG
 }
 
 /** Ids of the organizations where the user has one of `roles`. */

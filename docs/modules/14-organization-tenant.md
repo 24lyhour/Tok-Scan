@@ -102,7 +102,6 @@ Hooks:
 | `email`        | (auth)                                | globally unique. One person can belong to several organizations.                                       |
 | `name`         | text                                  | required                                                                                               |
 | `avatar`       | upload → `media`                      | optional                                                                                               |
-| `platformRole` | select                                | `super-admin` \| `none`; default `none`. Only a super-admin can set it. Hide it from non-super-admins. |
 | `tenants`      | array (plugin field, placed manually) | one row per organization membership (see below)                                                        |
 | `pinHash`      | text                                  | hidden, set by Module 12                                                                               |
 
@@ -135,7 +134,7 @@ The design guide's single "Admin" role is split into **org-level** and **outlet-
 
 | Level    | Role          | Can do (summary; the full matrix is in Module 12)                                                                    |
 | -------- | ------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Platform | `super-admin` | Everything, in every organization (plugin `userHasAccessToAllTenants`)                                               |
+| Platform | `super-admin` | Everything, in every organization (plugin `userHasAccessToAllTenants`) — accounts in the separate `admins` table                                               |
 | Org      | `owner`       | Everything in the organization, including deleting it and transferring ownership. At least 1 per organization.       |
 | Org      | `admin`       | Everything in every outlet of the organization, plus org settings, outlets and members. This is the guide's "Admin". |
 | Org      | `member`      | No org-wide rights; access comes only from `outletRoles`                                                             |
@@ -171,7 +170,7 @@ The design guide's single "Admin" role is split into **org-level** and **outlet-
 ### 5.3 Access helpers (create in `src/access/`)
 
 ```ts
-isSuperAdmin(user) // user?.platformRole === 'super-admin'
+isSuperAdmin(user) // user?.collection === 'admins' — tok-scan staff have their own table
 getUserOrgIds(user) // ids from user.tenants where status === 'active'
 getOrgRole(user, orgId) // 'owner' | 'admin' | 'member' | null
 isOrgAdmin(user, orgId) // owner or admin
@@ -212,7 +211,7 @@ https://tok-scan.app/r/{orgSlug}/{outletSlug}/t/{table}?k={key}   → QR entry (
 ### 7.1 Sign-up and onboarding (new restaurant)
 
 ```
-/signup            → name, email, password            → creates user (platformRole none)
+/signup            → name, email, password            → creates user (an owner — tok-scan staff are in `admins`)
 /onboarding/org    → org name, slug (auto from name, editable, live availability check), logo, phone
                      → creates organization (owner = user, user.tenants += {orgRole: owner})
 /onboarding/outlet → first outlet name, slug, code, address, opening hours
@@ -315,7 +314,7 @@ Do them in order. Run `yarn generate:types` after any schema change.
      })
      ```
      Confirm the option names against the installed plugin's types before relying on them, and update this spec if any differ.
-5. **Users access:** a user can read themselves and members of organizations where they are an org admin. Only super-admin can read all users or write `platformRole`.
+5. **Users access:** a user can read themselves and members of organizations where they are an org admin. Only super-admin (an `admins` account) can read all users or change memberships.
 6. **Database:** Postgres runs in push mode in dev. Before the first deploy, create a migration: `yarn payload migrate:create org_tenant`.
 7. **Seed** (`src/seed/orgs.ts`, run in dev only):
      - 1 super-admin

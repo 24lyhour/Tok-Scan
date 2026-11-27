@@ -58,13 +58,21 @@ export const testSuperAdmin = {
      email: 'e2e-admin@test.tok-scan.local',
      password: 'e2e-password-123',
      name: 'E2E Platform Admin',
+     /** tok-scan staff have their own table */
+     collection: 'admins' as const,
 }
 
-/** A tok-scan staff account (platformRole super-admin) for console tests — created once, reused. */
+/** A tok-scan staff account (the `admins` table) for console tests — created once, reused. */
 export async function ensureTestSuperAdmin(): Promise<void> {
      const payload = await getPayload({ config: await config })
-     const { docs } = await payload.find({
+     // Staff live only in `admins`: remove an old owner account with the same email (older runs)
+     await payload.delete({
           collection: 'users',
+          where: { email: { equals: testSuperAdmin.email } },
+          overrideAccess: true,
+     })
+     const { docs } = await payload.find({
+          collection: 'admins',
           where: { email: { equals: testSuperAdmin.email } },
           limit: 1,
           depth: 0,
@@ -72,15 +80,16 @@ export async function ensureTestSuperAdmin(): Promise<void> {
      })
      if (docs[0]) {
           await payload.update({
-               collection: 'users',
+               collection: 'admins',
                id: docs[0].id,
-               data: { platformRole: 'super-admin', password: testSuperAdmin.password },
+               data: { password: testSuperAdmin.password },
                overrideAccess: true,
           })
      } else {
+          const { email, password, name } = testSuperAdmin
           await payload.create({
-               collection: 'users',
-               data: { ...testSuperAdmin, platformRole: 'super-admin' },
+               collection: 'admins',
+               data: { email, password, name },
                overrideAccess: true,
           })
      }

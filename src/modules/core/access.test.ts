@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import {
      isSuperAdmin,
@@ -14,13 +14,15 @@ import {
 // Organization 1: owner · Organization 2: member
 const owner = {
      id: 10,
+     collection: 'users',
      tenants: [
           { tenant: 1, orgRole: 'owner' },
           { tenant: { id: 2 }, orgRole: 'member' },
      ],
 }
-const staff = { id: 11, tenants: [{ tenant: 1, orgRole: 'member' }] }
-const superAdmin = { id: 1, platformRole: 'super-admin', tenants: [] }
+const staff = { id: 11, collection: 'users', tenants: [{ tenant: 1, orgRole: 'member' }] }
+// tok-scan staff sign in from their own table
+const superAdmin = { id: 1, collection: 'admins' }
 
 // Access functions only read `req.user` (and `req.t` for errors)
 type AnyArgs = Parameters<typeof tenantManagers>[0]
@@ -33,28 +35,12 @@ describe('roles', () => {
           expect(orgIdsWithRole(null)).toEqual([])
      })
 
-     it('knows tok-scan staff', () => {
+     it('knows tok-scan staff: only accounts from the admins table', () => {
           expect(isSuperAdmin(superAdmin)).toBe(true)
+          // An owner is never staff — whatever else is on the account
           expect(isSuperAdmin(owner)).toBe(false)
-     })
-
-     describe('SUPER_ADMIN_EMAILS', () => {
-          afterEach(() => vi.unstubAllEnvs())
-
-          it('makes listed emails staff (any case, spaces ignored)', () => {
-               vi.stubEnv('SUPER_ADMIN_EMAILS', ' Boss@Tok-Scan.store , ops@tok-scan.store')
-               expect(isSuperAdmin({ ...owner, email: 'boss@tok-scan.store' })).toBe(true)
-               expect(isSuperAdmin({ ...owner, email: 'OPS@tok-scan.store' })).toBe(true)
-               expect(isSuperAdmin({ ...owner, email: 'someone@tok-scan.store' })).toBe(false)
-          })
-
-          it('gives nothing when empty or the user has no email', () => {
-               vi.stubEnv('SUPER_ADMIN_EMAILS', '')
-               expect(isSuperAdmin({ ...owner, email: '' })).toBe(false)
-               vi.stubEnv('SUPER_ADMIN_EMAILS', ' , ')
-               expect(isSuperAdmin({ ...owner, email: '' })).toBe(false)
-               expect(isSuperAdmin(null)).toBe(false)
-          })
+          expect(isSuperAdmin({ ...owner, platformRole: 'super-admin' } as never)).toBe(false)
+          expect(isSuperAdmin(null)).toBe(false)
      })
 })
 

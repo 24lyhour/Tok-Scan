@@ -1,27 +1,32 @@
 /**
  * Access rules against real Payload + Postgres (core/access.ts + multi-tenant plugin).
  *   Restaurant A: ownerA (owner), staffA (member)   ·   Restaurant B: ownerB (owner)
+ *   platformAdmin: tok-scan staff — their own table, `admins`
  * Creates its own data with a unique suffix and removes it afterwards.
  */
 import { getPayload, type Payload } from 'payload'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 import config from '@/payload.config'
-import { Users } from '@/modules/tenancy/payload'
-import type { Organization, Outlet, Table, User } from '@/payload-types'
+import { Admins } from '@/modules/super-admin/payload'
+import type { Admin, Organization, Outlet, Table, User } from '@/payload-types'
 
 const run = Date.now().toString(36)
 let payload: Payload
 let orgA: Organization, orgB: Organization
-let ownerA: User, staffA: User, ownerB: User, platformAdmin: User
+let ownerA: User, staffA: User, ownerB: User, platformAdmin: Admin
 let outletA: Outlet, outletB: Outlet, tableA: Table
 
 /** Payload's "not allowed" (Forbidden) or "not found" (hidden by access rules) — never a validation error */
 const DENIED = /not allowed|not found/i
 
-/** Local API call made AS this user, with access rules on */
+/** Local API call made AS this owner / tok-scan staff member, with access rules on */
 const as = (user: User) => ({
      user: { ...user, collection: 'users' as const },
+     overrideAccess: false,
+})
+const asStaff = (admin: Admin) => ({
+     user: { ...admin, collection: 'admins' as const },
      overrideAccess: false,
 })
 
@@ -64,14 +69,16 @@ beforeAll(async () => {
           makeUser('owner-a'),
           makeUser('staff-a'),
           makeUser('owner-b'),
-          makeUser('platform-admin'),
+          payload.create({
+               collection: 'admins',
+               data: {
+                    email: `platform-admin-${run}@test.tok-scan.local`,
+                    password: 'test-password-123',
+                    name: 'platform-admin',
+               },
+               overrideAccess: true,
+          }),
      ])
-     platformAdmin = await payload.update({
-          collection: 'users',
-          id: platformAdmin.id,
-          data: { platformRole: 'super-admin' },
-          overrideAccess: true,
-     })
      orgA = await makeOrg('a', ownerA)
      orgB = await makeOrg('b', ownerB)
      ownerA = await join(ownerA, orgA, 'owner')
@@ -107,7 +114,7 @@ afterAll(async () => {
           where: { tenant: { in: orgs } },
           overrideAccess: true,
      })
-     const users = [ownerA, staffA, ownerB, platformAdmin].filter(Boolean)
+     const users = [ownerA, staffA, ownerB].filter(Boolean)
      // users.tenants → organization and organization.owner → user: unlink first
      for (const u of users) {
           await payload.update({
@@ -127,6 +134,9 @@ afterAll(async () => {
           where: { id: { in: users.map((u) => u.id) } },
           overrideAccess: true,
      })
+     if (platformAdmin) {
+          await payload.delete({ collection: 'admins', id: platformAdmin.id, overrideAccess: true })
+     }
 })
 
 describe('restaurants are isolated', () => {
@@ -235,7 +245,6 @@ describe('accounts', () => {
                data: {
                     name: 'Staff renamed',
                     tenants: [{ tenant: orgA.id, orgRole: 'owner' }],
-                    platformRole: 'super-admin',
                },
                ...as(staffA),
           })
@@ -247,18 +256,33 @@ describe('accounts', () => {
           })
           expect(fresh.name).toBe('Staff renamed')
           expect(fresh.tenants?.[0]?.orgRole).toBe('member')
-          expect(fresh.platformRole).not.toBe('super-admin')
      })
 })
 
 describe('super-admin console (Payload admin)', () => {
-     const canOpenAdmin = (user: User) =>
-          (Users.access!.admin as (args: unknown) => boolean)({ req: { user } })
+     const canOpenAdmin = (user: { collection: string }) =>
+          (Admins.access!.admin as (args: unknown) => boolean)({ req: { user } })
 
-     it('only tok-scan staff can open /admin', () => {
-          expect(canOpenAdmin(platformAdmin)).toBe(true)
-          expect(canOpenAdmin(ownerA)).toBe(false)
-          expect(canOpenAdmin(staffA)).toBe(false)
+     it('only tok-scan staff (the admins table) can open /admin', () => {
+          expect(canOpenAdmin({ ...platformAdmin, collection: 'admins' })).toBe(true)
+          expect(canOpenAdmin({ ...ownerA, collection: 'users' })).toBe(false)
+          expect(canOpenAdmin({ ...staffA, collection: 'users' })).toBe(false)
+     })
+
+     it('owners and tok-scan staff are separate tables: no shared logins', async () => {
+          // The staff account can't log in as an owner, and an owner can't log in as staff
+          await expect(
+               payload.login({
+                    collection: 'users',
+                    data: { email: platformAdmin.email, password: 'test-password-123' },
+               }),
+          ).rejects.toThrow()
+          await expect(
+               payload.login({
+                    collection: 'admins',
+                    data: { email: ownerA.email, password: 'test-password-123' },
+               }),
+          ).rejects.toThrow()
      })
 
      it('approving a restaurant records who did it', async () => {
@@ -272,7 +296,7 @@ describe('super-admin console (Payload admin)', () => {
                collection: 'organizations',
                id: orgB.id,
                data: { status: 'active' },
-               ...as(platformAdmin),
+               ...asStaff(platformAdmin),
                depth: 0,
           })
           expect(approved.status).toBe('active')

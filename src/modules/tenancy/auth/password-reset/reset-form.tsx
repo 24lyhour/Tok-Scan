@@ -20,7 +20,16 @@ import { PASSWORD_MIN, type ResetField, resetSchema } from './schema'
 const FIELDS: ResetField[] = ['password', 'confirm']
 
 /** Step 2 · the page the email link opens: choose a new password (then you're signed in). */
-export function ResetForm({ token, forgotHref }: { token: string; forgotHref: string }) {
+export function ResetForm({
+     token,
+     forgotHref,
+     staff = false,
+}: {
+     token: string
+     forgotHref: string
+     /** A tok-scan staff account (`admins`), not a restaurant owner */
+     staff?: boolean
+}) {
      const { m } = useTranslations('auth')
      const copy = m.reset
      const [password, setPassword] = useState('')
@@ -38,6 +47,7 @@ export function ResetForm({ token, forgotHref }: { token: string; forgotHref: st
      return (
           <form {...form.formProps} className="flex flex-1 flex-col">
                <input type="hidden" name="token" value={token} />
+               {staff && <input type="hidden" name="staff" value="1" />}
                <FormAlert
                     message={
                          !form.hasErrors && state.formError ? m.errors[state.formError] : undefined

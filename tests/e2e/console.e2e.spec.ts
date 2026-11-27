@@ -63,21 +63,12 @@ test('staff log in at their own address, /admin/login, and land in the console',
      await expect(page.getByRole('heading', { name: 'Organizations' })).toBeVisible()
 })
 
-test('a super-admin without a restaurant skips onboarding after the normal /login', async ({
-     page,
-}) => {
-     await page.goto('/login')
-     await page.getByLabel(/^Email/).fill(testSuperAdmin.email)
-     await page.getByLabel(/^Password/).fill(testSuperAdmin.password)
-     await expect(page.locator('input[name="cf-turnstile-response"]')).not.toHaveValue('', {
-          timeout: 15000,
-     })
-     await page.getByRole('button', { name: 'Log in' }).click()
-     await expect(page).toHaveURL(/\/console\/organizations$/)
-
-     // The owner app sends staff back to the console too (no "create your organization")
-     await page.goto('/dashboard')
-     await expect(page).toHaveURL(/\/console\/organizations$/)
+test('tok-scan staff never onboard: the owner app sends them to the console', async ({ page }) => {
+     await apiLogin(page, testSuperAdmin)
+     for (const path of ['/dashboard', '/onboarding', '/onboarding/organization']) {
+          await page.goto(path)
+          await expect(page).toHaveURL(/\/console\/organizations$/)
+     }
 })
 
 test('console: a super-admin approves, then suspends, a restaurant (guide p.27)', async ({
@@ -143,4 +134,28 @@ test('log out asks first, then really signs out (back to /admin/login)', async (
      expect((await page.context().cookies()).some((c) => c.name === 'payload-token')).toBe(false)
      await page.goto('/console/organizations')
      await expect(page).toHaveURL(/\/admin\/login$/)
+})
+
+test('staff and owners are separate: each login refuses the other kind of account', async ({
+     page,
+}) => {
+     const login = async (path: string, account: { email: string; password: string }) => {
+          await page.goto(path)
+          await page.getByLabel(/^Email/).fill(account.email)
+          await page.getByLabel(/^Password/).fill(account.password)
+          await expect(page.locator('input[name="cf-turnstile-response"]')).not.toHaveValue('', {
+               timeout: 15000,
+          })
+          await page.getByRole('button', { name: 'Log in' }).click()
+     }
+
+     // An owner's email + password don't open the staff login…
+     await login('/admin/login', testOwner)
+     await expect(page.getByText('That email and password don’t match')).toBeVisible()
+     await expect(page).toHaveURL(/\/admin\/login$/)
+
+     // …and a staff account doesn't open the owners' login
+     await login('/login', testSuperAdmin)
+     await expect(page.getByText('That email and password don’t match')).toBeVisible()
+     await expect(page).toHaveURL(/\/login$/)
 })

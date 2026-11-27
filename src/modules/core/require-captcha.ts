@@ -13,10 +13,10 @@ export function readCookie(header: string | null | undefined, name: string): str
 }
 
 /**
- * Bot check for Payload's login API (REST /api/users/login and GraphQL) — used by the /admin login
- * form, and otherwise open to password-guessing scripts. The token comes in the `tok-captcha`
- * cookie set by the admin login widget. tok-scan's own /login checks Turnstile itself and logs in
- * through the Local API, so it isn't affected.
+ * Bot check for Payload's login API (REST /api/<users|admins>/login and GraphQL), which is
+ * otherwise open to password-guessing scripts. The token comes in the `tok-captcha` cookie.
+ * tok-scan's own login pages check Turnstile themselves and log in through the Local API, so they
+ * aren't affected. Used by both auth tables (users, admins).
  */
 export const requireCaptchaOnApiLogin: CollectionBeforeOperationHook = async ({
      operation,

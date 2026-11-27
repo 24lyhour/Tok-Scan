@@ -19,11 +19,13 @@ function loginTarget(raw: FormDataEntryValue | null): string {
  * token, a refused request) can leave the browser signed in.
  */
 export async function logoutAction(formData: FormData): Promise<never> {
-     const { payload, user } = await getCurrentUser()
-     const sid = (user as { _sid?: string } | null)?._sid
-     if (user && sid) {
-          await endSession(payload, user.id, sid).catch((error: unknown) =>
-               payload.logger.error({ err: error, msg: 'Logout: could not end the session' }),
+     const { payload, user, staff } = await getCurrentUser()
+     const account = user ?? staff
+     const sid = (account as { _sid?: string } | null)?._sid
+     if (account && sid) {
+          await endSession(payload, staff ? 'admins' : 'users', account.id, sid).catch(
+               (error: unknown) =>
+                    payload.logger.error({ err: error, msg: 'Logout: could not end the session' }),
           )
      }
      await clearAuthCookie(payload)

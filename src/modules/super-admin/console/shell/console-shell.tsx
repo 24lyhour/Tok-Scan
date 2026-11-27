@@ -16,10 +16,10 @@ import { ConsoleTopbar } from './console-topbar'
  * menu and staff user card; top bar; page content. Layout of every /console page.
  */
 export async function ConsoleShell({ children }: { children: ReactNode }) {
-     const { user, pendingCount } = await getConsoleContext()
+     const { staff, pendingCount } = await getConsoleContext()
      const { m, locale } = await getTranslations('console')
      const common = (await getTranslations('common', locale)).m
-     const name = user.name || user.email
+     const name = staff.name || staff.email
 
      return (
           <TranslationsProvider namespaces={['console']}>

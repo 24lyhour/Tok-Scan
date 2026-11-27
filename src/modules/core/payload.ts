@@ -6,6 +6,7 @@
 export * from './access'
 export { ADMIN_GROUPS } from './admin-groups'
 export { enforcePlanLimit } from './plan-limits'
+export { requireCaptchaOnApiLogin } from './require-captcha'
 export { coreCollections, coreTenantScoped, Media, mediaStorage } from './collections'
 export { emailAdapter } from './email'
 export { adminI18n, localization } from './i18n'

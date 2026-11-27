@@ -1,13 +1,20 @@
 import type { CollectionConfig } from 'payload'
 
-import { ADMIN_GROUPS, selfOrSuperAdmin, superAdminOnly, usersRead } from '@/modules/core/payload'
+import {
+     ADMIN_GROUPS,
+     requireCaptchaOnApiLogin,
+     selfOrSuperAdmin,
+     superAdminOnly,
+     usersRead,
+} from '@/modules/core/payload'
 
 import { brandedForgotPassword } from '../../auth/password-reset/email'
-import { requireCaptchaOnApiLogin } from './hooks/require-captcha'
+import { membershipsField } from '../../plugin'
 
 /**
- * Users — one login per person; a person can belong to many organizations (Module 14 §3.3).
- * Self sign-up goes through the onboarding server action (tenancy/onboarding), not public REST create.
+ * Users — restaurant owners and their staff: one login per person, who can belong to many
+ * organizations (Module 14 §3.3). tok-scan's own staff are NOT here: they have their own table,
+ * `admins` (super-admin module). Self sign-up goes through the onboarding server action.
  */
 export const Users: CollectionConfig = {
      slug: 'users',
@@ -17,10 +24,8 @@ export const Users: CollectionConfig = {
           defaultColumns: ['name', 'email', 'phone', 'createdAt'],
      },
      // Branded reset email (tok-scan logo, button → /reset-password), in the reader's language
-     auth: { forgotPassword: brandedForgotPassword },
+     auth: { forgotPassword: brandedForgotPassword() },
      access: {
-          /** The Payload admin (/admin) is tok-scan's console: super-admins only. Owners use /dashboard. */
-          admin: superAdminOnly,
           read: usersRead,
           // Sign-up and invitations create users in server actions; the API can't
           create: superAdminOnly,
@@ -28,7 +33,7 @@ export const Users: CollectionConfig = {
           delete: superAdminOnly,
      },
      hooks: {
-          // /admin login form + anyone calling /api/users/login must pass the bot check
+          // Anyone calling /api/users/login must pass the bot check
           beforeOperation: [requireCaptchaOnApiLogin],
      },
      fields: [
@@ -47,18 +52,6 @@ export const Users: CollectionConfig = {
                },
           },
           {
-               // tok-scan staff only. Only a super-admin can grant it.
-               name: 'platformRole',
-               type: 'select',
-               defaultValue: 'none',
-               options: [
-                    { label: 'None', value: 'none' },
-                    { label: 'Super-admin (tok-scan staff)', value: 'super-admin' },
-               ],
-               access: { create: superAdminOnly, update: superAdminOnly },
-               admin: { position: 'sidebar' },
-          },
-          {
                // Google account id (OIDC `sub`) — set by "Continue with Google", never changes.
                // Hidden: not returned by the API or shown in the admin.
                name: 'googleSub',
@@ -72,5 +65,6 @@ export const Users: CollectionConfig = {
                type: 'date',
                admin: { readOnly: true, position: 'sidebar' },
           },
+          membershipsField(),
      ],
 }

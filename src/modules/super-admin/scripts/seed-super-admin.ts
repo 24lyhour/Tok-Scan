@@ -1,12 +1,11 @@
 /**
- * Seed a tok-scan staff login (super-admin) for local development:
+ * Seed a tok-scan staff login (the `admins` table — separate from restaurant owners):
  *   yarn seed:admin
  * Reads SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD (and optional SEED_ADMIN_NAME) from .env — never
- * commit real values. Creates the account, or resets its password and makes it super-admin if it
- * already exists. Safe to run again.
+ * commit real values. Creates the staff account, or resets its password if it already exists.
+ * Safe to run again. Log in at /admin/login.
  *
- * Only runs against a local database. For a deployed database use `yarn super-admin <email>` on an
- * account with a strong password (or pass --remote if you really mean it).
+ * Only runs against a local database unless you pass --remote (use a strong password there).
  */
 import config from '@payload-config'
 import { getPayload } from 'payload'
@@ -37,7 +36,7 @@ if (!isLocal && !process.argv.includes('--remote')) {
 
 const payload = await getPayload({ config })
 const { docs } = await payload.find({
-     collection: 'users',
+     collection: 'admins',
      where: { email: { equals: email } },
      limit: 1,
      depth: 0,
@@ -47,19 +46,19 @@ const existing = docs[0]
 
 if (existing) {
      await payload.update({
-          collection: 'users',
+          collection: 'admins',
           id: existing.id,
-          data: { password, platformRole: 'super-admin' },
+          data: { password },
           overrideAccess: true,
      })
-     console.log(`Updated ${email}: super-admin, password reset from SEED_ADMIN_PASSWORD.`)
+     console.log(`Updated staff account ${email}: password reset from SEED_ADMIN_PASSWORD.`)
 } else {
      await payload.create({
-          collection: 'users',
-          data: { email, password, name, platformRole: 'super-admin' },
+          collection: 'admins',
+          data: { email, password, name },
           overrideAccess: true,
      })
-     console.log(`Created super-admin ${email}.`)
+     console.log(`Created staff account ${email}.`)
 }
-console.log('Log in at /admin.')
+console.log('Log in at /admin/login.')
 process.exit(0)

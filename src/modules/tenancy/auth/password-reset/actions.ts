@@ -3,6 +3,8 @@
 import { redirect } from 'next/navigation'
 
 import { getLocale } from '@/i18n/server'
+import { ADMINS_SLUG } from '@/modules/core/payload'
+import { CONSOLE_ROUTES } from '@/shared/config/app-routes'
 import { formValues } from '@/shared/lib/validation'
 import { TURNSTILE_FIELD } from '@/shared/security/turnstile-config'
 import { verifyTurnstile } from '@/shared/security/verify-turnstile'
@@ -34,6 +36,8 @@ export async function requestResetAction(
           return { status: 'error', formError: 'captcha' }
      }
 
+     // tok-scan staff reset their password in their own table
+     const staff = formData.get('staff') === '1'
      const { payload } = await getCurrentUser()
      const context: ResetEmailContext = {
           resetOrigin: await getPublicOrigin(),
@@ -41,7 +45,7 @@ export async function requestResetAction(
      }
      try {
           await payload.forgotPassword({
-               collection: 'users',
+               collection: staff ? ADMINS_SLUG : 'users',
                data: { email: result.data.email },
                context,
           })
@@ -50,7 +54,7 @@ export async function requestResetAction(
           payload.logger.error({ err: error, msg: 'Password reset email failed' })
      }
 
-     redirect(`${authRoutes.forgotPassword}?sent=1`)
+     redirect(`${authRoutes.forgotPassword}?sent=1${staff ? '&staff=1' : ''}`)
 }
 
 /** The page the email link opens: save the new password, then sign the person in. */
@@ -61,10 +65,11 @@ export async function resetPasswordAction(
      const result = validate(resetSchema, formValues(formData))
      if (!result.ok) return { status: 'error', fieldErrors: result.fieldErrors }
 
+     const staff = formData.get('staff') === '1'
      const { payload } = await getCurrentUser()
      try {
           const { token } = await payload.resetPassword({
-               collection: 'users',
+               collection: staff ? ADMINS_SLUG : 'users',
                data: { token: result.data.token, password: result.data.password },
                overrideAccess: true,
           })
@@ -74,5 +79,5 @@ export async function resetPasswordAction(
           return { status: 'error', formError: 'tokenInvalid' }
      }
 
-     redirect(authRoutes.afterLogin)
+     redirect(staff ? CONSOLE_ROUTES.home : authRoutes.afterLogin)
 }

@@ -8,9 +8,15 @@ import { TURNSTILE_COOKIE } from '@/shared/security/turnstile-config'
  */
 export const TEST_CAPTCHA_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX'
 
-/** Sign in through Payload's login API — it needs the bot-check token, like the /admin form. */
-export async function apiLogin(page: Page, user: { email: string; password: string }) {
-     const res = await page.request.post('/api/users/login', {
+/**
+ * Sign in through Payload's login API (it needs the bot-check token). Owners log in to `users`,
+ * tok-scan staff to their own table, `admins`.
+ */
+export async function apiLogin(
+     page: Page,
+     user: { email: string; password: string; collection?: 'users' | 'admins' },
+) {
+     const res = await page.request.post(`/api/${user.collection ?? 'users'}/login`, {
           data: { email: user.email, password: user.password },
           headers: { cookie: `${TURNSTILE_COOKIE}=${TEST_CAPTCHA_TOKEN}` },
      })
