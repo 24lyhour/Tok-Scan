@@ -42,9 +42,6 @@ function loadTurnstile(): Promise<TurnstileApi> {
      })
 }
 
-/** Local development (`yarn dev`) always shows Cloudflare's box so the check can be seen and tested. */
-const SHOW_BOX_LOCALLY = process.env.NODE_ENV === 'development'
-
 /** Status texts for the branded line under the form (from `common.security`). */
 export type TurnstileStatusText = { checking: string; verified: string; failed: string }
 type State = 'checking' | 'verified' | 'failed' | 'interactive'
@@ -54,11 +51,9 @@ type State = 'checking' | 'verified' | 'failed' | 'interactive'
  * `cf-turnstile-response` input that the server action verifies.
  * Bump `resetKey` after every submit — tokens can only be used once.
  *
- * With `status` (tok-scan's own forms, via useCaptcha): on the live site Cloudflare's grey box
- * stays hidden for visitors who pass (locally it is always shown, for testing), and a small line
- * in tok-scan's style says "Checking… → ✓ Verified" (or why
- * it failed). The box only appears when Cloudflare needs a click.
- * Without `status` (Payload admin login): Cloudflare's box is always shown.
+ * Cloudflare's box is always shown (local and live). With `status` (tok-scan's own forms, via
+ * useCaptcha) a small line in tok-scan's style under it says "Checking… → ✓ Verified" (or why
+ * it failed).
  */
 export function Turnstile({
      action,
@@ -95,9 +90,8 @@ export function Turnstile({
                          sitekey: turnstileSiteKey,
                          action,
                          theme: 'light',
-                         // Branded forms on the live site: hidden unless Cloudflare needs a click.
-                         // Locally, and without branding (Payload admin): always shown.
-                         appearance: branded && !SHOW_BOX_LOCALLY ? 'interaction-only' : 'always',
+                         // Always visible, so visitors (and we) can see the check working
+                         appearance: 'always',
                          // 'flexible' needs ≥300px; small phones get the compact widget instead
                          size: containerRef.current.offsetWidth >= 300 ? 'flexible' : 'compact',
                          language: getLocaleConfig(locale).turnstile,
@@ -144,8 +138,8 @@ export function Turnstile({
      }
      return (
           <div className={cn('w-full', className)}>
-               {/* Empty unless Cloudflare needs a click — then its checkbox appears here */}
-               <div ref={containerRef} data-turnstile-box />
+               {/* min-h reserves the box's height so the button below doesn't jump */}
+               <div ref={containerRef} data-turnstile-box className="min-h-16.25" />
                {state !== 'interactive' && status && <StatusLine state={state} text={status} />}
           </div>
      )
