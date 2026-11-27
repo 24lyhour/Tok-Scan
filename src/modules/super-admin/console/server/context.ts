@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
 import { isSuperAdmin } from '@/modules/core/payload'
-import { authRoutes, getCurrentUser } from '@/modules/tenancy'
+import { getCurrentUser } from '@/modules/tenancy'
 import { APP_ROUTES, CONSOLE_ROUTES } from '@/shared/config/app-routes'
 
 /**
@@ -14,7 +14,7 @@ import { APP_ROUTES, CONSOLE_ROUTES } from '@/shared/config/app-routes'
  */
 export const getConsoleContext = cache(async () => {
      const { payload, user } = await getCurrentUser()
-     if (!user) redirect(`${authRoutes.login}?next=${encodeURIComponent(CONSOLE_ROUTES.home)}`)
+     if (!user) redirect(CONSOLE_ROUTES.login)
      if (!isSuperAdmin(user)) redirect(APP_ROUTES.dashboard)
 
      const { totalDocs: pendingCount } = await payload.count({

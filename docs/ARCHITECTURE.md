@@ -41,7 +41,7 @@ tests/
 
 ## Module layout
 
-**Data and screens are separated, and every module has two entry points.**
+**Data and screens are separated, and every module has two entry points** (plus an optional third, `rules.ts`).
 
 ```
 src/modules/<module>/
@@ -50,6 +50,8 @@ src/modules/<module>/
 │                              #   → imported ONLY by src/modules/index.ts
 ├─ index.ts                    # PUBLIC API: pages, components, helpers, constants
 │                              #   → what src/app and other modules import
+├─ rules.ts                    # optional BROWSER-SAFE entry: Zod rules + constants only
+│                              #   → for client forms in OTHER modules (index.ts may pull in server code)
 ├─ collections/
 │  ├─ index.ts                 # <module>Collections + <module>TenantScoped
 │  └─ <name>/
@@ -90,7 +92,7 @@ Server actions write with `overrideAccess: true` **after** checking the user the
 
 ## Rules
 
-0. **Entry points.** Other modules import `@/modules/<module>` (public: pages, components, helpers — safe in the browser) or `@/modules/<module>/payload` (backend: collections, access rules). *Enforced by ESLint.*
+0. **Entry points.** Other modules import `@/modules/<module>` (public: pages, components, helpers), `@/modules/<module>/payload` (backend: collections, access rules) or `@/modules/<module>/rules` (browser-safe: validation rules and constants for a client form — `index.ts` can pull server-only code into the browser). *Enforced by ESLint.*
 1. **Routes are thin.** A file in `src/app/` only imports from a module entry point, e.g. `@/modules/tenancy`.
 2. **Import modules through their entry point** (`@/modules/<module>`), relative paths inside a module. *Enforced by ESLint.*
 3. **`src/shared/` never imports `src/modules/`.** *Enforced by ESLint.*

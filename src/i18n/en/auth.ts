@@ -40,8 +40,24 @@ export const auth = {
           metaTitle: 'Log in',
           title: 'Welcome back',
           subtitle: 'Log in to run your restaurant.',
-          staffTitle: 'Platform console',
-          staffSubtitle: 'For the tok-scan team. Log in with your staff email.',
+          /** Staff login (/admin/login): badge, then title + subtitle */
+          staffBadge: 'Platform console · staff only',
+          staffTitle: 'Welcome back',
+          staffSubtitle: 'Log in with your tok-scan staff account.',
+          /** Charcoal panel beside the staff login (large screens) */
+          ownerQuestion: 'Restaurant owner?',
+          ownerLink: 'Log in to your restaurant',
+          staffAside: {
+               title: 'Every restaurant on tok-scan, in one place.',
+               points: [
+                    'Approve new restaurants before they take online payments',
+                    'Help owners when they get stuck',
+                    'Every action on restaurant data is logged',
+               ],
+               pending: 'Pending approvals',
+               approve: 'Approve',
+               status: { pending: 'Pending approval', active: 'Active', trial: 'Trial' },
+          },
           email: 'Email',
           emailPlaceholder: 'you@restaurant.com',
           password: 'Password',

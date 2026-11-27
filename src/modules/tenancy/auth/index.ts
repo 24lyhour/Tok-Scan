@@ -14,7 +14,7 @@ export {
      ResetPasswordPage,
      resetPasswordMetadata,
 } from './password-reset/page'
-export { LogoutButton } from './logout-button'
+export { LogoutButton } from './logout/logout-button'
 export { authRoutes } from './routes'
 export { getCurrentUser } from './server/current-user'
 export type { LoginErrorCode } from './errors'

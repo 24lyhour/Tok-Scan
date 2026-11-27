@@ -11,7 +11,6 @@ import { getPublicOrigin } from '../../onboarding/server/context'
 import { type AuthState, validate } from '../errors'
 import { authRoutes } from '../routes'
 import { getCurrentUser } from '../server/current-user'
-import { homeAfterSignIn } from '../server/home'
 import { setAuthCookie } from '../server/session'
 import type { ResetEmailContext } from './email'
 import { type ForgotField, forgotSchema, type ResetField, resetSchema } from './schema'
@@ -63,19 +62,17 @@ export async function resetPasswordAction(
      if (!result.ok) return { status: 'error', fieldErrors: result.fieldErrors }
 
      const { payload } = await getCurrentUser()
-     let home: string = authRoutes.afterLogin
      try {
-          const { token, user } = await payload.resetPassword({
+          const { token } = await payload.resetPassword({
                collection: 'users',
                data: { token: result.data.token, password: result.data.password },
                overrideAccess: true,
           })
           if (token) await setAuthCookie(payload, token)
-          home = homeAfterSignIn(user)
      } catch {
           // Unknown, used or expired token
           return { status: 'error', formError: 'tokenInvalid' }
      }
 
-     redirect(home)
+     redirect(authRoutes.afterLogin)
 }

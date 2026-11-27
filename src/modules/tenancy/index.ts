@@ -8,7 +8,7 @@
  *   shared/       auth shell + social sign-in (auth and onboarding)
  *   plugin.ts     multi-tenant plugin   ·   access rules: @/modules/core
  *
- * Public API — what routes in src/app import.
+ * Public API — what routes in src/app import. Browser-safe rules for client forms: ./rules
  */
 export * from './auth'
 export {

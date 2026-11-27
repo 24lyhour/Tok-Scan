@@ -26,7 +26,33 @@ export async function setAuthCookie(payload: Payload, token: string, exp?: numbe
      ;(await cookies()).set(authCookieName(payload), token, authCookieOptions(exp))
 }
 
+/** Delete the auth cookie (same name and path it was set with). */
+export async function clearAuthCookie(payload: Payload) {
+     ;(await cookies()).delete({ name: authCookieName(payload), path: '/' })
+}
+
 type SessionEntry = { id: string; createdAt: Date | string; expiresAt: Date | string }
+
+/**
+ * End one Payload session (the `sid` inside the token) so the token stops working even if a copy
+ * of it survives. Mirrors payload/dist/auth/operations/logout.js (3.94.2).
+ */
+export async function endSession(payload: Payload, userId: number | string, sid: string) {
+     const user = (await payload.db.findOne({
+          collection: 'users',
+          where: { id: { equals: userId } },
+     })) as (Record<string, unknown> & { sessions?: SessionEntry[] }) | null
+     if (!user?.sessions?.length) return
+     user.sessions = user.sessions.filter((s) => s.id !== sid)
+     // Same as Payload: removing a session must not bump updatedAt
+     user.updatedAt = null
+     await payload.db.updateOne({
+          id: userId,
+          collection: 'users',
+          data: user,
+          returning: false,
+     })
+}
 
 /**
  * Start a normal Payload session for a user WITHOUT a password — used by "Continue with Google".

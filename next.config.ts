@@ -35,6 +35,15 @@ const nextConfig: NextConfig = {
                })),
           ]
      },
+     // Staff log in at their own address, /admin/login: it shows tok-scan's login in staff mode
+     // (no Google, no free trial; then the console) instead of Payload's login page.
+     async rewrites() {
+          return {
+               beforeFiles: [{ source: '/admin/login', destination: '/login?next=%2Fconsole' }],
+               afterFiles: [],
+               fallback: [],
+          }
+     },
      images: {
           localPatterns: [
                {

@@ -7,6 +7,8 @@ import { Turnstile } from '@/shared/components/security/turnstile'
 import type { Locale } from '@/shared/i18n/locales'
 import { TURNSTILE_COOKIE } from '@/shared/security/turnstile-config'
 
+import styles from './login.module.css'
+
 /** Hand the token to Payload's login API (checked by the users collection's beforeOperation hook). */
 function storeToken(token: string | null) {
      const attrs = `Path=/api; SameSite=Strict${location.protocol === 'https:' ? '; Secure' : ''}`
@@ -46,6 +48,7 @@ export function AdminLoginCaptcha() {
                locale={locale}
                resetKey={resetKey}
                onToken={storeToken}
+               className={styles.captcha}
           />
      )
 }

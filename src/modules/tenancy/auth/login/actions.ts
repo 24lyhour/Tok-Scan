@@ -10,7 +10,6 @@ import { TURNSTILE_FIELD } from '@/shared/security/turnstile-config'
 import { type AuthState, validate } from '../errors'
 import { authRoutes, safeNextPath } from '../routes'
 import { getCurrentUser } from '../server/current-user'
-import { homeAfterSignIn } from '../server/home'
 import { setAuthCookie } from '../server/session'
 import { type LoginField, loginSchema } from './schema'
 
@@ -27,16 +26,14 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
      }
 
      const { payload } = await getCurrentUser()
-     let home: string = authRoutes.afterLogin
      try {
-          const { token, exp, user } = await payload.login({
+          const { token, exp } = await payload.login({
                collection: 'users',
                data: result.data,
           })
           if (!token) return { status: 'error', formError: 'generic' }
 
           await setAuthCookie(payload, token, exp)
-          home = homeAfterSignIn(user)
      } catch (error) {
           // Same message for "no such user" and "wrong password" — don't reveal which emails exist.
           if (error instanceof LockedAuth) return { status: 'error', formError: 'locked' }
@@ -47,5 +44,5 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
           return { status: 'error', formError: 'generic' }
      }
 
-     redirect(safeNextPath(formData.get('next'), home))
+     redirect(safeNextPath(formData.get('next'), authRoutes.afterLogin))
 }

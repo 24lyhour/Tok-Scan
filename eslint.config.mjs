@@ -34,9 +34,10 @@ export default defineConfig([
                          patterns: [
                               {
                                    // Allowed: @/modules/<module> (public), @/modules/<module>/payload (backend:
-                                   // collections, access rules)
-                                   regex: '^@/modules/[^/]+/(?!payload$).+',
-                                   message: 'Import another module through an entry point: @/modules/<module> (public) or @/modules/<module>/payload (backend). Inside a module, use relative imports.',
+                                   // collections, access rules), @/modules/<module>/rules (browser-safe
+                                   // validation rules + constants for client forms)
+                                   regex: '^@/modules/[^/]+/(?!(payload|rules)$).+',
+                                   message: 'Import another module through an entry point: @/modules/<module> (public), @/modules/<module>/payload (backend) or @/modules/<module>/rules (browser-safe rules). Inside a module, use relative imports.',
                               },
                          ],
                     },
