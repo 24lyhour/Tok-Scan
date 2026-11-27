@@ -6,6 +6,7 @@
  *   access.ts      who-can-do-what rules used by every collection          ← backend (payload.ts)
  *   collections/   data: media (+ Vercel Blob storage)                     ← backend (payload.ts)
  *   i18n/          Payload content localization + admin UI languages       ← backend (payload.ts)
+ *   email.ts       outgoing email via Resend (RESEND_API_KEY)               ← backend (payload.ts)
  *
  * Public API — safe in pages, server actions and client components.
  */
