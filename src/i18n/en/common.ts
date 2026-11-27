@@ -27,6 +27,12 @@ export const common = {
           logIn: 'Log in',
           logOut: 'Log out',
      },
+     /** Bot check status under the form (Cloudflare Turnstile) */
+     security: {
+          checking: 'Checking your connection…',
+          verified: 'Verified · protected by Cloudflare',
+          failed: 'Security check couldn’t load. Refresh the page and try again.',
+     },
      states: {
           loading: 'Loading…',
           saving: 'Saving…',

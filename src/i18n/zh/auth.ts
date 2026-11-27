@@ -25,7 +25,7 @@ export const auth: AuthContent = {
           emailInvalid: '请输入有效的邮箱地址，例如 you@restaurant.com。',
           invalidCredentials: '邮箱和密码不匹配，请检查后重试。',
           locked: '失败次数过多，您的账户已被锁定 10 分钟——也可以重置密码。',
-          captcha: '请先完成按钮上方的安全验证，然后重试。',
+          captcha: '安全检查尚未完成。请稍候，然后重试。',
           generic: '出现问题，请重试。',
      },
      login: {

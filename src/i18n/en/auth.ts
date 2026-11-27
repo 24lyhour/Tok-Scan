@@ -30,7 +30,7 @@ export const auth = {
           emailInvalid: 'Enter a valid email address, like you@restaurant.com.',
           invalidCredentials: 'That email and password don’t match. Check them and try again.',
           locked: 'Too many failed attempts. Your account is locked for 10 minutes — or reset your password.',
-          captcha: 'Please complete the security check above the button, then try again.',
+          captcha: 'The security check isn’t finished yet. Wait a moment, then try again.',
           generic: 'Something went wrong. Please try again.',
      } satisfies Record<LoginErrorCode, string>,
      login: {

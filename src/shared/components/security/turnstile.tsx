@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { Loader2, ShieldAlert, ShieldCheck } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
 import { getLocaleConfig, type Locale } from '@/shared/i18n/locales'
 import { type TurnstileAction, turnstileSiteKey } from '@/shared/security/turnstile-config'
@@ -41,24 +42,37 @@ function loadTurnstile(): Promise<TurnstileApi> {
      })
 }
 
+/** Status texts for the branded line under the form (from `common.security`). */
+export type TurnstileStatusText = { checking: string; verified: string; failed: string }
+type State = 'checking' | 'verified' | 'failed' | 'interactive'
+
 /**
  * Cloudflare Turnstile widget. Put it INSIDE the <form>: it adds a hidden
  * `cf-turnstile-response` input that the server action verifies.
  * Bump `resetKey` after every submit — tokens can only be used once.
+ *
+ * With `status` (tok-scan's own forms, via useCaptcha): Cloudflare's grey box stays hidden for
+ * visitors who pass, and a small line in tok-scan's style says "Checking… → ✓ Verified" (or why
+ * it failed). The box only appears when Cloudflare needs a click.
+ * Without `status` (Payload admin login): Cloudflare's box is always shown.
  */
 export function Turnstile({
      action,
      locale,
      resetKey,
      onToken,
+     status,
      className,
 }: {
      action: TurnstileAction
      locale: Locale
      resetKey: number
      onToken: (token: string | null) => void
+     status?: TurnstileStatusText
      className?: string
 }) {
+     const [state, setState] = useState<State>('checking')
+     const branded = Boolean(status)
      const containerRef = useRef<HTMLDivElement>(null)
      const widgetIdRef = useRef<string | null>(null)
      // Latest callback for the widget's events (updated after render, read later by the widget)
@@ -77,33 +91,89 @@ export function Turnstile({
                          sitekey: turnstileSiteKey,
                          action,
                          theme: 'light',
-                         // Always visible: visitors see "Success ✓", and key/domain errors show in the box
-                         appearance: 'always',
+                         // Branded forms: hidden unless Cloudflare needs a click; else always shown
+                         appearance: branded ? 'interaction-only' : 'always',
                          // 'flexible' needs ≥300px; small phones get the compact widget instead
                          size: containerRef.current.offsetWidth >= 300 ? 'flexible' : 'compact',
                          language: getLocaleConfig(locale).turnstile,
-                         callback: (token: string) => onTokenRef.current(token),
-                         'expired-callback': () => onTokenRef.current(null),
-                         'error-callback': () => onTokenRef.current(null),
+                         callback: (token: string) => {
+                              setState('verified')
+                              onTokenRef.current(token)
+                         },
+                         'expired-callback': () => {
+                              setState('checking')
+                              onTokenRef.current(null)
+                         },
+                         'error-callback': () => {
+                              setState('failed')
+                              onTokenRef.current(null)
+                         },
+                         'before-interactive-callback': () => setState('interactive'),
+                         'after-interactive-callback': () => setState('checking'),
                     })
                })
-               .catch(() => onTokenRef.current(null))
+               .catch(() => {
+                    setState('failed')
+                    onTokenRef.current(null)
+               })
           return () => {
                cancelled = true
                if (widgetIdRef.current && window.turnstile)
                     window.turnstile.remove(widgetIdRef.current)
                widgetIdRef.current = null
           }
-     }, [action, locale])
+     }, [action, locale, branded])
 
      useEffect(() => {
           if (resetKey > 0 && widgetIdRef.current && window.turnstile) {
                window.turnstile.reset(widgetIdRef.current)
+               setState('checking')
                onTokenRef.current(null)
           }
      }, [resetKey])
 
      if (!turnstileSiteKey) return null
-     // min-h reserves the widget's height so the button below doesn't jump when it appears
-     return <div ref={containerRef} className={cn('min-h-16.25 w-full', className)} />
+     if (!branded) {
+          // min-h reserves the widget's height so the button below doesn't jump when it appears
+          return <div ref={containerRef} className={cn('min-h-16.25 w-full', className)} />
+     }
+     return (
+          <div className={cn('w-full', className)}>
+               {/* Empty unless Cloudflare needs a click — then its checkbox appears here */}
+               <div ref={containerRef} />
+               {state !== 'interactive' && status && <StatusLine state={state} text={status} />}
+          </div>
+     )
+}
+
+/** One quiet line in tok-scan's style: spinner → green shield → red message. */
+function StatusLine({
+     state,
+     text,
+}: {
+     state: Exclude<State, 'interactive'>
+     text: TurnstileStatusText
+}) {
+     const Icon = state === 'verified' ? ShieldCheck : state === 'failed' ? ShieldAlert : Loader2
+     return (
+          <p
+               role="status"
+               aria-live="polite"
+               className={cn(
+                    'flex items-center justify-center gap-1.5 text-xs',
+                    state === 'verified' && 'text-success',
+                    state === 'failed' && 'text-error',
+                    state === 'checking' && 'text-ink-3',
+               )}
+          >
+               <Icon
+                    aria-hidden
+                    className={cn(
+                         'size-3.5 shrink-0',
+                         state === 'checking' && 'motion-safe:animate-spin',
+                    )}
+               />
+               {text[state]}
+          </p>
+     )
 }

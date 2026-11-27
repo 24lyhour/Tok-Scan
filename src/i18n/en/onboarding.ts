@@ -165,7 +165,7 @@ export const onboarding = {
           passwordShort: 'Use at least 10 characters.',
           termsRequired: 'Please accept the Terms to continue.',
           emailTaken: 'An account with this email already exists. Log in instead.',
-          captcha: 'Please complete the security check above the button, then try again.',
+          captcha: 'The security check isn’t finished yet. Wait a moment, then try again.',
           slugTooShort: 'Use at least 3 characters.',
           slugTooLong: 'Use at most 40 characters.',
           slugInvalid: 'Use lower-case letters, numbers and single hyphens only.',
