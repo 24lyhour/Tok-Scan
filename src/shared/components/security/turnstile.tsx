@@ -105,5 +105,5 @@ export function Turnstile({
 
      if (!turnstileSiteKey) return null
      // min-h reserves the widget's height so the button below doesn't jump when it appears
-     return <div ref={containerRef} className={cn('min-h-[65px] w-full', className)} />
+     return <div ref={containerRef} className={cn('min-h-16.25 w-full', className)} />
 }
