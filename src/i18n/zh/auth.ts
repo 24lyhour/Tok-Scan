@@ -32,6 +32,8 @@ export const auth: AuthContent = {
           metaTitle: '登录',
           title: '欢迎回来',
           subtitle: '登录以管理您的餐厅。',
+          staffTitle: '平台控制台',
+          staffSubtitle: '仅限 tok-scan 团队。请使用员工邮箱登录。',
           email: '邮箱',
           emailPlaceholder: 'you@restaurant.com',
           password: '密码',

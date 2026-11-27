@@ -37,6 +37,8 @@ export const auth = {
           metaTitle: 'Log in',
           title: 'Welcome back',
           subtitle: 'Log in to run your restaurant.',
+          staffTitle: 'Platform console',
+          staffSubtitle: 'For the tok-scan team. Log in with your staff email.',
           email: 'Email',
           emailPlaceholder: 'you@restaurant.com',
           password: 'Password',

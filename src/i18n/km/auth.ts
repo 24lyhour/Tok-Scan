@@ -33,6 +33,8 @@ export const auth: AuthContent = {
           metaTitle: 'ចូលគណនី',
           title: 'សូមស្វាគមន៍ការត្រឡប់មកវិញ',
           subtitle: 'ចូលគណនី ដើម្បីគ្រប់គ្រងភោជនីយដ្ឋានរបស់អ្នក។',
+          staffTitle: 'ផ្ទាំងគ្រប់គ្រងវេទិកា',
+          staffSubtitle: 'សម្រាប់ក្រុម tok-scan។ ចូលដោយប្រើអ៊ីមែលបុគ្គលិករបស់អ្នក។',
           email: 'អ៊ីមែល',
           emailPlaceholder: 'you@restaurant.com',
           password: 'ពាក្យសម្ងាត់',
